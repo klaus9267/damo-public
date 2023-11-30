@@ -15,7 +15,6 @@ import java.util.Map;
 public class OAuth2UserService extends DefaultOAuth2UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-
         // 구글 로그인 버튼 클릭 -> 구글 로그인 창 -> 로그인 완료 -> code 리턴(Oauth2-Client 라이브러리) -> code를 통해 AccessToken 요청
         // userRequest 정보 -> loadUser함수 -> 구글로부터 유저 프로필 정보를 받아줌
         OAuth2User oAuth2User = super.loadUser(userRequest);
@@ -51,7 +50,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 //                    .build();
 //            userRepository.save(userEntity);
 //        }
-
-        return new OAuth2UserDetails(oAuth2User.getAttributes());
+    System.out.println(oAuth2UserInfo);
+        return new PrincipalDetails(oAuth2User.getAttributes(), username);
     }
 }

@@ -2,6 +2,7 @@ package com.damo.server.application.config.oauth;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
@@ -9,11 +10,13 @@ import java.util.Collection;
 import java.util.Map;
 
 @Data
-public class OAuth2UserDetails implements OAuth2User {
+public class PrincipalDetails implements UserDetails, OAuth2User {
     private final Map<String, Object> attributes;
+    private final String username;
 
-    public OAuth2UserDetails(Map<String, Object> attributes) {
+    public PrincipalDetails(Map<String, Object> attributes, String username) {
         this.attributes = attributes;
+        this.username = username;
     }
 
     @Override
@@ -31,5 +34,35 @@ public class OAuth2UserDetails implements OAuth2User {
         Collection<GrantedAuthority> collection = new ArrayList<>();
         collection.add((GrantedAuthority) () -> "user.getRole()");
         return collection;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
