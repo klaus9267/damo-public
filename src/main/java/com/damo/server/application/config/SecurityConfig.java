@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 .defaultSuccessUrl("/") // 성공시 이동하는 페이지
                 )
                 .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/loginForm")
+                        .loginPage("/")
                         .userInfoEndpoint(endPoint -> endPoint
                                 .userService(oAuth2UserService)
                         )
