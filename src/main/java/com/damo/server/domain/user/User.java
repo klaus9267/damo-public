@@ -20,17 +20,22 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username; // 고유 식별값
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String role; // TODO: enum으로 변경 / ROLE_USER, ROLE_ADMIN 등
 
+    @Column(nullable = false)
     private String provider; // TODO: enum으로 변경 / google, kakao, naver
 
-    @Column(name = "provider_id")
+    @Column(name = "provider_id", nullable = false)
     private String providerId;
 
     @CreationTimestamp

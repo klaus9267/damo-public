@@ -15,20 +15,20 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private LocalDateTime date;
 
-    @ColumnDefault("0")
+    @Column(nullable = false, columnDefinition = "0")
     private Integer amount;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id", nullable = false)
-    private Person person;
+    @Column(nullable = false)
+    private String event; // TODO: enum 타입 수정
 
 //    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private String status; // TODO: 나간 돈, 받은 돈, 진행 예정 등 enum타입
 
     @Column(name = "created_at")
@@ -38,4 +38,8 @@ public class Schedule {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Timestamp updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
 }
