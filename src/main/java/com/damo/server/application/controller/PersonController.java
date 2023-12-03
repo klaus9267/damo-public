@@ -18,6 +18,7 @@ public class PersonController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public @ResponseBody PersonDto addPerson(@RequestBody final RequestPersonDto personDto) {
+        // TODO: userId는 security에서 제공하는 데이터로 변경
         return this.personService.save(personDto);
     }
 }
