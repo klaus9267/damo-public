@@ -2,7 +2,6 @@ package com.damo.server.domain.schedule;
 
 import com.damo.server.domain.person.Person;
 import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -29,7 +28,11 @@ public class Schedule {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionType transaction;
+    private ScheduleStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ScheduleTransaction transaction;
 
     @Column(name = "created_at")
     @CreationTimestamp

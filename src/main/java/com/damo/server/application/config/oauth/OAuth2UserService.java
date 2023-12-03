@@ -4,6 +4,7 @@ import com.damo.server.application.config.oauth.provider.OAuth2Provider;
 import com.damo.server.domain.user.User;
 import com.damo.server.domain.user.UserRepository;
 import com.damo.server.domain.user.UserRole;
+import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -12,13 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@AllArgsConstructor
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
     private final UserRepository userRepository;
-
-    public OAuth2UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
 
     @Override
@@ -28,7 +26,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         final OAuth2ProviderFactory providerFactory = new OAuth2ProviderFactory();
         final OAuth2Provider oAuth2Provider = providerFactory.getOAuth2Provider(userRequest.getClientRegistration().getRegistrationId(), attributes);
 
-        if(userRepository.existsByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId())) {
+        if(!userRepository.existsByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId())) {
             userRepository.save(
                     User.builder()
                             .username(oAuth2Provider.getUsername())
