@@ -2,8 +2,11 @@ package com.damo.server.domain.person;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.domain.person.dto.PersonDto;
+import com.damo.server.domain.person.dto.PersonWithScheduleCount;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,5 +23,9 @@ public class PersonService {
         };
 
         return PersonDto.toPersonDto(this.personRepository.save(Person.toPersonFromRequest(personDto)));
+    }
+
+    public Page<PersonWithScheduleCount> readPeopleByTransaction(Pageable pageable, String relation) {
+        return personRepository.findAllPeopleWithScheduleCount(pageable, relation);
     }
 }
