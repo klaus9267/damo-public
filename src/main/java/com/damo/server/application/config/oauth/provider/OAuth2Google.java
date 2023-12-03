@@ -28,4 +28,9 @@ public class OAuth2Google implements OAuth2Provider {
     public String getName() {
         return attributes.get("name").toString();
     }
+
+    @Override
+    public String getUsername() {
+        return getProvider() + "_" + getProviderId();
+    }
 }

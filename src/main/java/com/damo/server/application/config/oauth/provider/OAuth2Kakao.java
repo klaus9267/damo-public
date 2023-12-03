@@ -29,4 +29,9 @@ public class OAuth2Kakao implements OAuth2Provider {
     public String getName() {
         return properties.get("nickname").toString();
     }
+
+    @Override
+    public String getUsername() {
+        return getProvider() + "_" + getProviderId();
+    }
 }
