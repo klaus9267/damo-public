@@ -1,6 +1,7 @@
 package com.damo.server.application.config.oauth;
 
 import com.damo.server.application.config.oauth.provider.OAuth2Provider;
+import com.damo.server.application.config.oauth.provider.ProviderType;
 import com.damo.server.application.config.oauth.strategy.GoogleProviderStrategy;
 import com.damo.server.application.config.oauth.strategy.KakaoProviderStrategy;
 import com.damo.server.application.config.oauth.strategy.NaverProviderStrategy;
@@ -14,9 +15,9 @@ public class OAuth2ProviderFactory {
     private final Map<String, OAuth2ProviderStrategy> strategies = new HashMap<>();;
 
     public OAuth2ProviderFactory() {
-        strategies.put("google", new GoogleProviderStrategy());
-        strategies.put("naver", new NaverProviderStrategy());
-        strategies.put("kakao", new KakaoProviderStrategy());
+        strategies.put(ProviderType.GOOGLE.getKey().toLowerCase(), new GoogleProviderStrategy());
+        strategies.put(ProviderType.NAVER.getKey().toLowerCase(), new NaverProviderStrategy());
+        strategies.put(ProviderType.KAKAO.getKey().toLowerCase(), new KakaoProviderStrategy());
     }
 
     public OAuth2Provider getOAuth2Provider(String registrationId, Map<String, Object> attributes) {
