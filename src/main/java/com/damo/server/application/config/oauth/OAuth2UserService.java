@@ -1,12 +1,9 @@
 package com.damo.server.application.config.oauth;
 
-import com.damo.server.application.config.oauth.provider.GoogleUserInfo;
-import com.damo.server.application.config.oauth.provider.KakaoUserInfo;
-import com.damo.server.application.config.oauth.provider.NaverUserInfo;
-import com.damo.server.application.config.oauth.provider.OAuth2UserInfo;
+import com.damo.server.application.config.oauth.provider.OAuth2Provider;
 import com.damo.server.domain.user.User;
 import com.damo.server.domain.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.damo.server.domain.user.UserRole;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -17,38 +14,33 @@ import java.util.Map;
 
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public OAuth2UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+    public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        final Map<String, Object> attributes = super.loadUser(userRequest).getAttributes();
 
-        OAuth2UserInfo oAuth2UserInfo = null;
-        if(userRequest.getClientRegistration().getRegistrationId().equals("google")) {
-            oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
-            oAuth2UserInfo = new NaverUserInfo((Map<String, Object>) oAuth2User.getAttributes().get("response"));
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
-            oAuth2UserInfo = new KakaoUserInfo(oAuth2User.getAttributes());
-        } else {
-            System.out.println("구글과 네이버와 카카오 가능");
-        }
-        assert oAuth2UserInfo != null;
+        final OAuth2ProviderFactory providerFactory = new OAuth2ProviderFactory();
+        final OAuth2Provider oAuth2Provider = providerFactory.getOAuth2Provider(userRequest.getClientRegistration().getRegistrationId(), attributes);
 
-        String provider = oAuth2UserInfo.getProvider();
-        String providerId = oAuth2UserInfo.getProviderId();
-        String username = provider + "_" + providerId;
-        String name = oAuth2UserInfo.getName();
-        String email = oAuth2UserInfo.getEmail();
-        String role = "ROLE_USER";
-
-        User userEntity = userRepository.findByProviderAndProviderId(provider, providerId);
-        if (userEntity == null) {
-            userEntity = User.builder().username(username).name(name).email(email).role(role).provider(provider).providerId(providerId).build();
-            userRepository.save(userEntity);
+        if(userRepository.existsByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId())) {
+            userRepository.save(
+                    User.builder()
+                            .username(oAuth2Provider.getUsername())
+                            .name(oAuth2Provider.getName())
+                            .email(oAuth2Provider.getEmail())
+                            .role(UserRole.USER)
+                            .provider(oAuth2Provider.getProvider())
+                            .providerId(oAuth2Provider.getProviderId())
+                            .build()
+            );
         }
 
-        return new PrincipalDetails(oAuth2User.getAttributes(), username);
+        return new PrincipalDetails(attributes, oAuth2Provider.getUsername());
     }
 }

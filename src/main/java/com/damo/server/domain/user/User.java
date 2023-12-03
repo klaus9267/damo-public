@@ -1,5 +1,7 @@
 package com.damo.server.domain.user;
 
+import com.damo.server.application.config.oauth.provider.ProviderType;
+import com.damo.server.domain.person.Person;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,17 +20,24 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String username; // 고유 식별값
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String email;
 
-    private String role;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    private String provider; // TODO: enum으로 변경 / google, kakao, naver
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
 
-    @Column(name = "provider_id")
+    @Column(name = "provider_id", nullable = false)
     private String providerId;
 
     @CreationTimestamp
@@ -34,7 +45,8 @@ public class User {
     private Timestamp createdAt;
 
     @Builder
-    public User(String username, String name, String email, String role, String provider, String providerId) {
+    public User(Long id, String username, String name, String email, UserRole role, ProviderType provider, String providerId) {
+        this.id = id;
         this.username = username;
         this.name = name;
         this.email = email;
@@ -42,4 +54,7 @@ public class User {
         this.provider = provider;
         this.providerId = providerId;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
+    private final List<Person> people = new ArrayList<>();
 }

@@ -2,11 +2,11 @@ package com.damo.server.application.config.oauth.provider;
 
 import java.util.Map;
 
-public class NaverUserInfo implements OAuth2UserInfo {
+public class OAuth2Naver implements OAuth2Provider {
     private Map<String, Object> attributes; // oauth2User.getAttributes();
 
-    public NaverUserInfo(Map<String, Object> attributes) {
-        this.attributes = attributes;
+    public OAuth2Naver(Map<String, Object> attributes) {
+        this.attributes = (Map<String, Object>) attributes.get("response");
     }
 
     @Override
@@ -15,8 +15,8 @@ public class NaverUserInfo implements OAuth2UserInfo {
     }
 
     @Override
-    public String getProvider() {
-        return "naver";
+    public ProviderType getProvider() {
+        return ProviderType.NAVER;
     }
 
     @Override
@@ -27,5 +27,10 @@ public class NaverUserInfo implements OAuth2UserInfo {
     @Override
     public String getName() {
         return attributes.get("name").toString();
+    }
+
+    @Override
+    public String getUsername() {
+        return getProvider() + "_" + getProviderId();
     }
 }

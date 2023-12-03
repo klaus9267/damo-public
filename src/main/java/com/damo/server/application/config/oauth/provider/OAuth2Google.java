@@ -2,10 +2,10 @@ package com.damo.server.application.config.oauth.provider;
 
 import java.util.Map;
 
-public class GoogleUserInfo implements OAuth2UserInfo {
+public class OAuth2Google implements OAuth2Provider {
     private final Map<String, Object> attributes; // oauth2User.getAttributes();
 
-    public GoogleUserInfo(Map<String, Object> attributes) {
+    public OAuth2Google(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 
@@ -15,8 +15,8 @@ public class GoogleUserInfo implements OAuth2UserInfo {
     }
 
     @Override
-    public String getProvider() {
-        return "google";
+    public ProviderType getProvider() {
+        return ProviderType.GOOGLE;
     }
 
     @Override
@@ -27,5 +27,10 @@ public class GoogleUserInfo implements OAuth2UserInfo {
     @Override
     public String getName() {
         return attributes.get("name").toString();
+    }
+
+    @Override
+    public String getUsername() {
+        return getProvider() + "_" + getProviderId();
     }
 }
