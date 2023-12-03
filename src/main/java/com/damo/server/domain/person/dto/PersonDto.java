@@ -2,7 +2,6 @@ package com.damo.server.domain.person.dto;
 
 import com.damo.server.domain.person.Person;
 import com.damo.server.domain.schedule.Schedule;
-import com.damo.server.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,7 +16,6 @@ public class PersonDto {
     private final String relation;
     private final String memo;
     private final List<Schedule> schedules;
-    private final User user;
     private final Timestamp createdAt;
 
     public static PersonDto toPersonDto(final Person person) {
@@ -27,7 +25,6 @@ public class PersonDto {
                 person.getRelation(),
                 person.getMemo(),
                 person.getSchedules(),
-                person.getUser(),
                 person.getCreatedAt()
         );
     }
