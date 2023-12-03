@@ -45,7 +45,8 @@ public class User {
     private Timestamp createdAt;
 
     @Builder
-    public User(String username, String name, String email, UserRole role, ProviderType provider, String providerId) {
+    public User(Long id, String username, String name, String email, UserRole role, ProviderType provider, String providerId) {
+        this.id = id;
         this.username = username;
         this.name = name;
         this.email = email;
