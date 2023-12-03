@@ -47,7 +47,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         String email = oAuth2UserInfo.getEmail();
         UserRole role = UserRole.USER;
 
-        User userEntity = userRepository.findByProviderAndProviderId(provider.getKey(), providerId);
+        User userEntity = userRepository.findByProviderAndProviderId(provider, providerId);
         if (userEntity == null) {
             userEntity = User.builder().username(username).name(name).email(email).role(role).provider(provider).providerId(providerId).build();
             userRepository.save(userEntity);
