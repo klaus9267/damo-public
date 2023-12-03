@@ -15,49 +15,52 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
     @Autowired
     private UserRepository userRepository;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+    public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        final Map<String, Object> attributes = super.loadUser(userRequest).getAttributes();
+        final OAuth2Provider oAuth2Provider = getOAuth2Provider(userRequest, attributes);
 
-        OAuth2Provider oAuth2Provider = null;
+        final String username = oAuth2Provider.getProvider() + "_" + oAuth2Provider.getProviderId();
 
-        // TODO: 디자인 패턴 적용으로 가독성 개선
-        if(userRequest.getClientRegistration().getRegistrationId().equals("google")) {
-            oAuth2Provider = new OAuth2Google(oAuth2User.getAttributes());
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
-            oAuth2Provider = new OAuth2Naver(oAuth2User.getAttributes());
-        } else if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
-            oAuth2Provider = new OAuth2Kakao(oAuth2User.getAttributes());
-        } else {
-            System.out.println("구글과 네이버와 카카오 가능");
+        if(userRepository.existsByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId())) {
+            saveUser(oAuth2Provider, username);
         }
+
+        return new PrincipalDetails(attributes, username);
+    }
+
+    private void saveUser(OAuth2Provider provider, String username) {
+        userRepository.save(
+            User.builder()
+                .username(username)
+                .name(provider.getName())
+                .email(provider.getEmail())
+                .role(UserRole.USER)
+                .provider(provider.getProvider())
+                .providerId(provider.getProviderId())
+                .build()
+        );
+    }
+
+    private OAuth2Provider getOAuth2Provider(OAuth2UserRequest userRequest, Map<String, Object> attributes) {
+        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+
+        OAuth2Provider oAuth2Provider = registrationId.equals("google")
+                ? new OAuth2Google(attributes)
+                : registrationId.equals("naver")
+                ? new OAuth2Naver(attributes)
+                : registrationId.equals("kakao")
+                ? new OAuth2Kakao(attributes)
+                : null;
+
         assert oAuth2Provider != null;
-
-        ProviderType provider = oAuth2Provider.getProvider();
-        String providerId = oAuth2Provider.getProviderId();
-        String username = provider + "_" + providerId;
-        String name = oAuth2Provider.getName();
-        String email = oAuth2Provider.getEmail();
-
-        User userEntity = userRepository.findByProviderAndProviderId(provider, providerId);
-        if (userEntity == null) {
-            userEntity = User
-                    .builder()
-                    .username(username)
-                    .name(name)
-                    .email(email)
-                    .role(UserRole.USER)
-                    .provider(provider)
-                    .providerId(providerId)
-                    .build();
-            userRepository.save(userEntity);
-        }
-
-        return new PrincipalDetails(oAuth2User.getAttributes(), username);
+        return oAuth2Provider;
     }
 }
