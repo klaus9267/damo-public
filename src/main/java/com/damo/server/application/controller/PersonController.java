@@ -25,8 +25,8 @@ public class PersonController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Page<PersonWithScheduleCount> readPeopleByTransaction(Pageable pageable, @RequestParam(required = false) String relation) {
+    public @ResponseBody Page<PersonWithScheduleCount> readPeopleByRelation(Pageable pageable, @RequestParam(required = false) String relation) {
         // TODO: Validation 적용해야 함
-        return personService.readPeopleByTransaction(pageable, relation);
+        return personService.readPeopleByRelation(pageable, relation);
     }
 }

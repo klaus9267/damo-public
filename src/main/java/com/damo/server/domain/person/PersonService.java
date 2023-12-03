@@ -25,7 +25,7 @@ public class PersonService {
         return PersonDto.toPersonDto(this.personRepository.save(Person.toPersonFromRequest(personDto)));
     }
 
-    public Page<PersonWithScheduleCount> readPeopleByTransaction(Pageable pageable, String relation) {
+    public Page<PersonWithScheduleCount> readPeopleByRelation(Pageable pageable, String relation) {
         return personRepository.findAllPeopleWithScheduleCount(pageable, relation);
     }
 }
