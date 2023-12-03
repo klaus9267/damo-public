@@ -21,10 +21,9 @@ public class OAuth2ProviderFactory {
     }
 
     public OAuth2Provider getOAuth2Provider(String registrationId, Map<String, Object> attributes) {
-        OAuth2ProviderStrategy strategy = strategies.get(registrationId);
-        if (strategy == null) {
+        if (!strategies.containsKey(registrationId)) {
             throw new NotFoundException("프로바이더를 찾을 수 없습니다");
         }
-        return strategy.getProvider(attributes);
+        return strategies.get(registrationId).getProvider(attributes);
     }
 }
