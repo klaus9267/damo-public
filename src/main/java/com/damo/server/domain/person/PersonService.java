@@ -3,16 +3,14 @@ package com.damo.server.domain.person;
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@AllArgsConstructor
 @Service
 public class PersonService {
     private final PersonRepository personRepository;
-
-    public PersonService(final PersonRepository personRepository) {
-        this.personRepository = personRepository;
-    }
 
     @Transactional
     public PersonDto save(final RequestPersonDto personDto) {
