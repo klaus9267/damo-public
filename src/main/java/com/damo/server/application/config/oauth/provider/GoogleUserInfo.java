@@ -1,5 +1,7 @@
 package com.damo.server.application.config.oauth.provider;
 
+import com.damo.server.domain.user.ProviderType;
+
 import java.util.Map;
 
 public class GoogleUserInfo implements OAuth2UserInfo {
@@ -15,8 +17,8 @@ public class GoogleUserInfo implements OAuth2UserInfo {
     }
 
     @Override
-    public String getProvider() {
-        return "google";
+    public ProviderType getProvider() {
+        return ProviderType.GOOGLE;
     }
 
     @Override

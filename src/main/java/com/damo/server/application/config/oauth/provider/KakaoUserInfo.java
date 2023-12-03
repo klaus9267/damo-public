@@ -1,5 +1,7 @@
 package com.damo.server.application.config.oauth.provider;
 
+import com.damo.server.domain.user.ProviderType;
+
 import java.util.Map;
 
 public class KakaoUserInfo implements OAuth2UserInfo {
@@ -18,8 +20,8 @@ public class KakaoUserInfo implements OAuth2UserInfo {
     }
 
     @Override
-    public String getProvider() {
-        return "kakao";
+    public ProviderType getProvider() {
+        return ProviderType.KAKAO;
     }
 
     @Override

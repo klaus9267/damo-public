@@ -30,10 +30,12 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String role; // TODO: enum으로 변경 / ROLE_USER, ROLE_ADMIN 등
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
     @Column(nullable = false)
-    private String provider; // TODO: enum으로 변경 / google, kakao, naver
+    @Enumerated(EnumType.STRING)
+    private ProviderType provider;
 
     @Column(name = "provider_id", nullable = false)
     private String providerId;
@@ -43,7 +45,7 @@ public class User {
     private Timestamp createdAt;
 
     @Builder
-    public User(String username, String name, String email, String role, String provider, String providerId) {
+    public User(String username, String name, String email, UserRole role, ProviderType provider, String providerId) {
         this.username = username;
         this.name = name;
         this.email = email;
