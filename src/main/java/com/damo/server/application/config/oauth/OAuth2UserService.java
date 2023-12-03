@@ -26,7 +26,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         final OAuth2ProviderFactory providerFactory = new OAuth2ProviderFactory();
         final OAuth2Provider oAuth2Provider = providerFactory.getOAuth2Provider(userRequest.getClientRegistration().getRegistrationId(), attributes);
 
-        if(userRepository.existsByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId())) {
+        if(!userRepository.existsByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId())) {
             userRepository.save(
                     User.builder()
                             .username(oAuth2Provider.getUsername())
