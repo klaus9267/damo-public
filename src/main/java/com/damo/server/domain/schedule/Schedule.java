@@ -19,17 +19,17 @@ public class Schedule {
     private LocalDateTime date;
 
     @Column(nullable = false, columnDefinition = "0")
-    private Integer amount;
+    private Integer amount; // Money
 
     @Column(columnDefinition = "TEXT")
     private String memo;
 
     @Column(nullable = false)
-    private String event; // TODO: enum 타입 수정
+    private String event;
 
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status; // TODO: 나간 돈, 받은 돈, 진행 예정 등 enum타입
+    private TransactionType transaction;
 
     @Column(name = "created_at")
     @CreationTimestamp
