@@ -28,6 +28,10 @@ public class Schedule {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private ScheduleStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ScheduleTransaction transaction;
 
     @Column(name = "created_at")
