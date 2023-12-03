@@ -1,13 +1,11 @@
 package com.damo.server.application.config.oauth.provider;
 
-import com.damo.server.domain.user.ProviderType;
-
 import java.util.Map;
 
-public class GoogleUserInfo implements OAuth2UserInfo {
+public class OAuth2Google implements OAuth2Provider {
     private final Map<String, Object> attributes; // oauth2User.getAttributes();
 
-    public GoogleUserInfo(Map<String, Object> attributes) {
+    public OAuth2Google(Map<String, Object> attributes) {
         this.attributes = attributes;
     }
 

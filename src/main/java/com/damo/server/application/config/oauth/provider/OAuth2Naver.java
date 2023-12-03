@@ -1,13 +1,11 @@
 package com.damo.server.application.config.oauth.provider;
 
-import com.damo.server.domain.user.ProviderType;
-
 import java.util.Map;
 
-public class NaverUserInfo implements OAuth2UserInfo {
+public class OAuth2Naver implements OAuth2Provider {
     private Map<String, Object> attributes; // oauth2User.getAttributes();
 
-    public NaverUserInfo(Map<String, Object> attributes) {
+    public OAuth2Naver(Map<String, Object> attributes) {
         this.attributes = (Map<String, Object>) attributes.get("response");
     }
 

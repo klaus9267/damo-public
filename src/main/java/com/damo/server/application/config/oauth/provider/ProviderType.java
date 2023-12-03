@@ -1,4 +1,4 @@
-package com.damo.server.domain.user;
+package com.damo.server.application.config.oauth.provider;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

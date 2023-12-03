@@ -1,14 +1,12 @@
 package com.damo.server.application.config.oauth.provider;
 
-import com.damo.server.domain.user.ProviderType;
-
 import java.util.Map;
 
-public class KakaoUserInfo implements OAuth2UserInfo {
+public class OAuth2Kakao implements OAuth2Provider {
     private Map<String, Object> attributes; // oauth2User.getAttributes();
     private Map<String, Object> properties;
 
-    public KakaoUserInfo(Map<String, Object> attributes) {
+    public OAuth2Kakao(Map<String, Object> attributes) {
         this.attributes = attributes;
         this.properties = (Map<String, Object>) attributes.get("properties");
     }
@@ -25,7 +23,7 @@ public class KakaoUserInfo implements OAuth2UserInfo {
     }
 
     @Override
-    public String getEmail() { return null; }
+    public String getEmail() { return "EMAIL"; }
 
     @Override
     public String getName() {

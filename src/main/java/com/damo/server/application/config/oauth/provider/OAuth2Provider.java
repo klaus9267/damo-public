@@ -1,8 +1,6 @@
 package com.damo.server.application.config.oauth.provider;
 
-import com.damo.server.domain.user.ProviderType;
-
-public interface OAuth2UserInfo {
+public interface OAuth2Provider {
     String getProviderId();
     ProviderType getProvider();
     String getEmail();
