@@ -1,5 +1,6 @@
 package com.damo.server.domain.schedule;
 
+import com.damo.server.domain.person.Person;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,7 +23,12 @@ public class Schedule {
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-    private Long personId; // TODO: 관계 매핑해야 함
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "person_id", nullable = false)
+    private Person person;
+
+//    @Enumerated(EnumType.STRING)
     private String status; // TODO: 나간 돈, 받은 돈, 진행 예정 등 enum타입
 
     @Column(name = "created_at")

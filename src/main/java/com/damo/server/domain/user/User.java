@@ -1,5 +1,7 @@
 package com.damo.server.domain.user;
 
+import com.damo.server.domain.person.Person;
+import com.damo.server.domain.schedule.Schedule;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
@@ -7,6 +9,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +26,7 @@ public class User {
 
     private String email;
 
-    private String role;
+    private String role; // TODO: enum으로 변경 / ROLE_USER, ROLE_ADMIN 등
 
     private String provider; // TODO: enum으로 변경 / google, kakao, naver
 
@@ -42,4 +46,7 @@ public class User {
         this.provider = provider;
         this.providerId = providerId;
     }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
+    private final List<Person> people = new ArrayList<>();
 }
