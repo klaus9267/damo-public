@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum TransactionType {
+public enum ScheduleTransaction {
     GIVING("GIVING", "준"),
     RECEIVING("RECEIVING", "받은");
 
