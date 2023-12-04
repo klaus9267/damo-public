@@ -1,12 +1,14 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.PersonWithScheduleCount;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.person.PersonService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +27,10 @@ public class PersonController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public @ResponseBody Page<PersonWithScheduleCount> readPeopleByRelation(Pageable pageable, @RequestParam(required = false) String relation) {
-        // TODO: Validation 적용해야 함
-        return personService.readPeopleByRelation(pageable, relation);
+    public @ResponseBody Page<PersonWithScheduleCount> readPeopleByRelation(
+            @Valid PersonPaginationParam paginationParam,
+            @RequestParam(required = false) @Length(max = 10) String relation
+    ) {
+        return personService.readPeopleByRelation(paginationParam.toPageable(), relation);
     }
 }
