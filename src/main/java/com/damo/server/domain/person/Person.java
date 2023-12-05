@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -34,19 +35,16 @@ public class Person {
     @CreationTimestamp
     private Timestamp createdAt;
 
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Timestamp updatedAt;
+
     @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
     private final List<Schedule> schedules = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
-    public Person(Long id, String name, String relation, String memo) {
-        this.id = id;
-        this.name = name;
-        this.relation = relation;
-        this.memo = memo;
-    }
 
     private Person(final RequestPersonDto personDto) {
         this.name = personDto.name();
