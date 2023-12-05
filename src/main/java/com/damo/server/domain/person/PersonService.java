@@ -32,7 +32,7 @@ public class PersonService {
 
     @Transactional
     public PersonDto patchPersonById(final RequestPersonDto personDto, final Long personId) {
-        Person person = personRepository.findByIdAndUserId(personId, personDto.userId()).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
+        final Person person = personRepository.findByIdAndUserId(personId, personDto.userId()).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
 
         person.setName(personDto.name() != null ? personDto.name() : person.getName());
         person.setRelation(personDto.relation() != null ? personDto.relation() : person.getRelation());
