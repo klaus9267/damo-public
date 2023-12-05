@@ -29,7 +29,7 @@ public class PersonService {
         return personRepository.findAllPeopleWithScheduleCount(pageable, relation);
     }
 
-    public void removePersonById(Long personId) {
+    public void removePersonById(final Long personId) {
         // TODO: security로 userId 받으면 유저가 생성한 person인지 판단하는 조건 추가해야 함
         personRepository.deleteById(personId);
     }

@@ -25,13 +25,13 @@ public class PersonController {
     }
 
     @GetMapping
-    public ResponseEntity<?> readPeopleByRelation(@Valid PersonPaginationParam paginationParam, @RequestParam(required = false) @Length(max = 10) String relation) {
-        Page<PeopleWithScheduleCountDto> people = personService.readPeopleByRelation(paginationParam.toPageable(), relation);
+    public ResponseEntity<?> readPeopleByRelation(@Valid final PersonPaginationParam paginationParam, @RequestParam(required = false) @Length(max = 10) final String relation) {
+        final Page<PeopleWithScheduleCountDto> people = personService.readPeopleByRelation(paginationParam.toPageable(), relation);
         return new ResponseEntity<>(people, HttpStatus.OK);
     }
 
     @DeleteMapping("{personId}")
-    public ResponseEntity<?> removePersonById(@PathVariable("personId") Long personId) {
+    public ResponseEntity<?> removePersonById(@PathVariable("personId") final Long personId) {
         personService.removePersonById(personId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
