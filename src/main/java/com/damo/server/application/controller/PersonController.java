@@ -26,6 +26,11 @@ public class PersonController {
         return personService.save(personDto);
     }
 
+    @PatchMapping("{personId}")
+    public ResponseEntity<?> patchPersonById(@RequestBody final RequestPersonDto personDto, @PathVariable("personId") final Long personId) {
+        return new ResponseEntity<>(personService.patchPersonById(personDto, personId), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<?> readPeopleByRelation(@Valid PersonPaginationParam paginationParam, @RequestParam(required = false) @Length(max = 10) String relation) {
         Page<PeopleWithScheduleCountDto> people = personService.readPeopleByRelation(paginationParam.toPageable(), relation);

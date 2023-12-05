@@ -4,7 +4,7 @@ import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.schedule.Schedule;
 import com.damo.server.domain.user.User;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "persons")
@@ -40,6 +40,13 @@ public class Person {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public Person(Long id, String name, String relation, String memo) {
+        this.id = id;
+        this.name = name;
+        this.relation = relation;
+        this.memo = memo;
+    }
 
     private Person(final RequestPersonDto personDto) {
         this.name = personDto.name();
