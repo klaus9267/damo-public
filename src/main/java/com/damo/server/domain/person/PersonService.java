@@ -30,6 +30,10 @@ public class PersonService {
         return personRepository.findAllPeopleWithScheduleCount(pageable, relation);
     }
 
+    public void removePersonById(final Long personId) {
+        // TODO: security로 userId 받으면 유저가 생성한 person인지 판단하는 조건 추가해야 함
+        personRepository.deleteById(personId);
+
     @Transactional
     public PersonDto patchPersonById(final RequestPersonDto personDto, final Long personId) {
         final Person person = personRepository.findByIdAndUserId(personId, personDto.userId()).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
