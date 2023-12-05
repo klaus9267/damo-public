@@ -4,15 +4,16 @@ import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.schedule.Schedule;
 import com.damo.server.domain.user.User;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Data
 @NoArgsConstructor
 @Entity
 @Table(name = "persons")
@@ -33,6 +34,10 @@ public class Person {
     @Column(name = "created_at")
     @CreationTimestamp
     private Timestamp createdAt;
+
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
     private final List<Schedule> schedules = new ArrayList<>();
