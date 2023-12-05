@@ -1,0 +1,73 @@
+name: Java CI with Gradle
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  java-build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: make application-db.yaml
+      run: |
+        cd ./src/main/resources
+        touch ./application-db.yaml
+        echo "${{ secrets.DATABASE }}" >> ./application-database.yaml
+      shell: bash
+
+    - name: make application-oauth.yaml
+      run: |
+        cd ./src/main/resources
+        touch ./application-oauth.yaml
+        echo "${{ secrets.OAUTH }}" >> ./application-database.yaml
+      shell: bash
+
+    - name: make application-server.yaml
+      run: |
+        cd ./src/main/resources
+        touch ./application-server.yaml
+        echo "${{ secrets.SERVER }}" >> ./application-database.yaml
+      shell: bash
+
+    - name: Change Permission
+      run: sudo chmod +x ./gradlew
+
+    - name: Build with Gradle      
+      run: ./gradlew bootJar
+        
+  push:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: web docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
+          docker push ${{ secrets.DOCKER_ID }}/damo-backend
+
+  docker-build:
+    runs-on: ubuntu0latest
+    steps:
+    
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_ID }}/damo-backend
+            run -d -p 8080:8080 ${{ secrets.DOCKER_ID }}/damo-backend
+            docker image prune -f
