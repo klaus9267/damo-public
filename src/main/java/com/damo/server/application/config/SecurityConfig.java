@@ -28,13 +28,14 @@ public class SecurityConfig {
                         //.requestMatchers("/.../**").hasRole("ADMIN")
                         .anyRequest().permitAll() // 위 페이지 외 누구나 들어갈 수 있음
                 )
-                .logout(logout -> logout.logoutUrl("/logout")  // 로그아웃 URL을 설정 (기본값은 /logout)
-                        // .logoutSuccessUrl("/loginForm")  // 로그아웃 성공 시 이동할 페이지 설정
+                .logout(logout -> logout.logoutUrl("/api/logout") // 로그아웃
+                        // .logoutSuccessUrl("/loginForm")  // TODO: 프론트 로그인 페이지 설정
                         .invalidateHttpSession(true)  // HTTP 세션 무효화 여부
                         .deleteCookies("JSESSIONID")  // 로그아웃 시 삭제할 쿠키 이름
                 )
-                .formLogin((customizer) -> customizer.defaultSuccessUrl("/")) // 성공시 이동하는 페이지
-                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService)))
+                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService))
+                        .defaultSuccessUrl("/") // TODO: 프론트 루트 경로로 이동
+                )
                 .build();
     }
 }
