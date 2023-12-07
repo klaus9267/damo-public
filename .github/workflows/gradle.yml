@@ -57,6 +57,7 @@ jobs:
       run: docker push ${{ secrets.DOCKER_ID }}/damo-backend
 
   ec2-run-docker-image:
+    needs: build
     runs-on: ubuntu0latest
     steps:
       - name: executing remote ssh commands using password
