@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  java-build:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -43,21 +43,18 @@ jobs:
 
     - name: Build with Gradle      
       run: ./gradlew bootJar
-        
-  push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: docker login
-        run: docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: docker image build
-        run: |
-          pwd
-          ls
-          docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
+    - name: docker login
+      run: docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: docker push
-        run: docker push ${{ secrets.DOCKER_ID }}/damo-backend
+    - name: docker image build
+      run: |
+        pwd
+        ls
+        docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
+
+    - name: docker push
+      run: docker push ${{ secrets.DOCKER_ID }}/damo-backend
 
   ec2-run-docker-image:
     runs-on: ubuntu0latest
