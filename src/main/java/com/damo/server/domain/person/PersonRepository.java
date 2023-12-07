@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
@@ -15,4 +16,6 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     Page<PeopleWithScheduleCountDto> findAllPeopleWithScheduleCount(Pageable pageable, String relation);
 
     Optional<Person> findByIdAndUserId(final Long personId, final Long userId);
+
+    List<Person> findAllByUserId(Long userId);
 }
