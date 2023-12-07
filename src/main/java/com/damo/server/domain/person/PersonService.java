@@ -1,9 +1,13 @@
 package com.damo.server.domain.person;
 
 import com.damo.server.application.handler.exception.BadRequestException;
+import com.damo.server.application.handler.exception.NotFoundException;
 import com.damo.server.domain.person.dto.PersonDto;
+import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,5 +24,25 @@ public class PersonService {
         };
 
         return PersonDto.toPersonDto(this.personRepository.save(Person.toPersonFromRequest(personDto)));
+    }
+
+    public Page<PeopleWithScheduleCountDto> readPeopleByRelation(Pageable pageable, String relation) {
+        return personRepository.findAllPeopleWithScheduleCount(pageable, relation);
+    }
+
+    public void removePersonById(final Long personId) {
+        // TODO: security로 userId 받으면 유저가 생성한 person인지 판단하는 조건 추가해야 함
+        personRepository.deleteById(personId);
+    }
+
+    @Transactional
+    public PersonDto patchPersonById(final RequestPersonDto personDto, final Long personId) {
+        final Person person = personRepository.findByIdAndUserId(personId, personDto.userId()).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
+
+        person.setName(personDto.name() != null ? personDto.name() : person.getName());
+        person.setRelation(personDto.relation() != null ? personDto.relation() : person.getRelation());
+        person.setMemo(personDto.memo() != null ? personDto.memo() : person.getMemo());
+
+        return PersonDto.toPersonDto(person);
     }
 }
