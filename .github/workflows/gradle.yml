@@ -28,14 +28,12 @@ jobs:
 
     - name: make application-oauth.yaml
       run: |
-        cd ./src/main/resources
         touch ./application-oauth.yaml
         echo "${{ secrets.OAUTH }}" >> ./application-database.yaml
       shell: bash
 
     - name: make application-server.yaml
       run: |
-        cd ./src/main/resources
         touch ./application-server.yaml
         echo "${{ secrets.SERVER }}" >> ./application-database.yaml
       shell: bash
@@ -52,6 +50,8 @@ jobs:
     
       - name: web docker build and push
         run: |
+          pwd
+          cd 
           docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
           docker push ${{ secrets.DOCKER_ID }}/damo-backend
