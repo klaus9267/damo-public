@@ -51,7 +51,11 @@ jobs:
         run: docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: docker image build
-        run: docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
+        run: |
+          cd 
+          pwd
+          ls
+          docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
 
       - name: docker push
         run: docker push ${{ secrets.DOCKER_ID }}/damo-backend
