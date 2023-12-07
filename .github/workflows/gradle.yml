@@ -38,11 +38,10 @@ jobs:
         echo "${{ secrets.SERVER }}" >> ./application-database.yaml
       shell: bash
 
-    - name: Change Permission
-      run: sudo chmod +x ./gradlew
-
-    - name: Build with Gradle      
-      run: ./gradlew bootJar
+    - name: Build with Gradle
+      run: |
+        sudo chmod +x ./gradlew
+        ./gradlew bootJar
 
     - name: docker login
       run: docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
