@@ -47,19 +47,18 @@ jobs:
   push:
     runs-on: ubuntu-latest
     steps:
-    
-      - name: web docker build and push
-        run: |
-          pwd
-          cd 
-          docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
-          docker push ${{ secrets.DOCKER_ID }}/damo-backend
+      - name: docker login
+        run: docker login -u ${{ secrets.DOCKER_ID }} -p ${{ secrets.DOCKER_PASSWORD }}
 
-  docker-build:
+      - name: docker image build
+        run: docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
+
+      - name: docker push
+        run: docker push ${{ secrets.DOCKER_ID }}/damo-backend
+
+  ec2-run-docker-image:
     runs-on: ubuntu0latest
     steps:
-    
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
