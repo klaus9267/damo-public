@@ -52,7 +52,7 @@ jobs:
 
       - name: docker image build
         run: |
-          cd /runner
+          cd /home/runner/runners
           pwd
           ls
           docker build -t ${{ secrets.DOCKER_ID }}/damo-backend .
