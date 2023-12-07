@@ -19,23 +19,23 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         
-    - name: make application-db.yaml
+    - name: make application-db.yml
       run: |
         cd ./src/main/resources
-        touch ./application-db.yaml
-        echo "${{ secrets.DATABASE }}" >> ./application-database.yaml
+        touch ./application-db.yml
+        echo "${{ secrets.DATABASE }}" >> ./application-database.yml
       shell: bash
 
-    - name: make application-oauth.yaml
+    - name: make application-oauth.yml
       run: |
-        touch ./application-oauth.yaml
-        echo "${{ secrets.OAUTH }}" >> ./application-database.yaml
+        touch ./application-oauth.yml
+        echo "${{ secrets.OAUTH }}" >> ./application-database.yml
       shell: bash
 
-    - name: make application-server.yaml
+    - name: make application-server.yml
       run: |
-        touch ./application-server.yaml
-        echo "${{ secrets.SERVER }}" >> ./application-database.yaml
+        touch ./application-server.yml
+        echo "${{ secrets.SERVER }}" >> ./application-database.yml
       shell: bash
 
     - name: Build with Gradle
