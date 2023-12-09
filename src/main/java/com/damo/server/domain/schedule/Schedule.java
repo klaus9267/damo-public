@@ -1,13 +1,17 @@
 package com.damo.server.domain.schedule;
 
 import com.damo.server.domain.person.Person;
+import com.damo.server.domain.person.dto.PersonDto;
+import com.damo.server.domain.schedule.dto.ScheduleDto;
 import jakarta.persistence.*;
+import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "schedules")
 public class Schedule {
@@ -46,4 +50,19 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
+
+    public static ScheduleDto toScheduleDto(Schedule schedule) {
+        return ScheduleDto.builder()
+                          .id(schedule.getId())
+                          .amount(schedule.getAmount())
+                          .person(PersonDto.toPersonDto(schedule.getPerson()))
+                          .date(schedule.getDate())
+                          .event(schedule.getEvent())
+                          .createdAt(schedule.getCreatedAt())
+                          .updatedAt(schedule.getUpdatedAt())
+                          .memo(schedule.getMemo())
+                          .status(schedule.getStatus().getTitle())
+                          .transaction(schedule.getTransaction().getTitle())
+                          .build();
+    }
 }
