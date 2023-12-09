@@ -8,7 +8,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Entity(name = "schedules")
+@Entity
+@Table(name = "schedules")
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,14 +18,14 @@ public class Schedule {
     @Column(nullable = false)
     private LocalDateTime date;
 
-    @Column(nullable = false, columnDefinition = "0")
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer amount; // Money
 
     @Column(columnDefinition = "TEXT")
     private String memo;
 
     @Column(nullable = false)
-    private String event;
+    private String event; // 경조사 종류
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
