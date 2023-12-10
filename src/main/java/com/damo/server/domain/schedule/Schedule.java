@@ -50,19 +50,4 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
-
-    public static ScheduleDto toScheduleDto(Schedule schedule) {
-        return ScheduleDto.builder()
-                          .id(schedule.getId())
-                          .amount(schedule.getAmount())
-                          .person(PersonDto.toPersonDto(schedule.getPerson()))
-                          .date(schedule.getDate())
-                          .event(schedule.getEvent())
-                          .createdAt(schedule.getCreatedAt())
-                          .updatedAt(schedule.getUpdatedAt())
-                          .memo(schedule.getMemo())
-                          .status(schedule.getStatus().getTitle())
-                          .transaction(schedule.getTransaction().getTitle())
-                          .build();
-    }
 }
