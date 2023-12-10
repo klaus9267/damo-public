@@ -1,5 +1,6 @@
 package com.damo.server.domain.schedule.dto;
 
+import com.damo.server.domain.person.Person;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.schedule.Schedule;
 import lombok.AllArgsConstructor;
@@ -24,9 +25,9 @@ public class ScheduleDto {
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
 
-    public ScheduleDto(final Schedule schedule) {
+    public ScheduleDto(final Schedule schedule, final Person person) {
         this.id = schedule.getId();
-        this.person = PersonDto.toPersonDto(schedule.getPerson());
+        this.person = PersonDto.toPersonDto(person);
         this.date = schedule.getDate();
         this.amount = schedule.getAmount();
         this.memo = schedule.getMemo();
