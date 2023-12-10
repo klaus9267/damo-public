@@ -1,7 +1,7 @@
 package com.damo.server.domain.person;
 
 import com.damo.server.domain.person.dto.RequestPersonDto;
-import com.damo.server.domain.schedule.Schedule;
+import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.user.User;
 import jakarta.persistence.*;
 import lombok.Data;

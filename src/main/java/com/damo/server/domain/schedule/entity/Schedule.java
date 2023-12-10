@@ -1,8 +1,6 @@
-package com.damo.server.domain.schedule;
+package com.damo.server.domain.schedule.entity;
 
 import com.damo.server.domain.person.Person;
-import com.damo.server.domain.person.dto.PersonDto;
-import com.damo.server.domain.schedule.dto.ScheduleDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;

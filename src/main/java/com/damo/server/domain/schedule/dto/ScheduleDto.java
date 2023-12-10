@@ -2,7 +2,7 @@ package com.damo.server.domain.schedule.dto;
 
 import com.damo.server.domain.person.Person;
 import com.damo.server.domain.person.dto.PersonDto;
-import com.damo.server.domain.schedule.Schedule;
+import com.damo.server.domain.schedule.entity.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
