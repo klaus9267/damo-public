@@ -22,7 +22,7 @@ public class Schedule {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer amount; // Money
