@@ -13,4 +13,9 @@ public class ScheduleService {
     public ScheduleDto readSchedule(final Long scheduleId) {
         return scheduleRepository.findOne(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
     }
+
+    public void removeScheduleById(final Long scheduleId) {
+        // TODO: security로 personId 받으면 같은 유저인지 판단 조건 추가
+        scheduleRepository.deleteById(scheduleId);
+    }
 }
