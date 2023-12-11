@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ScheduleDto {
     private final Long id;
-    private final PersonDto person;
+//    private final PersonDto person;
     private final LocalDateTime date;
     private final Integer amount;
     private final String memo;
@@ -28,7 +28,7 @@ public class ScheduleDto {
 
     public ScheduleDto(final Schedule schedule, final Person person) {
         this.id = schedule.getId();
-        this.person = PersonDto.toPersonDto(person);
+//        this.person = PersonDto.toPersonDto(person);
         this.date = schedule.getDate();
         this.amount = schedule.getAmount();
         this.memo = schedule.getMemo();

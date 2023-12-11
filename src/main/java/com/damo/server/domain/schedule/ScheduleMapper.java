@@ -12,7 +12,7 @@ public class ScheduleMapper {
     public static ScheduleDto toDto(final Schedule schedule) {
         return ScheduleDto.builder()
                           .id(schedule.getId())
-                          .person(PersonDto.toPersonDto(schedule.getPerson()))
+//                          .person(PersonDto.toPersonDto(schedule.getPerson()))
                           .date(schedule.getDate())
                           .amount(schedule.getAmount())
                           .memo(schedule.getMemo())

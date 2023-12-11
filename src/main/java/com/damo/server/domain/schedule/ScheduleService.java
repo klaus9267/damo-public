@@ -22,7 +22,7 @@ public class ScheduleService {
             throw new BadRequestException("스케줄 내에서 동일한 기록이 존재");
         };
 
-        return ScheduleMapper.toDto(this.scheduleRepository.save(ScheduleMapper.toEntity(scheduleDto)));
+        return ScheduleMapper.toDto(scheduleRepository.save(ScheduleMapper.toEntity(scheduleDto)));
     }
 
     public ScheduleDto readSchedule(final Long scheduleId) {
