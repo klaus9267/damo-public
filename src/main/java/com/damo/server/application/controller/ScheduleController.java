@@ -31,4 +31,12 @@ public class ScheduleController {
         final ScheduleDto schedule = scheduleService.readSchedule(scheduleId);
         return ResponseEntity.ok(schedule);
     }
+
+    @DeleteMapping("{scheduleId}")
+    @Operation(summary = "스케줄 삭제")
+    @ApiResponse(responseCode = "204")
+    public ResponseEntity<?> removeScheduleById(@PathVariable("scheduleId") final Long scheduleId) {
+        scheduleService.removeScheduleById(scheduleId);
+        return ResponseEntity.noContent().build();
+    }
 }
