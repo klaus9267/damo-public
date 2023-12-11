@@ -2,12 +2,13 @@ package com.damo.server.domain.schedule.dto;
 
 import com.damo.server.domain.person.Person;
 import com.damo.server.domain.person.dto.PersonDto;
-import com.damo.server.domain.schedule.Schedule;
+import com.damo.server.domain.schedule.entity.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Builder
 public class ScheduleDto {
     private final Long id;
-    private final PersonDto person;
+//    private final PersonDto person;
     private final LocalDateTime date;
     private final Integer amount;
     private final String memo;
@@ -27,7 +28,7 @@ public class ScheduleDto {
 
     public ScheduleDto(final Schedule schedule, final Person person) {
         this.id = schedule.getId();
-        this.person = PersonDto.toPersonDto(person);
+//        this.person = PersonDto.toPersonDto(person);
         this.date = schedule.getDate();
         this.amount = schedule.getAmount();
         this.memo = schedule.getMemo();

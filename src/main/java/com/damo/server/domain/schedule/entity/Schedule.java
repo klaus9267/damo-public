@@ -1,18 +1,20 @@
-package com.damo.server.domain.schedule;
+package com.damo.server.domain.schedule.entity;
 
 import com.damo.server.domain.person.Person;
-import com.damo.server.domain.person.dto.PersonDto;
-import com.damo.server.domain.schedule.dto.ScheduleDto;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "schedules")
 public class Schedule {
     @Id
