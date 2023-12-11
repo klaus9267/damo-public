@@ -2,7 +2,7 @@ package com.damo.server.domain.schedule.entity;
 
 import com.damo.server.domain.person.Person;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "schedules")
 public class Schedule {
     @Id
