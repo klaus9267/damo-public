@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ScheduleDto {
     private final Long id;
     private final PersonDto person;
-    private final LocalDateTime date;
+    private final LocalDate date;
     private final Integer amount;
     private final String memo;
     private final String event;
