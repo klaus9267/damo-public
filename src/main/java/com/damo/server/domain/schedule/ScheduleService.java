@@ -2,6 +2,7 @@ package com.damo.server.domain.schedule;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
+import com.damo.server.domain.common.pagination.CustomSchedulePage;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleWithPersonDto;
@@ -33,9 +34,11 @@ public class ScheduleService {
         return scheduleRepository.findOne(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
     }
 
-    public Page<ScheduleWithPersonDto> readScheduleList(final Pageable pageable, final Long userId, final String type) {
+    public CustomSchedulePage<ScheduleWithPersonDto> readScheduleList(final Pageable pageable, final Long userId, final String type) {
         // TODO: totalAmount 관련 협의 필요
-        return scheduleRepository.findAllByTransactionAndUserId(pageable, ScheduleTransaction.valueOf(type), userId);
+        Page<ScheduleWithPersonDto> schedule = scheduleRepository.findAllByTransactionAndUserId(pageable, ScheduleTransaction.valueOf(type), userId);
+        Integer totalAmount = schedule.getContent().stream().mapToInt(ScheduleWithPersonDto::getAmount).reduce(0, Integer::sum);
+        return new CustomSchedulePage<>(schedule, totalAmount);
     }
 
     @Transactional

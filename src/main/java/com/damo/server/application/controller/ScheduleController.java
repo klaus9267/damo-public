@@ -1,5 +1,6 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.domain.common.pagination.CustomSchedulePage;
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.ScheduleService;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
@@ -43,12 +44,12 @@ public class ScheduleController {
     @GetMapping
     @Operation(summary = "스케줄 타입별 목록 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
-    public ResponseEntity<Page<ScheduleWithPersonDto>> readScheduleList(
+    public ResponseEntity<CustomSchedulePage<ScheduleWithPersonDto>> readScheduleList(
             @Valid final SchedulePaginationParam paginationParam,
             @Parameter(name = "조회할 스케줄 종류", example = "RECEIVING")
             @RequestParam(required = true)
             @Length(max = 20) final String transaction) {
-        final Page<ScheduleWithPersonDto> schedule = scheduleService.readScheduleList(paginationParam.toPageable(), 1L, transaction);
+        final CustomSchedulePage<ScheduleWithPersonDto> schedule = scheduleService.readScheduleList(paginationParam.toPageable(), 1L, transaction);
         return ResponseEntity.ok(schedule);
     }
 
