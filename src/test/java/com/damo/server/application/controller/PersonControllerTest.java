@@ -20,11 +20,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,29 +72,24 @@ public class PersonControllerTest {
 
         @Test
         void 대상_수정() throws Exception {
-            Timestamp now = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
             PersonDto personDto = new PersonDto(1L, "테스트 이름", "가족", "테스트 메모", now, now);
-            given(postService.update(any())).willReturn(postDto);
+            given(personService.patchPersonById(any(), any(Long.class))).willReturn(personDto);
 
-            UpdatingPostDto inputPostDto = new UpdatingPostDto(postDto.id(), userDto.id(), postDto.content());
+            RequestPersonDto requestPersonDto = new RequestPersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), 1L);
             ObjectMapper mapper = new ObjectMapper()
                     .registerModule(new JavaTimeModule())
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            String json = mapper.writeValueAsString(inputPostDto);
+            String json = mapper.writeValueAsString(requestPersonDto);
 
-            mvc.perform(patch(END_POINT)
+            mvc.perform(patch(END_POINT + "/" + personDto.getId())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(json)
                             .accept(MediaType.APPLICATION_JSON)
                     ).andDo(print())
-                    .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.id").value(postDto.id()))
-                    .andExpect(jsonPath("$.content").value(inputPostDto.content()))
-                    .andExpect(jsonPath("$.user").isNotEmpty())
-                    .andExpect(jsonPath("$.comments").isArray())
-                    .andExpect(jsonPath("$.comments").isEmpty())
-                    .andExpect(jsonPath("$.createdAt").value(today.toString()))
-                    .andExpect(jsonPath("$.lastModifiedAt").value(today.toString()));
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.relation").value(requestPersonDto.relation()))
+                    .andExpect(jsonPath("$.memo").value(requestPersonDto.memo()))
+                    .andExpect(jsonPath("$.name").value(requestPersonDto.name()));
         }
     }
 }
