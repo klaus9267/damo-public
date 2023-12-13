@@ -3,21 +3,15 @@ package com.damo.server.domain.schedule.dto;
 import com.damo.server.domain.person.Person;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
-@Builder
-public class ScheduleDto {
+public class ScheduleWithPersonDto {
     private final Long id;
-//    private final PersonDto person;
+    private final PersonDto person;
     private final LocalDateTime date;
     private final Integer amount;
     private final String memo;
@@ -27,9 +21,9 @@ public class ScheduleDto {
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
 
-    public ScheduleDto(final Schedule schedule, final Person person) {
+    public ScheduleWithPersonDto(final Schedule schedule, final Person person) {
         this.id = schedule.getId();
-        //        this.person = PersonDto.toPersonDto(person);
+        this.person = PersonDto.toPersonDto(person);
         this.date = schedule.getDate();
         this.amount = schedule.getAmount();
         this.memo = schedule.getMemo();

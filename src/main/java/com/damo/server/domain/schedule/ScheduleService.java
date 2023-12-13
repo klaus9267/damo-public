@@ -2,12 +2,16 @@ package com.damo.server.domain.schedule;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
+import com.damo.server.domain.person.PersonRepository;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
+import com.damo.server.domain.schedule.dto.ScheduleWithPersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.schedule.entity.ScheduleTransaction;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,18 +19,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final PersonRepository personRepository;
 
     @Transactional
     public ScheduleDto save(final RequestScheduleDto scheduleDto) {
         if (scheduleRepository.existsByDateAndEventAndPersonId(scheduleDto.date(), scheduleDto.event(), scheduleDto.personId())) {
             throw new BadRequestException("스케줄 내에서 동일한 기록이 존재");
         }
-
+        //TODO: return 시 person 출력 유무 협의 예정
         return ScheduleMapper.toDto(scheduleRepository.save(ScheduleMapper.toEntity(scheduleDto)));
     }
 
     public ScheduleDto readSchedule(final Long scheduleId) {
+        // TODO: security로 userId 받으면 조회 시 조건문에 userId 추가
         return scheduleRepository.findOne(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+    }
+
+    public Page<ScheduleWithPersonDto> readScheduleList(final Pageable pageable, final Long userId, final String type) {
+        // TODO: totalAmount 관련 협의 필요
+        return scheduleRepository.findAllWithTotalAmount(pageable, ScheduleTransaction.valueOf(type), userId);
     }
 
     @Transactional
