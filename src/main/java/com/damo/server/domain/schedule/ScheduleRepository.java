@@ -20,5 +20,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Optional<ScheduleDto> findOne(@Param("scheduleId") Long scheduleId);
 
     @Query("SELECT new com.damo.server.domain.schedule.dto.ScheduleWithPersonDto(s, p) FROM Schedule s LEFT JOIN FETCH  Person p ON s.person.id = p.id WHERE (s.transaction = :transaction AND p.user.id = :userId) ORDER BY s.date")
-    Page<ScheduleWithPersonDto> findAllWithTotalAmount(Pageable pageable, ScheduleTransaction transaction, Long userId);
+    Page<ScheduleWithPersonDto> findAllByTransactionAndUserId(Pageable pageable, ScheduleTransaction transaction, Long userId);
 }

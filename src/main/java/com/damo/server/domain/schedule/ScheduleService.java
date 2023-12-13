@@ -2,7 +2,6 @@ package com.damo.server.domain.schedule;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
-import com.damo.server.domain.person.PersonRepository;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleWithPersonDto;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-    private final PersonRepository personRepository;
 
     @Transactional
     public ScheduleDto save(final RequestScheduleDto scheduleDto) {
@@ -37,7 +35,7 @@ public class ScheduleService {
 
     public Page<ScheduleWithPersonDto> readScheduleList(final Pageable pageable, final Long userId, final String type) {
         // TODO: totalAmount 관련 협의 필요
-        return scheduleRepository.findAllWithTotalAmount(pageable, ScheduleTransaction.valueOf(type), userId);
+        return scheduleRepository.findAllByTransactionAndUserId(pageable, ScheduleTransaction.valueOf(type), userId);
     }
 
     @Transactional
