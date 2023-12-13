@@ -91,5 +91,21 @@ public class PersonControllerTest {
                     .andExpect(jsonPath("$.memo").value(requestPersonDto.memo()))
                     .andExpect(jsonPath("$.name").value(requestPersonDto.name()));
         }
+
+        @Test
+        void 대상_삭제() throws Exception {
+            RequestPersonDto requestPersonDto = new RequestPersonDto("테스트 이름", "가족", "테스트 메모", 1L);
+            ObjectMapper mapper = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
+                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            String json = mapper.writeValueAsString(requestPersonDto);
+
+            mvc.perform(delete(END_POINT + "/" + 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json)
+                            .accept(MediaType.APPLICATION_JSON)
+                    ).andDo(print())
+                    .andExpect(status().isNoContent());
+        }
     }
 }
