@@ -1,14 +1,16 @@
 package com.damo.server.domain.person.dto;
 
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.Length;
 
 public record RequestPersonDto(
+        // TODO: 문자열 검증 패턴 구현해야 함
         @NotBlank(message = "name is required")
-        @Size(min = 1, max = 20, message = "name length 1 ~ 20")
+        @Length(min = 1, max = 20, message = "name length 1 ~ 20")
         String name,
 
         @NotBlank(message = "relation is required")
-        @Size(min = 1, max = 5, message = "relation length 1 ~ 5")
+        @Length(min = 1, max = 5, message = "relation length 1 ~ 5")
         String relation, // TODO: Enum 발리데이터로 수정
 
         @Null
