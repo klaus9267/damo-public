@@ -123,32 +123,78 @@ public class PersonControllerTest {
 
         @Test
         void 대상_생성_실패() throws Exception {
-            @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
-            class FailPersonDto {
-                private final Object id;
-                private final Object name;
-                private final Object relation;
-                private final Object memo;
-                public FailPersonDto(Object id, Object name, Object relation, Object memo) {
-                    this.id = id;
-                    this.name = name;
-                    this.relation = relation;
-                    this.memo = memo;
-                }
-            }
-            FailPersonDto personDto = new FailPersonDto("", 1, 1, 1);
+
+            FailPersonDto personDto = new FailPersonDto(null, "가족", null, 1L);
             ObjectMapper mapper = new ObjectMapper()
                     .registerModule(new JavaTimeModule())
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             String json = mapper.writeValueAsString(personDto);
 
-            // api 전송
+            // 이름 실패
             mvc.perform(post(END_POINT)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(json)
                     )
-                    .andExpect(status().isBadRequest()) // 에러 코드 반환
-                    .andDo(print()); // 요청과 응답 정보 전체 출력
+                    .andExpect(status().isBadRequest())
+                    .andDo(print());
+
+            personDto = new FailPersonDto("이름", null, null, 1L);
+            mapper = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
+                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            json = mapper.writeValueAsString(personDto);
+
+            // 관계 실패
+            mvc.perform(post(END_POINT)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andDo(print());
+
+
+            personDto = new FailPersonDto("이름", "가족", 123, 1L);
+            mapper = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
+                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            json = mapper.writeValueAsString(personDto);
+
+            // 메모 실패
+            mvc.perform(post(END_POINT)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andDo(print());
+
+
+            personDto = new FailPersonDto("이름", "가족", "112233", 0L);
+            mapper = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
+                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            json = mapper.writeValueAsString(personDto);
+
+            // 유저 아이디 실패
+            mvc.perform(post(END_POINT)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json)
+                    )
+                    .andExpect(status().isBadRequest())
+                    .andDo(print());
         }
+    }
+}
+
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+class FailPersonDto {
+    private final Object name;
+    private final Object relation;
+    private final Object memo;
+    private final Object userId;
+    public FailPersonDto(Object name, Object relation, Object memo, Object userId) {
+        this.name = name;
+        this.relation = relation;
+        this.memo = memo;
+        this.userId = userId;
     }
 }
