@@ -30,7 +30,7 @@ public class PersonController {
     @Operation(summary = "대상 추가", description = "대상을 추가함")
     @ApiResponse(responseCode = "201", description = "CREATED", content = @Content(schema = @Schema(implementation = PersonDto.class)))
     @PostMapping
-    public ResponseEntity<?> addPerson(@RequestBody final RequestPersonDto personDto) {
+    public ResponseEntity<?> addPerson(@RequestBody @Valid final RequestPersonDto personDto) {
         // TODO: userId는 security에서 제공하는 데이터로 변경
         return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
     }
