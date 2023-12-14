@@ -1,8 +1,10 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.domain.person.PersonService;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -21,6 +23,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -106,6 +109,46 @@ public class PersonControllerTest {
                             .accept(MediaType.APPLICATION_JSON)
                     ).andDo(print())
                     .andExpect(status().isNoContent());
+        }
+    }
+    @Nested
+    @DisplayName("실패 케이스")
+    class 실패 {
+        Timestamp now;
+        @BeforeEach
+        void 초기값() {
+            now = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        }
+
+
+        @Test
+        void 대상_생성_실패() throws Exception {
+            @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
+            class FailPersonDto {
+                private final Object id;
+                private final Object name;
+                private final Object relation;
+                private final Object memo;
+                public FailPersonDto(Object id, Object name, Object relation, Object memo) {
+                    this.id = id;
+                    this.name = name;
+                    this.relation = relation;
+                    this.memo = memo;
+                }
+            }
+            FailPersonDto personDto = new FailPersonDto("", 1, 1, 1);
+            ObjectMapper mapper = new ObjectMapper()
+                    .registerModule(new JavaTimeModule())
+                    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            String json = mapper.writeValueAsString(personDto);
+
+            // api 전송
+            mvc.perform(post(END_POINT)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(json)
+                    )
+                    .andExpect(status().isBadRequest()) // 에러 코드 반환
+                    .andDo(print()); // 요청과 응답 정보 전체 출력
         }
     }
 }
