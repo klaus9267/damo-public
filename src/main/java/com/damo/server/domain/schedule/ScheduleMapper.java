@@ -3,7 +3,6 @@ package com.damo.server.domain.schedule;
 import com.damo.server.domain.person.Person;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
-import com.damo.server.domain.schedule.dto.ScheduleWithPersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.schedule.entity.ScheduleTransaction;
@@ -17,8 +16,8 @@ public class ScheduleMapper {
                           .amount(schedule.getAmount())
                           .memo(schedule.getMemo())
                           .event(schedule.getEvent())
-                          .status(schedule.getStatus().getTitle())
-                          .transaction(schedule.getTransaction().getTitle())
+                          .status(schedule.getStatus())
+                          .transaction(schedule.getTransaction())
                           .createdAt(schedule.getCreatedAt())
                           .updatedAt(schedule.getCreatedAt())
                           .build();

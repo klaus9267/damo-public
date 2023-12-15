@@ -5,7 +5,6 @@ import com.damo.server.application.handler.exception.NotFoundException;
 import com.damo.server.domain.common.pagination.CustomSchedulePage;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
-import com.damo.server.domain.schedule.dto.ScheduleWithPersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.schedule.entity.ScheduleTransaction;
@@ -14,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -34,11 +35,27 @@ public class ScheduleService {
         return scheduleRepository.findOne(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
     }
 
-    public CustomSchedulePage<ScheduleWithPersonDto> readScheduleList(final Pageable pageable, final Long userId, final String type) {
-        // TODO: totalAmount 관련 협의 필요
-        Page<ScheduleWithPersonDto> schedule = scheduleRepository.findAllByTransactionAndUserId(pageable, ScheduleTransaction.valueOf(type), userId);
-        Integer totalAmount = schedule.getContent().stream().mapToInt(ScheduleWithPersonDto::getAmount).reduce(0, Integer::sum);
-        return new CustomSchedulePage<>(schedule, totalAmount);
+    public CustomSchedulePage readScheduleList(final Pageable pageable, final Long userId, final String transaction) {
+        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(pageable, userId);
+
+        Integer totalGiving = page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("GIVING")).mapToInt(ScheduleDto::getAmount).reduce(0, Integer::sum);
+        Integer totalReceiving = page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("RECEIVING")).mapToInt(ScheduleDto::getAmount).reduce(0, Integer::sum);
+        List<ScheduleDto> scheduleDtos = switch (transaction) {
+            case "TOTAL" -> {
+                yield page.getContent();
+            }
+            case "GIVING" -> {
+                yield page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("GIVING")).toList();
+            }
+            case "RECEIVING" -> {
+                yield page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("RECEIVING")).toList();
+            }
+            default -> {
+                throw new BadRequestException("조회할 거래 종류 입력 오류");
+            }
+        };
+
+        return new CustomSchedulePage(scheduleDtos, pageable, scheduleDtos.size(), totalGiving, totalReceiving);
     }
 
     @Transactional
