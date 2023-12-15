@@ -13,8 +13,7 @@ public record RequestPersonDto(
         @Length(min = 1, max = 5, message = "relation length 1 ~ 5")
         String relation, // TODO: Enum 발리데이터로 수정
 
-        @Null
-        @Max(value = 200, message = "memo max length 200")
+        @Length(max = 200, message = "memo max length 200")
         String memo,
 
         @NotNull(message = "userId is null")
