@@ -21,24 +21,23 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        final Map<String, Object> attributes = super.loadUser(userRequest).getAttributes();
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+        final Map<String, Object> attributes = oAuth2User.getAttributes();
 
         final OAuth2ProviderFactory providerFactory = new OAuth2ProviderFactory();
         final OAuth2Provider oAuth2Provider = providerFactory.getOAuth2Provider(userRequest.getClientRegistration().getRegistrationId(), attributes);
 
-        if(!userRepository.existsByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId())) {
-            userRepository.save(
-                    User.builder()
-                            .username(oAuth2Provider.getUsername())
-                            .name(oAuth2Provider.getName())
-                            .email(oAuth2Provider.getEmail())
-                            .role(UserRole.USER)
-                            .provider(oAuth2Provider.getProvider())
-                            .providerId(oAuth2Provider.getProviderId())
-                            .build()
-            );
-        }
+        User user = userRepository.findOneByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId()).orElseGet(() -> userRepository.save(
+                User.builder()
+                        .username(oAuth2Provider.getUsername())
+                        .name(oAuth2Provider.getName())
+                        .email(oAuth2Provider.getEmail())
+                        .role(UserRole.USER)
+                        .provider(oAuth2Provider.getProvider())
+                        .providerId(oAuth2Provider.getProviderId())
+                        .build())
+        );
 
-        return new PrincipalDetails(attributes, oAuth2Provider.getUsername());
+        return new PrincipalDetails(user, attributes);
     }
 }

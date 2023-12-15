@@ -1,5 +1,7 @@
 package com.damo.server.application.config.oauth;
 
+import com.damo.server.domain.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,18 +12,14 @@ import java.util.Collection;
 import java.util.Map;
 
 @Data
+@AllArgsConstructor
 public class PrincipalDetails implements UserDetails, OAuth2User {
+    private final User user;
     private final Map<String, Object> attributes;
-    private final String username;
-
-    public PrincipalDetails(Map<String, Object> attributes, String username) {
-        this.attributes = attributes;
-        this.username = username;
-    }
 
     @Override
     public String getName() { // 크게 중요하지 않음, 사용을 잘 안해서
-        return null;
+        return user.getName();
     }
 
     @Override
@@ -32,13 +30,13 @@ public class PrincipalDetails implements UserDetails, OAuth2User {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add((GrantedAuthority) () -> "user.getRole()");
+        collection.add((GrantedAuthority) () -> user.getRole().getKey());
         return collection;
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getUsername();
     }
 
     @Override

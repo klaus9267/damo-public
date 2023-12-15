@@ -24,8 +24,8 @@ public class SecurityConfig {
         return http.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         //.requestMatchers("/.../**").authenticated()
-                        //.requestMatchers("/.../**").hasAnyRole("ADMIN", "MANAGER")
-                        //.requestMatchers("/.../**").hasRole("ADMIN")
+//                        .requestMatchers("").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/oauth").hasRole("USER")
                         .anyRequest().permitAll() // 위 페이지 외 누구나 들어갈 수 있음
                 )
                 .logout(logout -> logout.logoutUrl("/api/logout") // 로그아웃
@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")  // 로그아웃 시 삭제할 쿠키 이름
                 )
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService))
-                        .defaultSuccessUrl("/") // TODO: 프론트 루트 경로로 이동
+                        .defaultSuccessUrl("/oauth") // TODO: 프론트 루트 경로로 이동
                 )
                 .build();
     }
