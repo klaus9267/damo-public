@@ -9,8 +9,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     private final OAuth2UserService oAuth2UserService;
@@ -23,10 +25,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(CsrfConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        //.requestMatchers("/.../**").authenticated()
-                        //.requestMatchers("/.../**").hasAnyRole("ADMIN", "MANAGER")
-                        //.requestMatchers("/.../**").hasRole("ADMIN")
-                        .anyRequest().permitAll() // 위 페이지 외 누구나 들어갈 수 있음
+                        .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/v3/**", "/swagger-ui/**") // swagger 허용
+                        .permitAll()
                 )
                 .logout(logout -> logout.logoutUrl("/api/logout") // 로그아웃
                         // .logoutSuccessUrl("/loginForm")  // TODO: 프론트 로그인 페이지 설정
@@ -34,8 +35,9 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")  // 로그아웃 시 삭제할 쿠키 이름
                 )
                 .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService))
-                        .defaultSuccessUrl("/") // TODO: 프론트 루트 경로로 이동
+                        .defaultSuccessUrl("/oauth") // TODO: 프론트 루트 경로로 이동
                 )
+                .httpBasic(withDefaults())
                 .build();
     }
 }
