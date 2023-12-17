@@ -10,6 +10,8 @@ public enum PaginationSortType {
     NAME("name"),
     RELATION("relation"),
     CREATED_AT("createdAt"),
+    TRANSACTION("transaction"),
+    DATE("date"),
     EMPTY(null);
 
     private final String field;
