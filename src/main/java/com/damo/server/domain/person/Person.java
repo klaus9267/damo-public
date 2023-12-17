@@ -4,10 +4,7 @@ import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -15,11 +12,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @NoArgsConstructor
 @Entity
 @Builder
 @AllArgsConstructor
+@Getter
 @Table(name = "persons")
 public class Person {
     @Id
@@ -63,5 +60,12 @@ public class Person {
 
     public static Person toPersonFromRequest(final RequestPersonDto personDto, final Long userId) {
         return new Person(personDto, userId);
+    }
+
+    public void changeInfo(final RequestPersonDto personDto) {
+        this.name = personDto.name() != null ? personDto.name() : getName();
+        this.contact = personDto.contact() != null ? personDto.contact() : getContact();
+        this.relation = personDto.relation() != null ? personDto.relation() : getRelation();
+        this.memo = personDto.memo() != null ? personDto.memo() : getMemo();
     }
 }
