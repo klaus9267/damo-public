@@ -1,6 +1,6 @@
 package com.damo.server.application.config.oauth;
 
-import com.damo.server.domain.user.User;
+import com.damo.server.domain.user.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,7 +14,7 @@ import java.util.Map;
 @Data
 @AllArgsConstructor
 public class PrincipalDetails implements UserDetails, OAuth2User {
-    private final User user;
+    private final UserDto user;
     private final Map<String, Object> attributes;
 
     @Override
