@@ -32,6 +32,9 @@ public class Person {
     @Column(nullable = false)
     private String relation;
 
+    @Column(nullable = false)
+    private String contact;
+
     @Column(columnDefinition = "TEXT")
     private String memo;
 
