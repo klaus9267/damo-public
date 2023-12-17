@@ -16,6 +16,9 @@ public record RequestPersonDto(
         @Length(max = 200, message = "memo max length 200")
         String memo,
 
+        @Pattern(regexp =  "^\\d{10,11}$", message = "a contact is a 10 or 11-digit range containing only numbers")
+        String contact,
+
         @NotNull(message = "userId is null")
         @Positive(message = "userId not positive")
         Long userId

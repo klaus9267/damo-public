@@ -2,6 +2,7 @@ package com.damo.server.application.config.oauth;
 
 import com.damo.server.application.config.oauth.provider.OAuth2Provider;
 import com.damo.server.domain.user.User;
+import com.damo.server.domain.user.UserDto;
 import com.damo.server.domain.user.UserRepository;
 import com.damo.server.domain.user.UserRole;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,6 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                         .build())
         );
 
-        return new PrincipalDetails(user, attributes);
+        return new PrincipalDetails(UserDto.toUserDto(user), attributes);
     }
 }
