@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @AllArgsConstructor
 @Service
 public class PersonService {
@@ -25,8 +27,8 @@ public class PersonService {
         personRepository.save(Person.toPersonFromRequest(personDto, userId));
     }
 
-    public Page<PeopleWithScheduleCountDto> readPeopleByRelation(Pageable pageable, String relation) {
-        return personRepository.findAllPeopleWithScheduleCount(pageable, relation);
+    public Page<PeopleWithScheduleCountDto> readPeopleByUserIdAndRelation(final Pageable pageable, final Long userId, final String relation) {
+        return personRepository.findAllPeopleWithScheduleCount(pageable, userId, relation);
     }
 
     @Transactional

@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 public class PeopleWithScheduleCountDto {
     private final Long id;
     private final String name;
+    private final String contact;
     private final String relation;
     private final String memo;
     private final Timestamp createdAt;
@@ -17,6 +18,7 @@ public class PeopleWithScheduleCountDto {
     public PeopleWithScheduleCountDto(Person person, Long scheduleCount) {
         this.id = person.getId();
         this.name = person.getName();
+        this.contact = person.getContact();
         this.relation = person.getRelation();
         this.memo = person.getMemo();
         this.createdAt = person.getCreatedAt();

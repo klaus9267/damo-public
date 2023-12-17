@@ -21,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Tag(name = "PERSON")
 @AllArgsConstructor
 @RestController
@@ -31,16 +33,18 @@ public class PersonController {
     @Operation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
     @ApiResponse(responseCode = "200", description = "페이지네이션 처리된 데이터 응답", content = @Content(schema = @Schema(implementation = Page.class)))
     @GetMapping
-    public ResponseEntity<?> readPeopleByRelation(
+    public ResponseEntity<?> readPeopleByUserIdAndRelation(
             // TODO: PersonPaginationParam docs 적용
             @Valid
             final PersonPaginationParam paginationParam,
+            @AuthenticationPrincipal
+            final PrincipalDetails principalDetails,
             @Parameter(name = "relation", description = "관계 기준", example = "가족")
             @RequestParam(required = false)
             @Length(max = 10)
             final String relation
     ) {
-        final Page<PeopleWithScheduleCountDto> people = personService.readPeopleByRelation(paginationParam.toPageable(), relation);
+        final Page<PeopleWithScheduleCountDto> people = personService.readPeopleByUserIdAndRelation(paginationParam.toPageable(), principalDetails.getUser().getId(), relation);
         return ResponseEntity.ok(people);
     }
 

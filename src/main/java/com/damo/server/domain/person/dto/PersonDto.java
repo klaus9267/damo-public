@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 public class PersonDto {
     private final Long id;
     private final String name;
+    private final String contact;
     private final String relation;
     private final String memo;
     private final Timestamp createdAt;
@@ -20,6 +21,7 @@ public class PersonDto {
         return new PersonDto(
                 person.getId(),
                 person.getName(),
+                person.getContact(),
                 person.getRelation(),
                 person.getMemo(),
                 person.getCreatedAt(),
