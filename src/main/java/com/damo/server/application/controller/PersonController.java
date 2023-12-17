@@ -29,16 +29,32 @@ import org.springframework.web.bind.annotation.*;
 public class PersonController {
     private final PersonService personService;
 
+    @Operation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
+    @ApiResponse(responseCode = "200", description = "페이지네이션 처리된 데이터 응답", content = @Content(schema = @Schema(implementation = Page.class)))
+    @GetMapping
+    public ResponseEntity<?> readPeopleByRelation(
+            // TODO: PersonPaginationParam docs 적용
+            @Valid
+            final PersonPaginationParam paginationParam,
+            @Parameter(name = "relation", description = "관계 기준", example = "가족")
+            @RequestParam(required = false)
+            @Length(max = 10)
+            final String relation
+    ) {
+        final Page<PeopleWithScheduleCountDto> people = personService.readPeopleByRelation(paginationParam.toPageable(), relation);
+        return ResponseEntity.ok(people);
+    }
+
     @Operation(summary = "대상 추가", description = "대상을 추가함")
     @ApiResponse(responseCode = "201", description = "대상을 추가함", content = @Content(schema = @Schema(implementation = PersonDto.class)))
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping
     public void addPerson(
             @RequestBody
             @Valid
             final RequestPersonDto personDto,
             @AuthenticationPrincipal
-            PrincipalDetails principalDetails
+            final PrincipalDetails principalDetails
     ) {
         personService.save(personDto, principalDetails.getUser().getId());
     }
@@ -46,33 +62,29 @@ public class PersonController {
 
     @Operation(summary = "대상 수정", description = "대상을 수정함")
     @ApiResponse(responseCode = "200", description = "성공적으로 수정함", content = @Content(schema = @Schema(implementation = PersonDto.class)))
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("{personId}")
-    public ResponseEntity<?> patchPersonById(@RequestBody final RequestPersonDto personDto, @PathVariable("personId") final Long personId) {
-        return ResponseEntity.status(HttpStatus.OK).body(personService.patchPersonById(personDto, personId));
-    }
-
-    @Operation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
-    @ApiResponse(responseCode = "200", description = "페이지네이션 처리된 데이터 응답", content = @Content(schema = @Schema(implementation = Page.class)))
-    @GetMapping
-    public ResponseEntity<?> readPeopleByRelation(
-        // TODO: PersonPaginationParam docs 적용
-        @Valid
-        final PersonPaginationParam paginationParam,
-        @Parameter(name = "relation", description = "관계 기준", example = "가족")
-        @RequestParam(required = false)
-        @Length(max = 10)
-        final String relation
+    public void patchPersonById(
+            @PathVariable("personId")
+            final Long personId,
+            @RequestBody
+            final RequestPersonDto personDto,
+            @AuthenticationPrincipal
+            final PrincipalDetails principalDetails
     ) {
-        final Page<PeopleWithScheduleCountDto> people = personService.readPeopleByRelation(paginationParam.toPageable(), relation);
-        return ResponseEntity.ok(people);
+        personService.patchPersonById(personDto, personId, principalDetails.getUser().getId());
     }
 
 
     @Operation(summary = "대상 제거", description = "대상 제거함")
     @ApiResponse(responseCode = "204", description = "응답 없음")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{personId}")
-    public ResponseEntity<?> removePersonById(@PathVariable("personId") final Long personId) {
-        personService.removePersonById(personId);
-        return ResponseEntity.noContent().build();
+    public void removePersonById(
+            @PathVariable("personId")
+            final Long personId,
+            @AuthenticationPrincipal
+            final PrincipalDetails principalDetails) {
+        personService.removePersonById(personId, principalDetails.getUser().getId());
     }
 }

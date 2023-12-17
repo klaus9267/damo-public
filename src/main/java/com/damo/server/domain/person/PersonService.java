@@ -17,32 +17,31 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     @Transactional
-    public PersonDto save(final RequestPersonDto personDto, final Long userId) {
+    public void save(final RequestPersonDto personDto, final Long userId) {
         // TODO: 동명이인일 경우 어떻게 해결할 것인가?
         if(personRepository.existsByNameAndRelationAndUserId(personDto.name(), personDto.relation(), userId)) {
             throw new BadRequestException("관계 내에서 동일한 이름이 존재");
         };
 
-        return PersonDto.toPersonDto(this.personRepository.save(Person.toPersonFromRequest(personDto, userId)));
+        personRepository.save(Person.toPersonFromRequest(personDto, userId));
     }
 
     public Page<PeopleWithScheduleCountDto> readPeopleByRelation(Pageable pageable, String relation) {
         return personRepository.findAllPeopleWithScheduleCount(pageable, relation);
     }
 
-    public void removePersonById(final Long personId) {
-        // TODO: security로 userId 받으면 유저가 생성한 person인지 판단하는 조건 추가해야 함
-        personRepository.deleteById(personId);
-    }
-
     @Transactional
-    public PersonDto patchPersonById(final RequestPersonDto personDto, final Long personId) {
-        final Person person = personRepository.findByIdAndUserId(personId, personDto.userId()).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
+    public void patchPersonById(final RequestPersonDto personDto, final Long personId, final Long userId) {
+        final Person person = personRepository.findByIdAndUserId(personId, userId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
 
         person.setName(personDto.name() != null ? personDto.name() : person.getName());
         person.setRelation(personDto.relation() != null ? personDto.relation() : person.getRelation());
         person.setMemo(personDto.memo() != null ? personDto.memo() : person.getMemo());
+    }
 
-        return PersonDto.toPersonDto(person);
+    @Transactional
+    public void removePersonById(final Long personId, final Long userId) {
+        personRepository.findByIdAndUserId(personId, userId).orElseThrow(() -> new NotFoundException("삭제할 대상을 찾을 수 없음"));
+        personRepository.deleteByIdAndUserId(personId, userId);
     }
 }
