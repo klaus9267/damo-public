@@ -17,13 +17,13 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     @Transactional
-    public PersonDto save(final RequestPersonDto personDto) {
+    public PersonDto save(final RequestPersonDto personDto, final Long userId) {
         // TODO: 동명이인일 경우 어떻게 해결할 것인가?
-        if(personRepository.existsByNameAndRelationAndUserId(personDto.name(), personDto.relation(), personDto.userId())) {
+        if(personRepository.existsByNameAndRelationAndUserId(personDto.name(), personDto.relation(), userId)) {
             throw new BadRequestException("관계 내에서 동일한 이름이 존재");
         };
 
-        return PersonDto.toPersonDto(this.personRepository.save(Person.toPersonFromRequest(personDto)));
+        return PersonDto.toPersonDto(this.personRepository.save(Person.toPersonFromRequest(personDto, userId)));
     }
 
     public Page<PeopleWithScheduleCountDto> readPeopleByRelation(Pageable pageable, String relation) {

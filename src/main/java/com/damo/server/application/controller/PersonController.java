@@ -1,5 +1,6 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
 import com.damo.server.domain.person.dto.PersonDto;
@@ -17,6 +18,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "PERSON")
@@ -26,13 +29,18 @@ import org.springframework.web.bind.annotation.*;
 public class PersonController {
     private final PersonService personService;
 
-
     @Operation(summary = "대상 추가", description = "대상을 추가함")
-    @ApiResponse(responseCode = "201", description = "CREATED", content = @Content(schema = @Schema(implementation = PersonDto.class)))
+    @ApiResponse(responseCode = "201", description = "대상을 추가함", content = @Content(schema = @Schema(implementation = PersonDto.class)))
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<?> addPerson(@RequestBody @Valid final RequestPersonDto personDto) {
-        // TODO: userId는 security에서 제공하는 데이터로 변경
-        return ResponseEntity.status(HttpStatus.CREATED).body(personService.save(personDto));
+    public void addPerson(
+            @RequestBody
+            @Valid
+            final RequestPersonDto personDto,
+            @AuthenticationPrincipal
+            PrincipalDetails principalDetails
+    ) {
+        personService.save(personDto, principalDetails.getUser().getId());
     }
 
 

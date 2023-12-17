@@ -32,7 +32,7 @@ public class Person {
     @Column(nullable = false)
     private String relation;
 
-    @Column(nullable = false)
+    @Column
     private String contact;
 
     @Column(columnDefinition = "TEXT")
@@ -53,14 +53,15 @@ public class Person {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Person(final RequestPersonDto personDto) {
+    private Person(final RequestPersonDto personDto, final Long userId) {
         this.name = personDto.name();
+        this.contact = personDto.contact();
         this.relation = personDto.relation();
         this.memo = personDto.memo();
-        this.user = User.builder().id(personDto.userId()).build();
+        this.user = User.builder().id(userId).build();
     }
 
-    public static Person toPersonFromRequest(final RequestPersonDto personDto) {
-        return new Person(personDto);
+    public static Person toPersonFromRequest(final RequestPersonDto personDto, final Long userId) {
+        return new Person(personDto, userId);
     }
 }
