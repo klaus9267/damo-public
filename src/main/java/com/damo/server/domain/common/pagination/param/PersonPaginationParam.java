@@ -7,9 +7,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 public class PersonPaginationParam extends AbstractPaginationParam {
-    private final int page;
-    private final int size;
-    public PersonPaginationParam(int page, int size) {
+    private final Integer page;
+    private final Integer size;
+    public PersonPaginationParam(final Integer page, final Integer size) {
         this.page = Math.max(page, 0);
         this.size = Math.max(size, 10);
     }
