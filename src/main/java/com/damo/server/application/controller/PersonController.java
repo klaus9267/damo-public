@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,10 @@ public class PersonController {
 
     @Operation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
     @ApiResponse(responseCode = "200", description = "페이지네이션 처리된 데이터 응답", content = @Content(schema = @Schema(implementation = Page.class)))
+    @PageableAsQueryParam
     @GetMapping
     public ResponseEntity<?> readPeopleByUserIdAndRelation(
-            // TODO: PersonPaginationParam docs 적용
+            @Parameter(hidden = true)
             @Valid
             final PersonPaginationParam paginationParam,
             @AuthenticationPrincipal
