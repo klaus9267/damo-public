@@ -6,7 +6,6 @@ import com.damo.server.domain.common.pagination.CustomSchedulePage;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.entity.Schedule;
-import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.schedule.entity.ScheduleTransaction;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,7 +13,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+
 
 @AllArgsConstructor
 @Service
@@ -22,12 +25,11 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
 
     @Transactional
-    public ScheduleDto save(final RequestScheduleDto scheduleDto) {
+    public void save(final RequestScheduleDto scheduleDto) {
         if (scheduleRepository.existsByDateAndEventAndPersonId(scheduleDto.date(), scheduleDto.event(), scheduleDto.personId())) {
             throw new BadRequestException("스케줄 내에서 동일한 기록이 존재");
         }
-        //TODO: return 시 person 출력 유무 협의 예정
-        return ScheduleMapper.toDto(scheduleRepository.save(ScheduleMapper.toEntity(scheduleDto)));
+        scheduleRepository.save(Schedule.from(scheduleDto));
     }
 
     public ScheduleDto readSchedule(final Long scheduleId) {
@@ -35,31 +37,18 @@ public class ScheduleService {
         return scheduleRepository.findOne(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
     }
 
-    public CustomSchedulePage readScheduleList(final Pageable pageable, final Long userId, final String transaction) {
-        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(pageable, userId);
-
-        Integer totalGiving = page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("GIVING")).mapToInt(ScheduleDto::getAmount).reduce(0, Integer::sum);
-        Integer totalReceiving = page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("RECEIVING")).mapToInt(ScheduleDto::getAmount).reduce(0, Integer::sum);
-        List<ScheduleDto> scheduleDtos = switch (transaction) {
-            case "TOTAL" -> {
-                yield page.getContent();
-            }
-            case "GIVING" -> {
-                yield page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("GIVING")).toList();
-            }
-            case "RECEIVING" -> {
-                yield page.getContent().stream().filter(dto -> dto.getTransaction().getKey().equals("RECEIVING")).toList();
-            }
-            default -> {
-                throw new BadRequestException("조회할 거래 종류 입력 오류");
-            }
-        };
-
-        return new CustomSchedulePage(scheduleDtos, pageable, scheduleDtos.size(), totalGiving, totalReceiving);
+    public CustomSchedulePage readScheduleList(final Pageable pageable, final Long userId, final ScheduleTransaction transaction,final LocalDateTime startedAt, final LocalDateTime endedAt) {
+        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(pageable, userId,startedAt,endedAt);
+        List<ScheduleDto> scheduleDtos = transaction.equals(ScheduleTransaction.TOTAL) ?
+                                         page.getContent() :
+                                         transaction.equals(ScheduleTransaction.RECEIVING) ?
+                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.RECEIVING)).toList() :
+                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.GIVING)).toList();
+        return new CustomSchedulePage(scheduleDtos, pageable, scheduleRepository.findTotalAmount(userId), startedAt, endedAt);
     }
 
     @Transactional
-    public ScheduleDto patchScheduleById(final RequestScheduleDto scheduleDto, final Long scheduleId) {
+    public void patchScheduleById(final RequestScheduleDto scheduleDto, final Long scheduleId) {
         final Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
         // TODO: security로 userId 받으면 같은 유저인지 판단 조건 추가
 
@@ -67,10 +56,8 @@ public class ScheduleService {
         schedule.setAmount(scheduleDto.amount() != null ? scheduleDto.amount() : schedule.getAmount());
         schedule.setMemo(scheduleDto.memo() != null ? scheduleDto.memo() : schedule.getMemo());
         schedule.setEvent(scheduleDto.event() != null ? scheduleDto.event() : schedule.getEvent());
-        schedule.setStatus(scheduleDto.status() != null ? ScheduleStatus.valueOf(scheduleDto.status()) : schedule.getStatus());
-        schedule.setTransaction(scheduleDto.transaction() != null ? ScheduleTransaction.valueOf(scheduleDto.transaction()) : schedule.getTransaction());
-
-        return ScheduleMapper.toDto(schedule);
+        schedule.setStatus(scheduleDto.status() != null ? scheduleDto.status() : schedule.getStatus());
+        schedule.setTransaction(scheduleDto.transaction() != null ? scheduleDto.transaction() : schedule.getTransaction());
     }
 
     public void removeScheduleById(final Long scheduleId) {

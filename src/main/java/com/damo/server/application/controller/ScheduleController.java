@@ -18,6 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/schedules")
@@ -46,13 +50,14 @@ public class ScheduleController {
     public ResponseEntity<CustomSchedulePage> readScheduleList(
             @Valid final SchedulePaginationParam paginationParam,
             @Parameter(name = "transaction", description = "조회할 스케줄 종류", example = "RECEIVING")
-            @RequestParam(required = true)
-            final ScheduleTransaction transaction,
+            @RequestParam(required = true) final ScheduleTransaction transaction,
+            @Parameter(name = "startedAt", description = "조회 시작 날짜", example = "2023-12-18")
+            @RequestParam(required = false) final LocalDateTime startedAt,
+            @Parameter(name = "endedAt", description = "조회 종료 날짜", example = "2023-12-18")
+            @RequestParam(required = false) final LocalDateTime endedAt,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        // TODO: userId는 security에서 제공하는 데이터로 변경
-        final CustomSchedulePage schedule = scheduleService.readScheduleList(paginationParam.toPageable(), 4L, transaction);
-//        final CustomSchedulePage schedule = scheduleService.readScheduleList(paginationParam.toPageable(), principalDetails.getUser().getId(), transaction);
+        final CustomSchedulePage schedule = scheduleService.readScheduleList(paginationParam.toPageable(), principalDetails.getUser().getId(), transaction, startedAt, endedAt);
         return ResponseEntity.ok(schedule);
     }
 
