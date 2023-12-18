@@ -1,5 +1,8 @@
 package com.damo.server.domain.schedule.dto;
 
+import com.damo.server.domain.schedule.entity.ScheduleStatus;
+import com.damo.server.domain.schedule.entity.ScheduleTransaction;
+
 import java.time.LocalDateTime;
 
 public record RequestScheduleDto(
@@ -8,6 +11,6 @@ public record RequestScheduleDto(
         Integer amount,
         String memo,
         String event,
-        String status,
-        String transaction
+        ScheduleStatus status,
+        ScheduleTransaction transaction
 ) {}

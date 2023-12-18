@@ -1,6 +1,7 @@
 package com.damo.server.domain.schedule.entity;
 
 import com.damo.server.domain.person.Person;
+import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,4 +55,18 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
+
+    private Schedule(final RequestScheduleDto scheduleDto) {
+        this.person = Person.builder().id(scheduleDto.personId()).build();
+        this.date = scheduleDto.date();
+        this.amount = scheduleDto.amount();
+        this.memo = scheduleDto.memo();
+        this.event = scheduleDto.event();
+        this.status = scheduleDto.status();
+        this.transaction = scheduleDto.transaction();
+    }
+
+    public static Schedule from(final RequestScheduleDto scheduleDto) {
+        return new Schedule(scheduleDto);
+    }
 }
