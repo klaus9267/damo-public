@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -47,13 +48,16 @@ public class ScheduleController {
     @GetMapping
     @Operation(summary = "스케줄 타입별 목록 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @PageableAsQueryParam
     public ResponseEntity<CustomSchedulePage> readScheduleList(
-            @Valid final SchedulePaginationParam paginationParam,
+            @Valid
+            @Parameter(hidden = true)
+            final SchedulePaginationParam paginationParam,
             @Parameter(name = "transaction", description = "조회할 스케줄 종류", example = "RECEIVING")
             @RequestParam(required = true) final ScheduleTransaction transaction,
-            @Parameter(name = "startedAt", description = "조회 시작 날짜", example = "2023-12-18")
+            @Parameter(name = "startedAt", description = "조회 시작 날짜", example = "2023-12-01T00:00:00")
             @RequestParam(required = false) final LocalDateTime startedAt,
-            @Parameter(name = "endedAt", description = "조회 종료 날짜", example = "2023-12-18")
+            @Parameter(name = "endedAt", description = "조회 종료 날짜", example = "2023-12-18T00:00:00")
             @RequestParam(required = false) final LocalDateTime endedAt,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
