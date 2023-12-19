@@ -50,18 +50,10 @@ public class ScheduleController {
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
     @PageableAsQueryParam
     public ResponseEntity<CustomSchedulePage> readScheduleList(
-            @Valid
-            @Parameter(hidden = true)
-            final SchedulePaginationParam paginationParam,
-            @Parameter(name = "transaction", description = "조회할 스케줄 종류", example = "RECEIVING")
-            @RequestParam(required = true) final ScheduleTransaction transaction,
-            @Parameter(name = "startedAt", description = "조회 시작 날짜", example = "2023-12-01T00:00:00")
-            @RequestParam(required = false) final LocalDateTime startedAt,
-            @Parameter(name = "endedAt", description = "조회 종료 날짜", example = "2023-12-18T00:00:00")
-            @RequestParam(required = false) final LocalDateTime endedAt,
+            @Valid @Parameter(hidden = true) final SchedulePaginationParam paginationParam,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        final CustomSchedulePage schedule = scheduleService.readScheduleList(paginationParam.toPageable(), principalDetails.getUser().getId(), transaction, startedAt, endedAt);
+        final CustomSchedulePage schedule = scheduleService.readScheduleList(paginationParam, principalDetails.getUser().getId());
         return ResponseEntity.ok(schedule);
     }
 
