@@ -7,7 +7,6 @@ import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.entity.Schedule;
-import com.damo.server.domain.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class ScheduleService {
 
     @Transactional
     public void save(final RequestScheduleDto scheduleDto, final Long userId) {
-        if (scheduleRepository.existsByDateAndEventAndPersonId(scheduleDto.date(), scheduleDto.event(), scheduleDto.personId())) {
+        if (scheduleRepository.existsByEventDateAndEventAndPersonId(scheduleDto.eventDate(), scheduleDto.event(), scheduleDto.personId())) {
             throw new BadRequestException("스케줄 내에서 동일한 기록이 존재");
         }
         scheduleRepository.save(Schedule.from(scheduleDto, userId));

@@ -23,7 +23,7 @@ public class Schedule {
     private Long id;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime eventDate;
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
     private Integer amount; // Money
@@ -60,7 +60,7 @@ public class Schedule {
 
     private Schedule(final RequestScheduleDto scheduleDto,final Long userId) {
         this.person = Person.builder().id(scheduleDto.personId()).build();
-        this.date = scheduleDto.date();
+        this.eventDate = scheduleDto.eventDate();
         this.amount = scheduleDto.amount();
         this.memo = scheduleDto.memo();
         this.event = scheduleDto.event();
@@ -74,7 +74,7 @@ public class Schedule {
     }
 
     public void changeInfo(final RequestScheduleDto scheduleDto) {
-        this.date = scheduleDto.date() != null ? scheduleDto.date() : this.getDate();
+        this.eventDate = scheduleDto.eventDate() != null ? scheduleDto.eventDate() : this.getEventDate();
         this.amount = scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount();
         this.memo = scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo();
         this.event = scheduleDto.event() != null ? scheduleDto.event() : this.getEvent();

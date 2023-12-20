@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    Boolean existsByDateAndEventAndPersonId(LocalDateTime date, String event, Long personId);
+    Boolean existsByEventDateAndEventAndPersonId(LocalDateTime eventDate, String event, Long personId);
 
     @Query("""
            SELECT new com.damo.server.domain.schedule.dto.ScheduleDto(s, p) 
            FROM Schedule s 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
            WHERE p.user.id = :userId 
-                AND (:startedAt IS NULL OR s.date >= :startedAt)
-                AND (:endedAt IS NULL OR s.date <= :endedAt)
+                AND (:startedAt IS NULL OR s.eventDate >= :startedAt)
+                AND (:endedAt IS NULL OR s.eventDate <= :endedAt)
                 AND ('TOTAL' = :transaction  OR s.transaction = :transaction)
            """)
     Page<ScheduleDto> findAllByUserId(
@@ -43,6 +43,18 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
            """)
     Optional<ScheduleAmount> findTotalAmount(final Long userId);
 
+//    @Query("""
+//           SELECT new com.damo.server.domain.schedule.ScheduleAmount(
+//                SUM(CASE WHEN s.transaction = com.damo.server.domain.schedule.entity.ScheduleTransaction.GIVING THEN s.amount ELSE 0 END),
+//                SUM(CASE WHEN s.transaction = com.damo.server.domain.schedule.entity.ScheduleTransaction.RECEIVING THEN s.amount ELSE 0 END)
+//                )
+//           FROM Schedule s
+//                LEFT JOIN FETCH  Person p ON s.person.id = p.id
+//                LEFT JOIN FETCH  User u ON s.person.id = p.id
+//           WHERE p.user.id = :userId
+//           """)
+//    Optional<ScheduleAmount> findByIdaUserId(final Long userId);
+
     @Query("""
            SELECT new com.damo.server.domain.schedule.ScheduleAmount(
                 SUM(CASE WHEN s.transaction = com.damo.server.domain.schedule.entity.ScheduleTransaction.GIVING THEN s.amount ELSE 0 END),
@@ -51,8 +63,8 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
            FROM Schedule s 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
            WHERE p.user.id = :userId 
-                AND (:startedAt IS NULL OR s.date >= :startedAt)
-                AND (:endedAt IS NULL OR s.date <= :endedAt)
+                AND (:startedAt IS NULL OR s.eventDate >= :startedAt)
+                AND (:endedAt IS NULL OR s.eventDate <= :endedAt)
            """)
     ScheduleAmount findTermTotalAmount(final Long userId, final LocalDateTime startedAt, final LocalDateTime endedAt);
 }
