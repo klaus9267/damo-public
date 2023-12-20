@@ -58,7 +58,7 @@ public class Schedule {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Schedule(final RequestScheduleDto scheduleDto) {
+    private Schedule(final RequestScheduleDto scheduleDto,final Long userId) {
         this.person = Person.builder().id(scheduleDto.personId()).build();
         this.date = scheduleDto.date();
         this.amount = scheduleDto.amount();
@@ -66,10 +66,11 @@ public class Schedule {
         this.event = scheduleDto.event();
         this.status = scheduleDto.status();
         this.transaction = scheduleDto.transaction();
+        this.user = User.builder().id(userId).build();
     }
 
-    public static Schedule from(final RequestScheduleDto scheduleDto) {
-        return new Schedule(scheduleDto);
+    public static Schedule from(final RequestScheduleDto scheduleDto, final Long userId) {
+        return new Schedule(scheduleDto, userId);
     }
 
     public void changeInfo(final RequestScheduleDto scheduleDto) {

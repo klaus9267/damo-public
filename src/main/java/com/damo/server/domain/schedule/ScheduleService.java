@@ -18,14 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
-    private final UserService userService;
 
     @Transactional
-    public void save(final RequestScheduleDto scheduleDto) {
+    public void save(final RequestScheduleDto scheduleDto, final Long userId) {
         if (scheduleRepository.existsByDateAndEventAndPersonId(scheduleDto.date(), scheduleDto.event(), scheduleDto.personId())) {
             throw new BadRequestException("스케줄 내에서 동일한 기록이 존재");
         }
-        scheduleRepository.save(Schedule.from(scheduleDto));
+        scheduleRepository.save(Schedule.from(scheduleDto, userId));
     }
 
     public ScheduleAmount readTotalAmounts(final Long userId) {

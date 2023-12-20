@@ -29,8 +29,11 @@ public class ScheduleController {
     @PostMapping
     @Operation(summary = "스케줄 생성", description = "응답 없음")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addSchedule(@RequestBody final RequestScheduleDto scheduleDto) {
-        scheduleService.save(scheduleDto);
+    public void addSchedule(
+            @RequestBody final RequestScheduleDto scheduleDto,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        scheduleService.save(scheduleDto, principalDetails.getUser().getId());
     }
 
     @GetMapping("/total-amounts")
