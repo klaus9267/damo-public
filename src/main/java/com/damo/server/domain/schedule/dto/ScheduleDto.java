@@ -40,16 +40,7 @@ public class ScheduleDto {
         this.updatedAt = schedule.getUpdatedAt();
     }
 
-    public ScheduleDto(final Schedule schedule) {
-        this.id = schedule.getId();
-        this.person = null;
-        this.date = schedule.getDate();
-        this.amount = schedule.getAmount();
-        this.memo = schedule.getMemo();
-        this.event = schedule.getEvent();
-        this.status = schedule.getStatus();
-        this.transaction = schedule.getTransaction();
-        this.createdAt = schedule.getCreatedAt();
-        this.updatedAt = schedule.getUpdatedAt();
+    public static ScheduleDto from(Schedule schedule) {
+        return new ScheduleDto(schedule, schedule.getPerson());
     }
 }
