@@ -3,6 +3,7 @@ package com.damo.server.domain.schedule;
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
 import com.damo.server.domain.common.pagination.CustomSchedulePage;
+import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.entity.Schedule;
@@ -37,27 +38,23 @@ public class ScheduleService {
         return scheduleRepository.findOne(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
     }
 
-    public CustomSchedulePage readScheduleList(final Pageable pageable, final Long userId, final ScheduleTransaction transaction,final LocalDateTime startedAt, final LocalDateTime endedAt) {
-        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(pageable, userId,startedAt,endedAt);
-        List<ScheduleDto> scheduleDtos = transaction.equals(ScheduleTransaction.TOTAL) ?
-                                         page.getContent() :
-                                         transaction.equals(ScheduleTransaction.RECEIVING) ?
-                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.RECEIVING)).toList() :
-                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.GIVING)).toList();
-        return new CustomSchedulePage(scheduleDtos, pageable, scheduleRepository.findTotalAmount(userId), startedAt, endedAt);
+    public CustomSchedulePage readScheduleList(final SchedulePaginationParam schedulePaginationParam, final Long userId) {
+        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(schedulePaginationParam.toPageable(), userId, schedulePaginationParam.getStartedAt(), schedulePaginationParam.getEndedAt());
+//        List<ScheduleDto> scheduleDtos = transaction.equals(ScheduleTransaction.TOTAL) ?
+//                                         page.getContent() :
+//                                         transaction.equals(ScheduleTransaction.RECEIVING) ?
+//                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.RECEIVING)).toList() :
+//                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.GIVING)).toList();
+        return new CustomSchedulePage(page.getContent(), schedulePaginationParam.toPageable() , scheduleRepository.findTotalAmount(userId), null,null);
     }
 
     @Transactional
     public void patchScheduleById(final RequestScheduleDto scheduleDto, final Long scheduleId) {
         final Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
-        // TODO: security로 userId 받으면 같은 유저인지 판단 조건 추가
-
-        schedule.setDate(scheduleDto.date() != null ? scheduleDto.date() : schedule.getDate());
-        schedule.setAmount(scheduleDto.amount() != null ? scheduleDto.amount() : schedule.getAmount());
-        schedule.setMemo(scheduleDto.memo() != null ? scheduleDto.memo() : schedule.getMemo());
-        schedule.setEvent(scheduleDto.event() != null ? scheduleDto.event() : schedule.getEvent());
-        schedule.setStatus(scheduleDto.status() != null ? scheduleDto.status() : schedule.getStatus());
-        schedule.setTransaction(scheduleDto.transaction() != null ? scheduleDto.transaction() : schedule.getTransaction());
+        if (!schedule.getPerson().getUser().getId().equals(scheduleId)) {
+            throw new BadRequestException("다른 사용자의 스케줄");
+        }
+        schedule.changeInfo(scheduleDto);
     }
 
     public void removeScheduleById(final Long scheduleId) {

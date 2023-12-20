@@ -69,4 +69,13 @@ public class Schedule {
     public static Schedule from(final RequestScheduleDto scheduleDto) {
         return new Schedule(scheduleDto);
     }
+
+    public void changeInfo(final RequestScheduleDto scheduleDto) {
+        this.setDate(scheduleDto.date() != null ? scheduleDto.date() : this.getDate());
+        this.setAmount(scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount());
+        this.setMemo(scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo());
+        this.setEvent(scheduleDto.event() != null ? scheduleDto.event() : this.getEvent());
+        this.setStatus(scheduleDto.status() != null ? scheduleDto.status() : this.getStatus());
+        this.setTransaction(scheduleDto.transaction() != null ? scheduleDto.transaction() : this.getTransaction());
+    }
 }

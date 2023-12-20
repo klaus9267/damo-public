@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class SchedulePaginationParam extends AbstractPaginationParam {
     private final Integer page;
     private final Integer size;
-    private ScheduleTransaction transaction;
+    private final ScheduleTransaction transaction;
     private final LocalDateTime startedAt;
     private final LocalDateTime endedAt;
 
