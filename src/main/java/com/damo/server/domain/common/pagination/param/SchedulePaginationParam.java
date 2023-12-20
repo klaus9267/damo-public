@@ -35,8 +35,8 @@ public class SchedulePaginationParam extends AbstractPaginationParam {
         this.page = Math.max(page, 0);
         this.size = Math.max(size, 10);
         this.transaction = transaction;
-        this.startedAt = startedAt;
-        this.endedAt = endedAt;
+        this.startedAt = startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt;
+        this.endedAt = endedAt == null ? LocalDateTime.now() : endedAt;
     }
 
     public Pageable toPageable() {
