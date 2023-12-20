@@ -2,6 +2,7 @@ package com.damo.server.domain.schedule.entity;
 
 import com.damo.server.domain.person.Person;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
+import com.damo.server.domain.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -52,6 +53,10 @@ public class Schedule {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     private Schedule(final RequestScheduleDto scheduleDto) {
         this.person = Person.builder().id(scheduleDto.personId()).build();
