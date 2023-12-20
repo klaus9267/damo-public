@@ -39,4 +39,8 @@ public class ScheduleDto {
         this.createdAt = schedule.getCreatedAt();
         this.updatedAt = schedule.getUpdatedAt();
     }
+
+    public static ScheduleDto from(Schedule schedule) {
+        return new ScheduleDto(schedule, schedule.getPerson());
+    }
 }

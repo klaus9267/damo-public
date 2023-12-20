@@ -6,8 +6,6 @@ import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-import java.time.LocalDateTime;
-
 @Getter
 public class CustomSchedulePage extends PageImpl<ScheduleDto> {
     private final ScheduleAmount amounts;
@@ -17,7 +15,7 @@ public class CustomSchedulePage extends PageImpl<ScheduleDto> {
         this.amounts = null;
     }
 
-    public CustomSchedulePage(final Page<ScheduleDto> page,final ScheduleAmount scheduleAmount) {
+    public CustomSchedulePage(final Page<ScheduleDto> page, final ScheduleAmount scheduleAmount) {
         super(page.getContent(), page.getPageable(), page.getTotalElements());
         this.amounts = scheduleAmount;
     }

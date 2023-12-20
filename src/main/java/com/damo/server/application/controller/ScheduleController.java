@@ -44,8 +44,11 @@ public class ScheduleController {
     @GetMapping("{scheduleId}")
     @Operation(summary = "스케줄 단건 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
-    public ResponseEntity<ScheduleDto> readSchedule(@PathVariable("scheduleId") final Long scheduleId) {
-        final ScheduleDto schedule = scheduleService.readSchedule(scheduleId);
+    public ResponseEntity<ScheduleDto> readSchedule(
+            @PathVariable("scheduleId") final Long scheduleId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        final ScheduleDto schedule = scheduleService.readSchedule(scheduleId, principalDetails.getUser().getId());
         return ResponseEntity.ok(schedule);
     }
 
@@ -66,15 +69,19 @@ public class ScheduleController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchScheduleById(
             @RequestBody final RequestScheduleDto scheduleDto,
-            @PathVariable("scheduleId") final Long scheduleId
+            @PathVariable("scheduleId") final Long scheduleId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        scheduleService.patchScheduleById(scheduleDto, scheduleId);
+        scheduleService.patchScheduleById(scheduleDto, scheduleId, principalDetails.getUser().getId());
     }
 
     @DeleteMapping("{scheduleId}")
     @Operation(summary = "스케줄 삭제", description = "응답 없음")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeScheduleById(@PathVariable("scheduleId") final Long scheduleId) {
-        scheduleService.removeScheduleById(scheduleId);
+    public void removeScheduleById(
+            @PathVariable("scheduleId") final Long scheduleId,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        scheduleService.removeScheduleById(scheduleId, principalDetails.getUser().getId());
     }
 }
