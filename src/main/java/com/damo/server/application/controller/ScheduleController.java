@@ -3,10 +3,10 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.domain.common.pagination.CustomSchedulePage;
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
+import com.damo.server.domain.schedule.ScheduleAmount;
 import com.damo.server.domain.schedule.ScheduleService;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
-import com.damo.server.domain.schedule.entity.ScheduleTransaction;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,10 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @AllArgsConstructor
 @RestController
@@ -35,6 +31,14 @@ public class ScheduleController {
     @ResponseStatus(HttpStatus.CREATED)
     public void addSchedule(@RequestBody final RequestScheduleDto scheduleDto) {
         scheduleService.save(scheduleDto);
+    }
+
+    @GetMapping("/total-amounts")
+    @Operation(summary = "거래 총액 조회")
+    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    public ResponseEntity<ScheduleAmount> readTotalAmounts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        final ScheduleAmount amount = scheduleService.readTotalAmounts(principalDetails.getUser().getId());
+        return ResponseEntity.ok(amount);
     }
 
     @GetMapping("{scheduleId}")

@@ -7,17 +7,10 @@ import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.entity.Schedule;
-import com.damo.server.domain.schedule.entity.ScheduleTransaction;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
 
 
 @AllArgsConstructor
@@ -33,19 +26,20 @@ public class ScheduleService {
         scheduleRepository.save(Schedule.from(scheduleDto));
     }
 
+    public ScheduleAmount readTotalAmounts(final Long userId) {
+        return scheduleRepository.findTotalAmount(userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+    }
+
     public ScheduleDto readSchedule(final Long scheduleId) {
         // TODO: security로 userId 받으면 조회 시 조건문에 userId 추가
         return scheduleRepository.findOne(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
     }
 
-    public CustomSchedulePage readScheduleList(final SchedulePaginationParam schedulePaginationParam, final Long userId) {
-        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(schedulePaginationParam.toPageable(), userId, schedulePaginationParam.getStartedAt(), schedulePaginationParam.getEndedAt());
-//        List<ScheduleDto> scheduleDtos = transaction.equals(ScheduleTransaction.TOTAL) ?
-//                                         page.getContent() :
-//                                         transaction.equals(ScheduleTransaction.RECEIVING) ?
-//                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.RECEIVING)).toList() :
-//                                         page.getContent().stream().filter(dto -> dto.getTransaction().equals(ScheduleTransaction.GIVING)).toList();
-        return new CustomSchedulePage(page.getContent(), schedulePaginationParam.toPageable() , scheduleRepository.findTotalAmount(userId), null,null);
+    public CustomSchedulePage readScheduleList(final SchedulePaginationParam param, final Long userId) {
+        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getTransaction());
+        return param.getStartedAt() != null && param.getEndedAt() != null
+               ? new CustomSchedulePage(page, scheduleRepository.findTermTotalAmount(userId, param.getStartedAt(), param.getEndedAt()))
+               : new CustomSchedulePage(page);
     }
 
     @Transactional
