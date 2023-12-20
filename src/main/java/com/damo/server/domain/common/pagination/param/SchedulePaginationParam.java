@@ -22,9 +22,9 @@ public class SchedulePaginationParam extends AbstractPaginationParam {
     private final Integer size;
     @Parameter(required = true)
     private final ScheduleTransaction transaction;
-    @Parameter(example = "2023-12-09T:00:00:00", required = false)
+    @Parameter(example = "2023-12-09T:00:00:00", required = false, hidden = true)
     private final LocalDateTime startedAt;
-    @Parameter(example = "2023-12-10T:00:00:00", required = false)
+    @Parameter(example = "2023-12-10T:00:00:00", required = false, hidden = true)
     private final LocalDateTime endedAt;
 
     @Parameter(description = "대상 정렬은 TRANSACTION, EVENT_DATE만 사용 가능")
