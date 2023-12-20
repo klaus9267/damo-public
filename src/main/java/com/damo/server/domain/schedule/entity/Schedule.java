@@ -3,17 +3,14 @@ package com.damo.server.domain.schedule.entity;
 import com.damo.server.domain.person.Person;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -71,11 +68,11 @@ public class Schedule {
     }
 
     public void changeInfo(final RequestScheduleDto scheduleDto) {
-        this.setDate(scheduleDto.date() != null ? scheduleDto.date() : this.getDate());
-        this.setAmount(scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount());
-        this.setMemo(scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo());
-        this.setEvent(scheduleDto.event() != null ? scheduleDto.event() : this.getEvent());
-        this.setStatus(scheduleDto.status() != null ? scheduleDto.status() : this.getStatus());
-        this.setTransaction(scheduleDto.transaction() != null ? scheduleDto.transaction() : this.getTransaction());
+        this.date = scheduleDto.date() != null ? scheduleDto.date() : this.getDate();
+        this.amount = scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount();
+        this.memo = scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo();
+        this.event = scheduleDto.event() != null ? scheduleDto.event() : this.getEvent();
+        this.status = scheduleDto.status() != null ? scheduleDto.status() : this.getStatus();
+        this.transaction = scheduleDto.transaction() != null ? scheduleDto.transaction() : this.getTransaction();
     }
 }
