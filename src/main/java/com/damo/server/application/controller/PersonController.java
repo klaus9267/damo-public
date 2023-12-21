@@ -2,6 +2,7 @@ package com.damo.server.application.controller;
 
 import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.application.controller.operation.person.PersonOperationWithBody;
+import com.damo.server.application.controller.operation.person.PersonOperationWithNoBody;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
 import com.damo.server.domain.person.dto.PersonDto;
@@ -64,8 +65,7 @@ public class PersonController {
     }
 
 
-    @Operation(summary = "대상 제거", description = "대상 제거함")
-    @ApiResponse(responseCode = "204", description = "응답 없음")
+    @PersonOperationWithNoBody(summary = "대상 제거", description = "대상 제거함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{personId}")
     public void removePersonById(
