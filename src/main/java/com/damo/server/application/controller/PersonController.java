@@ -61,6 +61,7 @@ public class PersonController {
             @PathVariable("personId")
             final Long personId,
             @RequestBody
+            @io.swagger.v3.oas.annotations.parameters.RequestBody
             final RequestPersonDto personDto,
             @AuthenticationPrincipal
             final PrincipalDetails principalDetails
