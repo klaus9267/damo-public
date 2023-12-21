@@ -1,6 +1,7 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.application.config.oauth.PrincipalDetails;
+import com.damo.server.application.controller.operation.person.PersonOperationWithBody;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
 import com.damo.server.domain.person.dto.PersonDto;
@@ -32,39 +33,32 @@ public class PersonController {
     @ApiResponse(responseCode = "200", description = "페이지네이션 처리된 데이터 응답", content = @Content(schema = @Schema(implementation = Page.class)))
     @PageableAsQueryParam
     @GetMapping
-    public ResponseEntity<?> readPeopleByUserIdAndRelation(@ParameterObject @Valid final PersonPaginationParam paginationParam, @AuthenticationPrincipal final PrincipalDetails principalDetails
+    public ResponseEntity<?> readPeopleByUserIdAndRelation(
+            @ParameterObject @Valid final PersonPaginationParam paginationParam,
+            @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
         final Page<PeopleWithScheduleCountDto> people = personService.readPeopleByUserIdAndRelation(paginationParam, principalDetails.getUser().getId());
         return ResponseEntity.ok(people);
     }
 
-    @Operation(summary = "대상 추가", description = "대상을 추가함")
-    @ApiResponse(responseCode = "201", description = "대상을 추가함", content = @Content(schema = @Schema(implementation = PersonDto.class)))
+    @PersonOperationWithBody(summary = "대상 추가", description = "대상을 추가함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping
     public void addPerson(
-            @RequestBody
-            @Valid
-            final RequestPersonDto personDto,
-            @AuthenticationPrincipal
-            final PrincipalDetails principalDetails
+            @RequestBody @Valid final RequestPersonDto personDto,
+            @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
         personService.save(personDto, principalDetails.getUser().getId());
     }
 
 
-    @Operation(summary = "대상 수정", description = "대상을 수정함")
-    @ApiResponse(responseCode = "200", description = "성공적으로 수정함", content = @Content(schema = @Schema(implementation = PersonDto.class)))
+    @PersonOperationWithBody(summary = "대상 수정", description = "대상을 수정함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("{personId}")
     public void patchPersonById(
-            @PathVariable("personId")
-            final Long personId,
-            @RequestBody
-            @io.swagger.v3.oas.annotations.parameters.RequestBody
-            final RequestPersonDto personDto,
-            @AuthenticationPrincipal
-            final PrincipalDetails principalDetails
+            @PathVariable("personId") final Long personId,
+            @RequestBody final RequestPersonDto personDto,
+            @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
         personService.patchPersonById(personDto, personId, principalDetails.getUser().getId());
     }
@@ -75,10 +69,9 @@ public class PersonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{personId}")
     public void removePersonById(
-            @PathVariable("personId")
-            final Long personId,
-            @AuthenticationPrincipal
-            final PrincipalDetails principalDetails) {
+            @PathVariable("personId") final Long personId,
+            @AuthenticationPrincipal final PrincipalDetails principalDetails
+    ) {
         personService.removePersonById(personId, principalDetails.getUser().getId());
     }
 }
