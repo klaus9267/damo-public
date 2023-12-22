@@ -42,7 +42,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 ) 
            FROM Schedule s 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
-           WHERE p.user.id = :userId 
+           WHERE s.user.id = :userId 
            """)
     Optional<ScheduleAmount> findTotalAmount(final Long userId);
 
