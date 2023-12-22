@@ -8,20 +8,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
-    Boolean existsByDateAndEventAndPersonId(LocalDateTime date, String event, Long personId);
+    Boolean existsByEventDateAndEventAndPersonId(LocalDateTime eventDate, String event, Long personId);
+
+    Optional<Schedule> findByIdAndUserId(@Param("scheduleId") final Long scheduleId, @Param("userId") final Long userId);
 
     @Query("""
            SELECT new com.damo.server.domain.schedule.dto.ScheduleDto(s, p) 
            FROM Schedule s 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
            WHERE p.user.id = :userId 
-                AND (:startedAt IS NULL OR s.date >= :startedAt)
-                AND (:endedAt IS NULL OR s.date <= :endedAt)
+                AND (:startedAt IS NULL OR s.eventDate >= :startedAt)
+                AND (:endedAt IS NULL OR s.eventDate <= :endedAt)
                 AND ('TOTAL' = :transaction  OR s.transaction = :transaction)
            """)
     Page<ScheduleDto> findAllByUserId(
@@ -39,9 +42,9 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 ) 
            FROM Schedule s 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
-           WHERE p.user.id = :userId 
+           WHERE s.user.id = :userId 
            """)
-    Optional<ScheduleAmount> findTotalAmount(final Long userId);
+    ScheduleAmount findTotalAmount(@Param("userId") final Long userId);
 
     @Query("""
            SELECT new com.damo.server.domain.schedule.ScheduleAmount(
@@ -50,9 +53,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 ) 
            FROM Schedule s 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
-           WHERE p.user.id = :userId 
-                AND (:startedAt IS NULL OR s.date >= :startedAt)
-                AND (:endedAt IS NULL OR s.date <= :endedAt)
+           WHERE s.user.id = :userId AND s.eventDate >= :startedAt
            """)
-    ScheduleAmount findTermTotalAmount(final Long userId, final LocalDateTime startedAt, final LocalDateTime endedAt);
+    ScheduleAmount readRecentAmounts(@Param("userId") final Long userId, @Param("startedAt") final LocalDateTime startedAt);
 }
