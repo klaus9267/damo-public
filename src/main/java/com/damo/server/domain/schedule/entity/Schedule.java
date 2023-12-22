@@ -4,7 +4,10 @@ import com.damo.server.domain.person.Person;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.user.User;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 

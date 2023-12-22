@@ -2,7 +2,6 @@ package com.damo.server.domain.schedule;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
-import com.damo.server.domain.common.pagination.CustomSchedulePage;
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
@@ -29,11 +28,11 @@ public class ScheduleService {
     }
 
     public ScheduleAmount readTotalAmounts(final Long userId) {
-        return scheduleRepository.findTotalAmount(userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+        return scheduleRepository.findTotalAmount(userId);
     }
 
     public ScheduleAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
-        return scheduleRepository.findTotalAmount(userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+        return scheduleRepository.readRecentAmounts(userId, startedAt);
     }
 
     public ScheduleDto readSchedule(final Long scheduleId, final Long userId) {
@@ -41,11 +40,8 @@ public class ScheduleService {
         return ScheduleDto.from(schedule);
     }
 
-    public CustomSchedulePage readScheduleList(final SchedulePaginationParam param, final Long userId) {
-        Page<ScheduleDto> page = scheduleRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getTransaction());
-        return param.getStartedAt() != null && param.getEndedAt() != null
-               ? new CustomSchedulePage(page)
-               : new CustomSchedulePage(page, scheduleRepository.findTermTotalAmount(userId, param.getStartedAt(), param.getEndedAt()));
+    public Page<ScheduleDto> readScheduleList(final SchedulePaginationParam param, final Long userId) {
+        return scheduleRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getTransaction());
     }
 
     @Transactional
@@ -55,7 +51,7 @@ public class ScheduleService {
     }
 
     public void removeScheduleById(final Long scheduleId, final Long userId) {
-        final Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+        scheduleRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
         scheduleRepository.deleteById(scheduleId);
     }
 }

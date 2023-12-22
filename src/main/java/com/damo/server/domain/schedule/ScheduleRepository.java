@@ -44,7 +44,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
            WHERE s.user.id = :userId 
            """)
-    Optional<ScheduleAmount> findTotalAmount(final Long userId);
+    ScheduleAmount findTotalAmount(@Param("userId") final Long userId);
 
     @Query("""
            SELECT new com.damo.server.domain.schedule.ScheduleAmount(
@@ -53,9 +53,7 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 ) 
            FROM Schedule s 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
-           WHERE p.user.id = :userId 
-                AND (:startedAt IS NULL OR s.eventDate >= :startedAt)
-                AND (:endedAt IS NULL OR s.eventDate <= :endedAt)
+           WHERE s.user.id = :userId AND s.eventDate >= :startedAt
            """)
-    ScheduleAmount findTermTotalAmount(final Long userId, final LocalDateTime startedAt, final LocalDateTime endedAt);
+    ScheduleAmount readRecentAmounts(@Param("userId") final Long userId, @Param("startedAt") final LocalDateTime startedAt);
 }

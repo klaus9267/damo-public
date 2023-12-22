@@ -1,7 +1,6 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.application.config.oauth.PrincipalDetails;
-import com.damo.server.domain.common.pagination.CustomSchedulePage;
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.ScheduleAmount;
 import com.damo.server.domain.schedule.ScheduleService;
@@ -14,10 +13,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @RestController
@@ -44,6 +46,17 @@ public class ScheduleController {
         return ResponseEntity.ok(amount);
     }
 
+    @GetMapping("/term-amounts")
+    @Operation(summary = "최근 거래 총액 조회")
+    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    public ResponseEntity<ScheduleAmount> readRecentAmounts(
+            @RequestParam(value = "startedAt", defaultValue = "#{T(java.time.LocalDateTime).now().minusMonths(1)}") final LocalDateTime startedAt,
+            @AuthenticationPrincipal PrincipalDetails principalDetails
+    ) {
+        final ScheduleAmount amount = scheduleService.readRecentAmounts(principalDetails.getUser().getId(), startedAt);
+        return ResponseEntity.ok(amount);
+    }
+
     @GetMapping("{scheduleId}")
     @Operation(summary = "스케줄 단건 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
@@ -59,11 +72,11 @@ public class ScheduleController {
     @Operation(summary = "스케줄 타입별 목록 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
     @PageableAsQueryParam
-    public ResponseEntity<CustomSchedulePage> readScheduleList(
+    public ResponseEntity<Page<ScheduleDto>> readScheduleList(
             @Valid @Parameter(hidden = true) final SchedulePaginationParam paginationParam,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        final CustomSchedulePage schedule = scheduleService.readScheduleList(paginationParam, principalDetails.getUser().getId());
+        final Page<ScheduleDto> schedule = scheduleService.readScheduleList(paginationParam, principalDetails.getUser().getId());
         return ResponseEntity.ok(schedule);
     }
 
