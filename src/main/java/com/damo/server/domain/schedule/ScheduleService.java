@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 
 @AllArgsConstructor
 @Service
@@ -30,11 +32,12 @@ public class ScheduleService {
         return scheduleRepository.findTotalAmount(userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
     }
 
+    public ScheduleAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
+        return scheduleRepository.findTotalAmount(userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+    }
+
     public ScheduleDto readSchedule(final Long scheduleId, final Long userId) {
-        final Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
-        if (!schedule.getPerson().getUser().getId().equals(userId)) {
-            throw new BadRequestException("다른 사용자의 스케줄");
-        }
+        final Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
         return ScheduleDto.from(schedule);
     }
 
@@ -47,18 +50,12 @@ public class ScheduleService {
 
     @Transactional
     public void patchScheduleById(final RequestScheduleDto scheduleDto, final Long scheduleId, final Long userId) {
-        final Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
-        if (!schedule.getPerson().getUser().getId().equals(userId)) {
-            throw new BadRequestException("다른 사용자의 스케줄");
-        }
+        final Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
         schedule.changeInfo(scheduleDto);
     }
 
     public void removeScheduleById(final Long scheduleId, final Long userId) {
-        final Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
-        if (!schedule.getPerson().getUser().getId().equals(userId)) {
-            throw new BadRequestException("다른 사용자의 스케줄");
-        }
+        final Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
         scheduleRepository.deleteById(scheduleId);
     }
 }

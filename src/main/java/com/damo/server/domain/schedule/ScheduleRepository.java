@@ -8,12 +8,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Boolean existsByEventDateAndEventAndPersonId(LocalDateTime eventDate, String event, Long personId);
+
+    Optional<Schedule> findByIdAndUserId(@Param("scheduleId") final Long scheduleId, @Param("userId") final Long userId);
 
     @Query("""
            SELECT new com.damo.server.domain.schedule.dto.ScheduleDto(s, p) 
@@ -42,18 +45,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
            WHERE p.user.id = :userId 
            """)
     Optional<ScheduleAmount> findTotalAmount(final Long userId);
-
-//    @Query("""
-//           SELECT new com.damo.server.domain.schedule.ScheduleAmount(
-//                SUM(CASE WHEN s.transaction = com.damo.server.domain.schedule.entity.ScheduleTransaction.GIVING THEN s.amount ELSE 0 END),
-//                SUM(CASE WHEN s.transaction = com.damo.server.domain.schedule.entity.ScheduleTransaction.RECEIVING THEN s.amount ELSE 0 END)
-//                )
-//           FROM Schedule s
-//                LEFT JOIN FETCH  Person p ON s.person.id = p.id
-//                LEFT JOIN FETCH  User u ON s.person.id = p.id
-//           WHERE p.user.id = :userId
-//           """)
-//    Optional<ScheduleAmount> findByIdaUserId(final Long userId);
 
     @Query("""
            SELECT new com.damo.server.domain.schedule.ScheduleAmount(
