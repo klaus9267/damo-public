@@ -1,4 +1,4 @@
-package com.damo.server.domain.person;
+package com.damo.server.domain.person.entity;
 
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;

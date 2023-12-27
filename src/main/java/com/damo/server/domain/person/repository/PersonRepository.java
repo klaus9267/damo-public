@@ -1,6 +1,7 @@
-package com.damo.server.domain.person;
+package com.damo.server.domain.person.repository;
 
 import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
+import com.damo.server.domain.person.entity.Person;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

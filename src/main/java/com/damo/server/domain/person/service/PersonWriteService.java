@@ -1,19 +1,18 @@
-package com.damo.server.domain.person;
+package com.damo.server.domain.person.service;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
-import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
-import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
+import com.damo.server.domain.person.entity.Person;
+import com.damo.server.domain.person.repository.PersonRepository;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @AllArgsConstructor
 @Service
-public class PersonService {
+public class PersonWriteService {
     private final PersonRepository personRepository;
 
     @Transactional
@@ -24,10 +23,6 @@ public class PersonService {
         };
 
         personRepository.save(Person.toPersonFromRequest(personDto, userId));
-    }
-
-    public Page<PeopleWithScheduleCountDto> readPeopleByUserIdAndRelation(final PersonPaginationParam paginationParam, final Long userId) {
-        return personRepository.findAllPeopleWithScheduleCount(paginationParam.toPageable(), userId, paginationParam.getRelation());
     }
 
     @Transactional
