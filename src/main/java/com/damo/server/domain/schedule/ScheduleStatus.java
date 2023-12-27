@@ -1,4 +1,4 @@
-package com.damo.server.domain.transaction.entity;
+package com.damo.server.domain.schedule;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

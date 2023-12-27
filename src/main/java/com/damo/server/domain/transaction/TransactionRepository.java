@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    Boolean existsByEventDateAndEventAndPersonId(LocalDateTime eventDate, String event, Long personId);
+    Boolean existsByEventDateAndPersonId(LocalDateTime eventDate,  Long personId);
 
     Optional<Transaction> findByIdAndUserId(@Param("scheduleId") final Long scheduleId, @Param("userId") final Long userId);
 
@@ -35,7 +35,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                                         );
 
     @Query("""
-           SELECT new com.damo.server.domain.transaction.ScheduleAmount(
+           SELECT new com.damo.server.domain.transaction.TransactionAmount(
                 SUM(CASE WHEN s.transaction = com.damo.server.domain.transaction.entity.TransactionAction.GIVING THEN s.amount ELSE 0 END),
                 SUM(CASE WHEN s.transaction = com.damo.server.domain.transaction.entity.TransactionAction.RECEIVING THEN s.amount ELSE 0 END)
                 ) 
@@ -43,10 +43,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
            WHERE s.user.id = :userId 
            """)
-    ScheduleAmount findTotalAmount(@Param("userId") final Long userId);
+    TransactionAmount findTotalAmount(@Param("userId") final Long userId);
 
     @Query("""
-           SELECT new com.damo.server.domain.transaction.ScheduleAmount(
+           SELECT new com.damo.server.domain.transaction.TransactionAmount(
                 SUM(CASE WHEN s.transaction = com.damo.server.domain.transaction.entity.TransactionAction.GIVING THEN s.amount ELSE 0 END),
                 SUM(CASE WHEN s.transaction = com.damo.server.domain.transaction.entity.TransactionAction.RECEIVING THEN s.amount ELSE 0 END)
                 ) 
@@ -54,5 +54,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 LEFT JOIN FETCH  Person p ON s.person.id = p.id 
            WHERE s.user.id = :userId AND s.eventDate >= :startedAt
            """)
-    ScheduleAmount readRecentAmounts(@Param("userId") final Long userId, @Param("startedAt") final LocalDateTime startedAt);
+    TransactionAmount readRecentAmounts(@Param("userId") final Long userId, @Param("startedAt") final LocalDateTime startedAt);
 }

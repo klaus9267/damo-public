@@ -1,6 +1,7 @@
 package com.damo.server.domain.transaction.entity;
 
 import com.damo.server.domain.person.entity.Person;
+import com.damo.server.domain.schedule.Schedule;
 import com.damo.server.domain.transaction.dto.RequestTransactionDto;
 import com.damo.server.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -34,9 +35,6 @@ public class Transaction {
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-    @Column(nullable = false)
-    private String event; // TODO: schedule로 변경
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionAction transaction;
@@ -57,12 +55,14 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToOne
+    private Schedule schedule;
+
     private Transaction(final RequestTransactionDto scheduleDto, final Long userId) {
         this.person = Person.builder().id(scheduleDto.personId()).build();
         this.eventDate = scheduleDto.eventDate();
         this.amount = scheduleDto.amount();
         this.memo = scheduleDto.memo();
-        this.event = scheduleDto.event();
         this.transaction = scheduleDto.transaction();
         this.user = User.builder().id(userId).build();
     }
@@ -75,7 +75,6 @@ public class Transaction {
         this.eventDate = scheduleDto.eventDate() != null ? scheduleDto.eventDate() : this.getEventDate();
         this.amount = scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount();
         this.memo = scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo();
-        this.event = scheduleDto.event() != null ? scheduleDto.event() : this.getEvent();
         this.transaction = scheduleDto.transaction() != null ? scheduleDto.transaction() : this.getTransaction();
     }
 }

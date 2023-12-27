@@ -9,6 +9,5 @@ public record RequestTransactionDto(
         LocalDateTime eventDate,
         Integer amount,
         String memo,
-        String event,
         TransactionAction transaction
 ) {}

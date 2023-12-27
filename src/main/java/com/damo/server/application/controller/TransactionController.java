@@ -2,7 +2,7 @@ package com.damo.server.application.controller;
 
 import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
-import com.damo.server.domain.transaction.ScheduleAmount;
+import com.damo.server.domain.transaction.TransactionAmount;
 import com.damo.server.domain.transaction.TransactionService;
 import com.damo.server.domain.transaction.dto.RequestTransactionDto;
 import com.damo.server.domain.transaction.dto.TransactionDto;
@@ -41,19 +41,19 @@ public class TransactionController {
     @GetMapping("/total-amounts")
     @Operation(summary = "거래 총액 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
-    public ResponseEntity<ScheduleAmount> readTotalAmounts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        final ScheduleAmount amount = transactionService.readTotalAmounts(principalDetails.getUser().getId());
+    public ResponseEntity<TransactionAmount> readTotalAmounts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        final TransactionAmount amount = transactionService.readTotalAmounts(principalDetails.getUser().getId());
         return ResponseEntity.ok(amount);
     }
 
     @GetMapping("/term-amounts")
     @Operation(summary = "최근 거래 총액 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
-    public ResponseEntity<ScheduleAmount> readRecentAmounts(
+    public ResponseEntity<TransactionAmount> readRecentAmounts(
             @RequestParam(value = "startedAt", defaultValue = "#{T(java.time.LocalDateTime).now().minusMonths(1)}") final LocalDateTime startedAt,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        final ScheduleAmount amount = transactionService.readRecentAmounts(principalDetails.getUser().getId(), startedAt);
+        final TransactionAmount amount = transactionService.readRecentAmounts(principalDetails.getUser().getId(), startedAt);
         return ResponseEntity.ok(amount);
     }
 

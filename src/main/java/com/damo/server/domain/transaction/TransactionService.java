@@ -21,17 +21,17 @@ public class TransactionService {
 
     @Transactional
     public void save(final RequestTransactionDto scheduleDto, final Long userId) {
-        if (transactionRepository.existsByEventDateAndEventAndPersonId(scheduleDto.eventDate(), scheduleDto.event(), scheduleDto.personId())) {
+        if (transactionRepository.existsByEventDateAndPersonId(scheduleDto.eventDate(), scheduleDto.personId())) {
             throw new BadRequestException("스케줄 내에서 동일한 기록이 존재");
         }
         transactionRepository.save(Transaction.from(scheduleDto, userId));
     }
 
-    public ScheduleAmount readTotalAmounts(final Long userId) {
+    public TransactionAmount readTotalAmounts(final Long userId) {
         return transactionRepository.findTotalAmount(userId);
     }
 
-    public ScheduleAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
+    public TransactionAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
         return transactionRepository.readRecentAmounts(userId, startedAt);
     }
 
