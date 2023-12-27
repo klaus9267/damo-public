@@ -1,7 +1,7 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.application.config.oauth.PrincipalDetails;
-import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
+import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.ScheduleAmount;
 import com.damo.server.domain.transaction.TransactionService;
 import com.damo.server.domain.transaction.dto.RequestTransactionDto;
@@ -23,15 +23,15 @@ import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/schedules")
-@Tag(name = "SCHEDULE")
+@RequestMapping("/api/transactions")
+@Tag(name = "TRANSACTION")
 public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    @Operation(summary = "스케줄 생성", description = "응답 없음")
+    @Operation(summary = "내역 생성", description = "응답 없음")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addSchedule(
+    public void addTransaction(
             @RequestBody final RequestTransactionDto scheduleDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
@@ -57,47 +57,47 @@ public class TransactionController {
         return ResponseEntity.ok(amount);
     }
 
-    @GetMapping("{scheduleId}")
-    @Operation(summary = "스케줄 단건 조회")
+    @GetMapping("{transactionId}")
+    @Operation(summary = "내역 단건 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
-    public ResponseEntity<TransactionDto> readSchedule(
-            @PathVariable("scheduleId") final Long scheduleId,
+    public ResponseEntity<TransactionDto> readTransaction(
+            @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
-                                                      ) {
-        final TransactionDto schedule = transactionService.readSchedule(scheduleId, principalDetails.getUser().getId());
-        return ResponseEntity.ok(schedule);
+    ) {
+        final TransactionDto transactionDto = transactionService.readTransaction(transactionId, principalDetails.getUser().getId());
+        return ResponseEntity.ok(transactionDto);
     }
 
     @GetMapping
-    @Operation(summary = "스케줄 타입별 목록 조회")
+    @Operation(summary = "내역 종류별 목록 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
     @PageableAsQueryParam
     public ResponseEntity<Page<TransactionDto>> readScheduleList(
-            @Valid @Parameter(hidden = true) final SchedulePaginationParam paginationParam,
+            @Valid @Parameter(hidden = true) final TransactionPaginationParam paginationParam,
             @AuthenticationPrincipal PrincipalDetails principalDetails
-                                                                ) {
-        final Page<TransactionDto> schedule = transactionService.readScheduleList(paginationParam, principalDetails.getUser().getId());
-        return ResponseEntity.ok(schedule);
+    ) {
+        final Page<TransactionDto> transaction = transactionService.readTransactionList(paginationParam, principalDetails.getUser().getId());
+        return ResponseEntity.ok(transaction);
     }
 
-    @PatchMapping("{scheduleId}")
-    @Operation(summary = "스케줄 수정", description = "응답 없음")
+    @PatchMapping("{transactionId}")
+    @Operation(summary = "내역 수정", description = "응답 없음")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void patchScheduleById(
+    public void patchTransactionById(
             @RequestBody final RequestTransactionDto scheduleDto,
-            @PathVariable("scheduleId") final Long scheduleId,
+            @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        transactionService.patchScheduleById(scheduleDto, scheduleId, principalDetails.getUser().getId());
+        transactionService.patchTransactionById(scheduleDto, transactionId, principalDetails.getUser().getId());
     }
 
-    @DeleteMapping("{scheduleId}")
-    @Operation(summary = "스케줄 삭제", description = "응답 없음")
+    @DeleteMapping("{transactionId}")
+    @Operation(summary = "내역 삭제", description = "응답 없음")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeScheduleById(
-            @PathVariable("scheduleId") final Long scheduleId,
+    public void removeTransactionById(
+            @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        transactionService.removeScheduleById(scheduleId, principalDetails.getUser().getId());
+        transactionService.removeTransactionById(transactionId, principalDetails.getUser().getId());
     }
 }

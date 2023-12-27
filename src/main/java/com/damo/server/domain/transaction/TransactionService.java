@@ -2,7 +2,7 @@ package com.damo.server.domain.transaction;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
-import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
+import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.dto.RequestTransactionDto;
 import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
@@ -35,23 +35,23 @@ public class TransactionService {
         return transactionRepository.readRecentAmounts(userId, startedAt);
     }
 
-    public TransactionDto readSchedule(final Long scheduleId, final Long userId) {
-        final Transaction transaction = transactionRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+    public TransactionDto readTransaction(final Long transactionId, final Long userId) {
+        final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
         return TransactionDto.from(transaction);
     }
 
-    public Page<TransactionDto> readScheduleList(final SchedulePaginationParam param, final Long userId) {
+    public Page<TransactionDto> readTransactionList(final TransactionPaginationParam param, final Long userId) {
         return transactionRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getAction());
     }
 
     @Transactional
-    public void patchScheduleById(final RequestTransactionDto scheduleDto, final Long scheduleId, final Long userId) {
-        final Transaction transaction = transactionRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
+    public void patchTransactionById(final RequestTransactionDto scheduleDto, final Long transactionId, final Long userId) {
+        final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
         transaction.changeInfo(scheduleDto);
     }
 
-    public void removeScheduleById(final Long scheduleId, final Long userId) {
-        transactionRepository.findByIdAndUserId(scheduleId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
-        transactionRepository.deleteById(scheduleId);
+    public void removeTransactionById(final Long transactionId, final Long userId) {
+        transactionRepository.findByIdAndUserId(transactionId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
+        transactionRepository.deleteById(transactionId);
     }
 }

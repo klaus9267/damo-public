@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @ParameterObject
 @Getter
-public class SchedulePaginationParam extends AbstractPaginationParam {
+public class TransactionPaginationParam extends AbstractPaginationParam {
     @Parameter(example = "0", required = true)
     private final Integer page;
     @Parameter(example = "10", required = true)
@@ -28,10 +28,10 @@ public class SchedulePaginationParam extends AbstractPaginationParam {
     private final LocalDateTime endedAt;
 
     @Parameter(description = "대상 정렬은 TRANSACTION, EVENT_DATE만 사용 가능")
-    @PaginationValidation(sortGroup = PaginationSortGroup.SCHEDULE)
+    @PaginationValidation(sortGroup = PaginationSortGroup.TRANSACTION)
     private final PaginationSortType field = PaginationSortType.EVENT_DATE;
 
-    public SchedulePaginationParam(final Integer page, final Integer size, final TransactionAction action, final LocalDateTime startedAt, final LocalDateTime endedAt) {
+    public TransactionPaginationParam(final Integer page, final Integer size, final TransactionAction action, final LocalDateTime startedAt, final LocalDateTime endedAt) {
         this.page = Math.max(page, 0);
         this.size = Math.max(size, 10);
         this.action = action;
