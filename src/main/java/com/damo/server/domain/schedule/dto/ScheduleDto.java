@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class ScheduleDto {
     private final Long id;
     private final PersonDto person;
-    private final LocalDateTime date;
+    private final LocalDateTime eventDate;
     private final Integer amount;
     private final String memo;
     private final String event;
@@ -30,7 +30,7 @@ public class ScheduleDto {
     public ScheduleDto(final Schedule schedule, final Person person) {
         this.id = schedule.getId();
         this.person = PersonDto.toPersonDto(person);
-        this.date = schedule.getDate();
+        this.eventDate = schedule.getEventDate();
         this.amount = schedule.getAmount();
         this.memo = schedule.getMemo();
         this.event = schedule.getEvent();
@@ -40,16 +40,7 @@ public class ScheduleDto {
         this.updatedAt = schedule.getUpdatedAt();
     }
 
-    public ScheduleDto(final Schedule schedule) {
-        this.id = schedule.getId();
-        this.person = null;
-        this.date = schedule.getDate();
-        this.amount = schedule.getAmount();
-        this.memo = schedule.getMemo();
-        this.event = schedule.getEvent();
-        this.status = schedule.getStatus();
-        this.transaction = schedule.getTransaction();
-        this.createdAt = schedule.getCreatedAt();
-        this.updatedAt = schedule.getUpdatedAt();
+    public static ScheduleDto from(Schedule schedule) {
+        return new ScheduleDto(schedule, schedule.getPerson());
     }
 }

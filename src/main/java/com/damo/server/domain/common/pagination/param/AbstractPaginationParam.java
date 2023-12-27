@@ -5,8 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 public abstract class AbstractPaginationParam {
-    protected int size = 10;
-    protected int page = 0;
+    protected Integer page = 0;
+    protected Integer size = 10;
     private PaginationSortType field = PaginationSortType.EMPTY;
     protected Sort.Direction direction = Sort.Direction.DESC;
 
