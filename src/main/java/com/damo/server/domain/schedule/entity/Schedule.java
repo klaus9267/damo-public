@@ -2,7 +2,7 @@ package com.damo.server.domain.schedule.entity;
 
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.schedule.dto.RequestScheduleDto;
-import com.damo.server.domain.user.User;
+import com.damo.server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

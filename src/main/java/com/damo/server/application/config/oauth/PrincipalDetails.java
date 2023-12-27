@@ -1,6 +1,6 @@
 package com.damo.server.application.config.oauth;
 
-import com.damo.server.domain.user.UserDto;
+import com.damo.server.domain.user.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

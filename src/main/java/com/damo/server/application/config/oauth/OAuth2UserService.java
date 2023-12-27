@@ -1,9 +1,9 @@
 package com.damo.server.application.config.oauth;
 
 import com.damo.server.application.config.oauth.provider.OAuth2Provider;
-import com.damo.server.domain.user.User;
-import com.damo.server.domain.user.UserDto;
-import com.damo.server.domain.user.UserRepository;
+import com.damo.server.domain.user.entity.User;
+import com.damo.server.domain.user.dto.UserDto;
+import com.damo.server.domain.user.repository.UserRepository;
 import com.damo.server.domain.user.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
