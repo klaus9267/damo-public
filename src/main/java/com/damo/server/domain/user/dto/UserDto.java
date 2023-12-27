@@ -1,6 +1,8 @@
-package com.damo.server.domain.user;
+package com.damo.server.domain.user.dto;
 
 import com.damo.server.application.config.oauth.provider.ProviderType;
+import com.damo.server.domain.user.UserRole;
+import com.damo.server.domain.user.entity.User;
 import lombok.Getter;
 
 import java.sql.Timestamp;

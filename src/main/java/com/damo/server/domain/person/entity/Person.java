@@ -2,7 +2,7 @@ package com.damo.server.domain.person.entity;
 
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;
-import com.damo.server.domain.user.User;
+import com.damo.server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
