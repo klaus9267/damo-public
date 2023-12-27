@@ -1,6 +1,6 @@
 package com.damo.server.domain.schedule.dto;
 
-import com.damo.server.domain.person.Person;
+import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;

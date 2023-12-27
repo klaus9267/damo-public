@@ -1,7 +1,7 @@
 package com.damo.server.domain.user;
 
 import com.damo.server.application.config.oauth.provider.ProviderType;
-import com.damo.server.domain.person.Person;
+import com.damo.server.domain.person.entity.Person;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;

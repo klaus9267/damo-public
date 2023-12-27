@@ -1,7 +1,7 @@
 package com.damo.server.domain.user;
 
-import com.damo.server.domain.person.Person;
-import com.damo.server.domain.person.PersonRepository;
+import com.damo.server.domain.person.entity.Person;
+import com.damo.server.domain.person.repository.PersonRepository;
 import com.damo.server.domain.person.dto.PersonDto;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

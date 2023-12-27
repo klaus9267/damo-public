@@ -1,6 +1,6 @@
 package com.damo.server.domain.person.dto;
 
-import com.damo.server.domain.person.Person;
+import com.damo.server.domain.person.entity.Person;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

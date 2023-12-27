@@ -5,9 +5,10 @@ import com.damo.server.application.controller.operation.person.PersonOperationWi
 import com.damo.server.application.controller.operation.person.PersonOperationWithNoBody;
 import com.damo.server.application.controller.operation.person.PersonOperationWithPagination;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
+import com.damo.server.domain.person.service.PersonReadService;
 import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
-import com.damo.server.domain.person.PersonService;
+import com.damo.server.domain.person.service.PersonWriteService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/persons")
 public class PersonController {
-    private final PersonService personService;
+    private final PersonWriteService personWriteService;
+    private final PersonReadService personReadService;
 
     @PersonOperationWithPagination(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
     @GetMapping
@@ -31,7 +33,7 @@ public class PersonController {
             @ParameterObject @Valid final PersonPaginationParam paginationParam,
             @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
-        final Page<PeopleWithScheduleCountDto> people = personService.readPeopleByUserIdAndRelation(paginationParam, principalDetails.getUser().getId());
+        final Page<PeopleWithScheduleCountDto> people = personReadService.readPeopleByUserIdAndRelation(paginationParam, principalDetails.getUser().getId());
         return ResponseEntity.ok(people);
     }
 
@@ -42,7 +44,7 @@ public class PersonController {
             @RequestBody @Valid final RequestPersonDto personDto,
             @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
-        personService.save(personDto, principalDetails.getUser().getId());
+        personWriteService.save(personDto, principalDetails.getUser().getId());
     }
 
 
@@ -54,7 +56,7 @@ public class PersonController {
             @RequestBody final RequestPersonDto personDto,
             @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
-        personService.patchPersonById(personDto, personId, principalDetails.getUser().getId());
+        personWriteService.patchPersonById(personDto, personId, principalDetails.getUser().getId());
     }
 
 
@@ -65,6 +67,6 @@ public class PersonController {
             @PathVariable("personId") @Valid final Long personId,
             @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
-        personService.removePersonById(personId, principalDetails.getUser().getId());
+        personWriteService.removePersonById(personId, principalDetails.getUser().getId());
     }
 }
