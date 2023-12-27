@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public record RequestScheduleDto(
         Long personId,
-        LocalDateTime date,
+        LocalDateTime eventDate,
         Integer amount,
         String memo,
         String event,
