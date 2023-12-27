@@ -6,22 +6,22 @@ import lombok.Getter;
 import java.sql.Timestamp;
 
 @Getter
-public class PeopleWithScheduleCountDto {
+public class PeopleWithTransactionCountDto {
     private final Long id;
     private final String name;
     private final String contact;
     private final String relation;
     private final String memo;
     private final Timestamp createdAt;
-    private final Long scheduleCount;
+    private final Long transactionCount;
 
-    public PeopleWithScheduleCountDto(Person person, Long scheduleCount) {
+    public PeopleWithTransactionCountDto(Person person, Long transactionCount) {
         this.id = person.getId();
         this.name = person.getName();
         this.contact = person.getContact();
         this.relation = person.getRelation();
         this.memo = person.getMemo();
         this.createdAt = person.getCreatedAt();
-        this.scheduleCount = scheduleCount;
+        this.transactionCount = transactionCount;
     }
 }

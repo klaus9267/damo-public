@@ -1,4 +1,4 @@
-package com.damo.server.domain.schedule;
+package com.damo.server.domain.transaction;
 
 public record ScheduleAmount(
         Long totalGivingAmount,
