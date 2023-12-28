@@ -4,7 +4,7 @@ import com.damo.server.domain.transaction.entity.TransactionAction;
 
 import java.time.LocalDateTime;
 
-public record RequestTransactionDto(
+public record RequestCreateTransactionDto(
         Long personId,
         LocalDateTime eventDate,
         Integer amount,

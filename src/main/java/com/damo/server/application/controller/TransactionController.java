@@ -3,8 +3,9 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
+import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import com.damo.server.domain.transaction.service.TransactionReadService;
-import com.damo.server.domain.transaction.dto.RequestTransactionDto;
+import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.transaction.service.TransactionWriteService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +35,7 @@ public class TransactionController {
     @Operation(summary = "내역 생성", description = "응답 없음")
     @ResponseStatus(HttpStatus.CREATED)
     public void addTransaction(
-            @RequestBody final RequestTransactionDto scheduleDto,
+            @RequestBody final RequestCreateTransactionDto scheduleDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
         transactionWriteService.save(scheduleDto, principalDetails.getUser().getId());
@@ -86,7 +87,7 @@ public class TransactionController {
     @Operation(summary = "내역 수정", description = "응답 없음")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchTransactionById(
-            @RequestBody final RequestTransactionDto scheduleDto,
+            @RequestBody final RequestUpdateTransactionDto scheduleDto,
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {

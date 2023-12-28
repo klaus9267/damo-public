@@ -2,7 +2,8 @@ package com.damo.server.domain.transaction.entity;
 
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.schedule.Schedule;
-import com.damo.server.domain.transaction.dto.RequestTransactionDto;
+import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
+import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import com.damo.server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -59,7 +60,7 @@ public class Transaction {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    private Transaction(final RequestTransactionDto scheduleDto, final Long userId) {
+    private Transaction(final RequestCreateTransactionDto scheduleDto, final Long userId) {
         this.person = Person.builder().id(scheduleDto.personId()).build();
         this.eventDate = scheduleDto.eventDate();
         this.amount = scheduleDto.amount();
@@ -68,11 +69,11 @@ public class Transaction {
         this.user = User.builder().id(userId).build();
     }
 
-    public static Transaction from(final RequestTransactionDto scheduleDto, final Long userId) {
+    public static Transaction from(final RequestCreateTransactionDto scheduleDto, final Long userId) {
         return new Transaction(scheduleDto, userId);
     }
 
-    public void changeInfo(final RequestTransactionDto scheduleDto) {
+    public void changeInfo(final RequestUpdateTransactionDto scheduleDto) {
         this.eventDate = scheduleDto.eventDate() != null ? scheduleDto.eventDate() : this.getEventDate();
         this.amount = scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount();
         this.memo = scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo();
