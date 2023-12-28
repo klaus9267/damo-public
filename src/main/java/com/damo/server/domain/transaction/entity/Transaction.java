@@ -55,7 +55,8 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
     private Transaction(final RequestTransactionDto scheduleDto, final Long userId) {

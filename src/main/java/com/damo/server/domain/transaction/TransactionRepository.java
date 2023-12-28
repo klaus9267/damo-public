@@ -35,7 +35,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                                         );
 
     @Query("""
-           SELECT new com.damo.server.domain.transaction.TransactionAmount(
+           SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
                 SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.GIVING THEN t.amount ELSE 0 END),
                 SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.RECEIVING THEN t.amount ELSE 0 END)
                 ) 
@@ -43,10 +43,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 LEFT JOIN FETCH  Person p ON t.person.id = p.id 
            WHERE t.user.id = :userId 
            """)
-    TransactionAmount findTotalAmount(@Param("userId") final Long userId);
+    TransactionTotalAmount findTotalAmount(@Param("userId") final Long userId);
 
     @Query("""
-           SELECT new com.damo.server.domain.transaction.TransactionAmount(
+           SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
                 SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.GIVING THEN t.amount ELSE 0 END),
                 SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.RECEIVING THEN t.amount ELSE 0 END)
                 ) 
@@ -54,5 +54,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 LEFT JOIN FETCH  Person p ON t.person.id = p.id 
            WHERE t.user.id = :userId AND t.eventDate >= :startedAt
            """)
-    TransactionAmount readRecentAmounts(@Param("userId") final Long userId, @Param("startedAt") final LocalDateTime startedAt);
+    TransactionTotalAmount readRecentAmounts(@Param("userId") final Long userId, @Param("startedAt") final LocalDateTime startedAt);
 }
