@@ -3,9 +3,10 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionAmount;
-import com.damo.server.domain.transaction.TransactionService;
+import com.damo.server.domain.transaction.service.TransactionReadService;
 import com.damo.server.domain.transaction.dto.RequestTransactionDto;
 import com.damo.server.domain.transaction.dto.TransactionDto;
+import com.damo.server.domain.transaction.service.TransactionWriteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +27,8 @@ import java.time.LocalDateTime;
 @RequestMapping("/api/transactions")
 @Tag(name = "TRANSACTION")
 public class TransactionController {
-    private final TransactionService transactionService;
+    private final TransactionReadService transactionReadService;
+    private final TransactionWriteService transactionWriteService;
 
     @PostMapping
     @Operation(summary = "내역 생성", description = "응답 없음")
@@ -35,14 +37,14 @@ public class TransactionController {
             @RequestBody final RequestTransactionDto scheduleDto,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        transactionService.save(scheduleDto, principalDetails.getUser().getId());
+        transactionWriteService.save(scheduleDto, principalDetails.getUser().getId());
     }
 
     @GetMapping("/total-amounts")
     @Operation(summary = "거래 총액 조회")
     @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
     public ResponseEntity<TransactionAmount> readTotalAmounts(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        final TransactionAmount amount = transactionService.readTotalAmounts(principalDetails.getUser().getId());
+        final TransactionAmount amount = transactionReadService.readTotalAmounts(principalDetails.getUser().getId());
         return ResponseEntity.ok(amount);
     }
 
@@ -53,7 +55,7 @@ public class TransactionController {
             @RequestParam(value = "startedAt", defaultValue = "#{T(java.time.LocalDateTime).now().minusMonths(1)}") final LocalDateTime startedAt,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        final TransactionAmount amount = transactionService.readRecentAmounts(principalDetails.getUser().getId(), startedAt);
+        final TransactionAmount amount = transactionReadService.readRecentAmounts(principalDetails.getUser().getId(), startedAt);
         return ResponseEntity.ok(amount);
     }
 
@@ -64,7 +66,7 @@ public class TransactionController {
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        final TransactionDto transactionDto = transactionService.readTransaction(transactionId, principalDetails.getUser().getId());
+        final TransactionDto transactionDto = transactionReadService.readTransaction(transactionId, principalDetails.getUser().getId());
         return ResponseEntity.ok(transactionDto);
     }
 
@@ -76,7 +78,7 @@ public class TransactionController {
             @Valid @Parameter(hidden = true) final TransactionPaginationParam paginationParam,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        final Page<TransactionDto> transaction = transactionService.readTransactionList(paginationParam, principalDetails.getUser().getId());
+        final Page<TransactionDto> transaction = transactionReadService.readTransactionList(paginationParam, principalDetails.getUser().getId());
         return ResponseEntity.ok(transaction);
     }
 
@@ -88,7 +90,7 @@ public class TransactionController {
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        transactionService.patchTransactionById(scheduleDto, transactionId, principalDetails.getUser().getId());
+        transactionWriteService.patchTransactionById(scheduleDto, transactionId, principalDetails.getUser().getId());
     }
 
     @DeleteMapping("{transactionId}")
@@ -98,6 +100,6 @@ public class TransactionController {
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal PrincipalDetails principalDetails
     ) {
-        transactionService.removeTransactionById(transactionId, principalDetails.getUser().getId());
+        transactionWriteService.removeTransactionById(transactionId, principalDetails.getUser().getId());
     }
 }

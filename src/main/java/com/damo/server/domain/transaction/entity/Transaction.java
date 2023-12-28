@@ -37,7 +37,7 @@ public class Transaction {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TransactionAction transaction;
+    private TransactionAction action;
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -63,7 +63,7 @@ public class Transaction {
         this.eventDate = scheduleDto.eventDate();
         this.amount = scheduleDto.amount();
         this.memo = scheduleDto.memo();
-        this.transaction = scheduleDto.transaction();
+        this.action = scheduleDto.action();
         this.user = User.builder().id(userId).build();
     }
 
@@ -75,6 +75,6 @@ public class Transaction {
         this.eventDate = scheduleDto.eventDate() != null ? scheduleDto.eventDate() : this.getEventDate();
         this.amount = scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount();
         this.memo = scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo();
-        this.transaction = scheduleDto.transaction() != null ? scheduleDto.transaction() : this.getTransaction();
+        this.action = scheduleDto.action() != null ? scheduleDto.action() : this.action;
     }
 }
