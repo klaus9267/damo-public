@@ -6,7 +6,7 @@ import com.damo.server.application.controller.operation.person.PersonOperationWi
 import com.damo.server.application.controller.operation.person.PersonOperationWithPagination;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.service.PersonReadService;
-import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
+import com.damo.server.domain.person.dto.PeopleWithTransactionCountDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.person.service.PersonWriteService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,7 +33,7 @@ public class PersonController {
             @ParameterObject @Valid final PersonPaginationParam paginationParam,
             @AuthenticationPrincipal final PrincipalDetails principalDetails
     ) {
-        final Page<PeopleWithScheduleCountDto> people = personReadService.readPeopleByUserIdAndRelation(paginationParam, principalDetails.getUser().getId());
+        final Page<PeopleWithTransactionCountDto> people = personReadService.readPeopleByUserIdAndRelation(paginationParam, principalDetails.getUser().getId());
         return ResponseEntity.ok(people);
     }
 

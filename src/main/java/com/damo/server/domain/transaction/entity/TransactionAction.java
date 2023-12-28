@@ -1,11 +1,11 @@
-package com.damo.server.domain.schedule.entity;
+package com.damo.server.domain.transaction.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ScheduleTransaction {
+public enum TransactionAction {
     TOTAL("TOTAL","전체"),
     GIVING("GIVING", "준"),
     RECEIVING("RECEIVING", "받은");
