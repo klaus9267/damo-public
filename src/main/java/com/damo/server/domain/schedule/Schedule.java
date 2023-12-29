@@ -41,6 +41,6 @@ public class Schedule {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    @OneToOne
+    @OneToOne(mappedBy = "schedule")
     private Transaction transaction;
 }

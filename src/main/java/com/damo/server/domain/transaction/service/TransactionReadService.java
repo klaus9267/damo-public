@@ -2,7 +2,7 @@ package com.damo.server.domain.transaction.service;
 
 import com.damo.server.application.handler.exception.NotFoundException;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
-import com.damo.server.domain.transaction.TransactionAmount;
+import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
@@ -18,11 +18,11 @@ import java.time.LocalDateTime;
 public class TransactionReadService {
     private final TransactionRepository transactionRepository;
 
-    public TransactionAmount readTotalAmounts(final Long userId) {
+    public TransactionTotalAmount readTotalAmounts(final Long userId) {
         return transactionRepository.findTotalAmount(userId);
     }
 
-    public TransactionAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
+    public TransactionTotalAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
         return transactionRepository.readRecentAmounts(userId, startedAt);
     }
 

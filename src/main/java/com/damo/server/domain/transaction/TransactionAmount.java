@@ -1,10 +1,12 @@
 package com.damo.server.domain.transaction;
 
-public record TransactionAmount(
-        Long totalGivingAmount,
-        Long totalReceivingAmount) {
-    public TransactionAmount(final Long totalGivingAmount, final Long totalReceivingAmount) {
-        this.totalReceivingAmount = totalReceivingAmount != null ? totalReceivingAmount : 0;
-        this.totalGivingAmount = totalGivingAmount != null ? totalGivingAmount : 0;
-    }
+import com.damo.server.domain.transaction.entity.TransactionAction;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class TransactionAmount {
+    private final Long amount;
+    private final TransactionAction action;
 }
