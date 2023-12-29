@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Map;
 
@@ -28,7 +29,20 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         final OAuth2ProviderFactory providerFactory = new OAuth2ProviderFactory();
         final OAuth2Provider oAuth2Provider = providerFactory.getOAuth2Provider(userRequest.getClientRegistration().getRegistrationId(), attributes);
 
-        User user = userRepository.findOneByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId()).orElseGet(() -> userRepository.save(
+        validateEmail(oAuth2Provider.getEmail());
+        User user = registerUser(oAuth2Provider);
+
+        return new PrincipalDetails(UserDto.toUserDto(user), attributes);
+    }
+
+    private void validateEmail(String email) {
+        if (!StringUtils.hasText(email)) {
+            throw new RuntimeException("Email not found from OAuth2 provider");
+        }
+    }
+
+    private User registerUser(OAuth2Provider oAuth2Provider) {
+        return userRepository.findOneByProviderAndProviderId(oAuth2Provider.getProvider(), oAuth2Provider.getProviderId()).orElseGet(() -> userRepository.save(
                 User.builder()
                         .username(oAuth2Provider.getUsername())
                         .name(oAuth2Provider.getName())
@@ -38,7 +52,5 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
                         .providerId(oAuth2Provider.getProviderId())
                         .build())
         );
-
-        return new PrincipalDetails(UserDto.toUserDto(user), attributes);
     }
 }
