@@ -16,17 +16,17 @@ public class TransactionWriteService {
     private final TransactionRepository transactionRepository;
 
     @Transactional
-    public void save(final RequestCreateTransactionDto scheduleDto, final Long userId) {
-        if (transactionRepository.existsByEventDateAndPersonId(scheduleDto.eventDate(), scheduleDto.personId())) {
+    public void save(final RequestCreateTransactionDto transactionDto, final Long userId) {
+        if (transactionRepository.existsByEventDateAndPersonId(transactionDto.eventDate(), transactionDto.personId())) {
             throw new BadRequestException("스케줄 내에서 동일한 기록이 존재");
         }
-        transactionRepository.save(Transaction.from(scheduleDto, userId));
+        transactionRepository.save(Transaction.from(transactionDto, userId));
     }
 
     @Transactional
-    public void patchTransactionById(final RequestUpdateTransactionDto scheduleDto, final Long transactionId, final Long userId) {
+    public void patchTransactionById(final RequestUpdateTransactionDto transactionDto, final Long transactionId, final Long userId) {
         final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId).orElseThrow(() -> new NotFoundException("수정할 대상을 찾을 수 없음"));
-        transaction.changeInfo(scheduleDto);
+        transaction.changeInfo(transactionDto);
     }
 
     public void removeTransactionById(final Long transactionId, final Long userId) {

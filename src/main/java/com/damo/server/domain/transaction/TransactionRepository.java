@@ -13,18 +13,18 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    Boolean existsByEventDateAndPersonId(LocalDateTime eventDate,  Long personId);
+    Boolean existsByEventDateAndPersonId(LocalDateTime eventDate, Long personId);
 
     Optional<Transaction> findByIdAndUserId(@Param("scheduleId") final Long scheduleId, @Param("userId") final Long userId);
 
     @Query("""
-           SELECT new com.damo.server.domain.transaction.dto.TransactionDto(t, p) 
-           FROM Transaction t 
-                LEFT JOIN FETCH  Person p ON t.person.id = p.id 
-           WHERE p.user.id = :userId 
+           SELECT new com.damo.server.domain.transaction.dto.TransactionDto(t, p)
+           FROM Transaction t
+                LEFT JOIN FETCH  Person p ON t.person.id = p.id
+           WHERE p.user.id = :userId
                 AND (:startedAt IS NULL OR t.eventDate >= :startedAt)
                 AND (:endedAt IS NULL OR t.eventDate <= :endedAt)
-                AND ('TOTAL' = :action  OR t.action = :action)
+                AND ('TOTAL' = :action  OR t.amount.action = :action)
            """)
     Page<TransactionDto> findAllByUserId(
             final Pageable pageable,
@@ -32,26 +32,34 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             @Param("startedAt") final LocalDateTime startedAt,
             @Param("endedAt") final LocalDateTime endedAt,
             @Param("action") final TransactionAction action
-                                        );
+    );
 
     @Query("""
            SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
-                SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.GIVING THEN t.amount ELSE 0 END),
-                SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.RECEIVING THEN t.amount ELSE 0 END)
-                ) 
-           FROM Transaction t 
-                LEFT JOIN FETCH  Person p ON t.person.id = p.id 
-           WHERE t.user.id = :userId 
+                 new com.damo.server.domain.transaction.entity.TransactionAmount(
+                     SUM(CASE WHEN t.amount.action = 'GIVING' THEN t.amount.amount ELSE 0 END), 'GIVING'
+                 ),
+                 new com.damo.server.domain.transaction.entity.TransactionAmount(
+                     SUM(CASE WHEN t.amount.action = 'RECEIVING' THEN t.amount.amount ELSE 0 END), 'RECEIVING'
+                 )
+           )
+           FROM Transaction t
+                LEFT JOIN FETCH  Person p ON t.person.id = p.id
+           WHERE t.user.id = :userId
            """)
     TransactionTotalAmount findTotalAmount(@Param("userId") final Long userId);
 
     @Query("""
            SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
-                SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.GIVING THEN t.amount ELSE 0 END),
-                SUM(CASE WHEN t.action = com.damo.server.domain.transaction.entity.TransactionAction.RECEIVING THEN t.amount ELSE 0 END)
-                ) 
-           FROM Transaction t 
-                LEFT JOIN FETCH  Person p ON t.person.id = p.id 
+                 new com.damo.server.domain.transaction.entity.TransactionAmount(
+                     SUM(CASE WHEN t.amount.action = 'GIVING' THEN t.amount.amount ELSE 0 END), 'GIVING'
+                 ),
+                 new com.damo.server.domain.transaction.entity.TransactionAmount(
+                     SUM(CASE WHEN t.amount.action = 'RECEIVING' THEN t.amount.amount ELSE 0 END), 'RECEIVING'
+                 )
+           )
+           FROM Transaction t
+                LEFT JOIN FETCH  Person p ON t.person.id = p.id
            WHERE t.user.id = :userId AND t.eventDate >= :startedAt
            """)
     TransactionTotalAmount readRecentAmounts(@Param("userId") final Long userId, @Param("startedAt") final LocalDateTime startedAt);

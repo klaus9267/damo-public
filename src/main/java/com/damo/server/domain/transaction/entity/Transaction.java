@@ -30,15 +30,12 @@ public class Transaction {
     @Column(nullable = false)
     private LocalDateTime eventDate;
 
-    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
-    private Integer amount; // Money
+    @Embedded
+    private TransactionAmount amount;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TransactionAction action;
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -65,7 +62,6 @@ public class Transaction {
         this.eventDate = scheduleDto.eventDate();
         this.amount = scheduleDto.amount();
         this.memo = scheduleDto.memo();
-        this.action = scheduleDto.action();
         this.user = User.builder().id(userId).build();
     }
 
@@ -77,6 +73,5 @@ public class Transaction {
         this.eventDate = scheduleDto.eventDate() != null ? scheduleDto.eventDate() : this.getEventDate();
         this.amount = scheduleDto.amount() != null ? scheduleDto.amount() : this.getAmount();
         this.memo = scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo();
-        this.action = scheduleDto.action() != null ? scheduleDto.action() : this.action;
     }
 }

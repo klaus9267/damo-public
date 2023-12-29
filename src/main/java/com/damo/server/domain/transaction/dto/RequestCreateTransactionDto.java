@@ -1,13 +1,12 @@
 package com.damo.server.domain.transaction.dto;
 
-import com.damo.server.domain.transaction.entity.TransactionAction;
+import com.damo.server.domain.transaction.entity.TransactionAmount;
 
 import java.time.LocalDateTime;
 
 public record RequestCreateTransactionDto(
         Long personId,
         LocalDateTime eventDate,
-        Integer amount,
-        String memo,
-        TransactionAction action
+        TransactionAmount amount,
+        String memo
 ) {}
