@@ -18,7 +18,7 @@ public class TransactionDto {
     private final Long id;
     private final PersonDto person;
     private final LocalDateTime eventDate;
-    private final TransactionAmount amount;
+    private final TransactionAmount transaction;
     private final String memo;
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
@@ -27,7 +27,7 @@ public class TransactionDto {
         this.id = transaction.getId();
         this.person = PersonDto.toPersonDto(person);
         this.eventDate = transaction.getEventDate();
-        this.amount = transaction.getAmount();
+        this.transaction = transaction.getTransaction();
         this.memo = transaction.getMemo();
         this.createdAt = transaction.getCreatedAt();
         this.updatedAt = transaction.getUpdatedAt();

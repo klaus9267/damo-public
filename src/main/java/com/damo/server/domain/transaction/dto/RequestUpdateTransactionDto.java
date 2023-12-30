@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 public record RequestUpdateTransactionDto(
         Long personId,
         LocalDateTime eventDate,
-        TransactionAmount amount,
+        TransactionAmount transaction,
         String memo
 ) {
 }

@@ -7,6 +7,6 @@ import java.time.LocalDateTime;
 public record RequestCreateTransactionDto(
         Long personId,
         LocalDateTime eventDate,
-        TransactionAmount amount,
+        TransactionAmount transaction,
         String memo
 ) {}
