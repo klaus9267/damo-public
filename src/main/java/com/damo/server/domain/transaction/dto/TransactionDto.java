@@ -3,7 +3,7 @@ package com.damo.server.domain.transaction.dto;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.transaction.entity.Transaction;
-import com.damo.server.domain.transaction.entity.TransactionAction;
+import com.damo.server.domain.transaction.entity.TransactionAmount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,9 +18,8 @@ public class TransactionDto {
     private final Long id;
     private final PersonDto person;
     private final LocalDateTime eventDate;
-    private final Integer amount;
+    private final TransactionAmount transaction;
     private final String memo;
-    private final TransactionAction action;
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
 
@@ -28,9 +27,8 @@ public class TransactionDto {
         this.id = transaction.getId();
         this.person = PersonDto.toPersonDto(person);
         this.eventDate = transaction.getEventDate();
-        this.amount = transaction.getAmount();
+        this.transaction = transaction.getTransaction();
         this.memo = transaction.getMemo();
-        this.action = transaction.getAction();
         this.createdAt = transaction.getCreatedAt();
         this.updatedAt = transaction.getUpdatedAt();
     }
