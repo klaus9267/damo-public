@@ -10,16 +10,14 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor(force = true)
 public class TransactionAmount {
+    private static final Long DEFAULT_AMOUNT = 0L;
+
     @Enumerated(EnumType.STRING)
     private final TransactionAction action;
     private final Long amount;
 
     public TransactionAmount(Long amount, String action) {
-        this.amount = amount;
+        this.amount = amount == null ? DEFAULT_AMOUNT : amount;
         this.action = TransactionAction.valueOf(action);
-    }
-
-    public Long getAmount() {
-        return this.amount != null ? amount : 0;
     }
 }
