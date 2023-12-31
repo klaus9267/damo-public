@@ -1,43 +1,53 @@
 package com.damo.server.application.config;
 
+import com.damo.server.application.config.oauth.jwt.JwtTokenFilter;
+import com.damo.server.application.config.oauth.OAuth2SuccessHandler;
 import com.damo.server.application.config.oauth.OAuth2UserService;
+import com.damo.server.application.config.oauth.jwt.JwtTokenService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
     private final OAuth2UserService oAuth2UserService;
-
-    public SecurityConfig(OAuth2UserService oAuth2UserService) {
-        this.oAuth2UserService = oAuth2UserService;
-    }
+    private final OAuth2SuccessHandler successHandler;
+    private final JwtTokenService jwtTokenService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.csrf(CsrfConfigurer::disable)
+        return http
+                .csrf(CsrfConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 쿠키 대신 토큰 사용
+                )
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/v3/**", "/swagger-ui/**", "/oauth/token/**").permitAll() // swagger 허용
                         .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers("/v3/**", "/swagger-ui/**") // swagger 허용
-                        .permitAll()
                 )
                 .logout(logout -> logout.logoutUrl("/api/logout") // 로그아웃
                         // .logoutSuccessUrl("/loginForm")  // TODO: 프론트 로그인 페이지 설정
                         .invalidateHttpSession(true)  // HTTP 세션 무효화 여부
                         .deleteCookies("JSESSIONID")  // 로그아웃 시 삭제할 쿠키 이름
                 )
-                .oauth2Login(oauth2 -> oauth2.userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService))
-                        .defaultSuccessUrl("/oauth") // TODO: 프론트 루트 경로로 이동
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(successHandler)
+                        .userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService))
+//                        .defaultSuccessUrl("/oauth") // TODO: 프론트 루트 경로로 이동
                 )
-                .httpBasic(withDefaults())
+                .addFilterBefore(new JwtTokenFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

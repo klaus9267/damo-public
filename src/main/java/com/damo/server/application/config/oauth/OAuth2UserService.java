@@ -32,7 +32,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         validateEmail(oAuth2Provider.getEmail());
         User user = registerUser(oAuth2Provider);
 
-        return new PrincipalDetails(UserDto.toUserDto(user), attributes);
+        return new PrincipalDetails(UserDto.from(user), attributes);
     }
 
     private void validateEmail(String email) {
