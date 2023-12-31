@@ -30,6 +30,8 @@ public class SecurityConfig {
         return http
                 .csrf(CsrfConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 쿠키 대신 토큰 사용
                 )
@@ -37,15 +39,9 @@ public class SecurityConfig {
                         .requestMatchers("/v3/**", "/swagger-ui/**", "/oauth/token/**").permitAll() // swagger 허용
                         .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
                 )
-                .logout(logout -> logout.logoutUrl("/api/logout") // 로그아웃
-                        // .logoutSuccessUrl("/loginForm")  // TODO: 프론트 로그인 페이지 설정
-                        .invalidateHttpSession(true)  // HTTP 세션 무효화 여부
-                        .deleteCookies("JSESSIONID")  // 로그아웃 시 삭제할 쿠키 이름
-                )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(successHandler)
                         .userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService))
-//                        .defaultSuccessUrl("/oauth") // TODO: 프론트 루트 경로로 이동
                 )
                 .addFilterBefore(new JwtTokenFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
                 .build();

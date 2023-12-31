@@ -44,4 +44,6 @@ public class OAuthController {
         response.addHeader(JwtHeader.AUTHORIZATION_REFRESH.getKey(), newJwtToken.refreshToken());
         response.setContentType(JwtHeader.CONTENT_TYPE.getKey());
     }
+
+    // TODO: 로그아웃, 회원탈퇴 구현해야 함
 }
