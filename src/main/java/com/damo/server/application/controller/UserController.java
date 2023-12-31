@@ -1,8 +1,7 @@
 package com.damo.server.application.controller;
 
-
-import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.domain.person.dto.PersonDto;
+import com.damo.server.domain.user.dto.UserDto;
 import com.damo.server.domain.user.service.UserReadService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,8 +23,8 @@ public class UserController {
 
     @ApiResponse(responseCode = "200", description = "유저가 등록한 대상 목록 조회", useReturnTypeSchema = true)
     @GetMapping("me/persons")
-    public ResponseEntity<List<PersonDto>> readPersonsByUserId(@AuthenticationPrincipal final PrincipalDetails principalDetails) {
-        List<PersonDto> people = userReadService.readPersonsByUserId(principalDetails.getUser().getId());
+    public ResponseEntity<List<PersonDto>> readPersonsByUserId(@AuthenticationPrincipal final UserDto user) {
+        final List<PersonDto> people = userReadService.readPersonsByUserId(user.getId());
         return ResponseEntity.ok(people);
     }
 }
