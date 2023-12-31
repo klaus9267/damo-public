@@ -31,7 +31,11 @@ public class OAuthController {
     @GetMapping("token/expired")
     public boolean checkExpiredToken(final HttpServletRequest request) {
         final String authorization = request.getHeader(JwtHeader.AUTHORIZATION.getKey());
-        return jwtTokenService.hasBearerToken(authorization);
+        if(!jwtTokenService.hasBearerToken(authorization)) {
+            throw new UnauthorizedException("잘못된 토큰 정보");
+        }
+        final String token = jwtTokenService.extractBearerToken(authorization);
+        return jwtTokenService.verifyToken(token);
     }
 
     @GetMapping("token/refresh")
