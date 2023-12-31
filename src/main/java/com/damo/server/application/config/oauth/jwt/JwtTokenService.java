@@ -73,6 +73,14 @@ public class JwtTokenService {
         return new UserDto(id, email, role);
     }
 
+    public boolean hasBearerToken(final String authorization) {
+        return authorization != null && authorization.contains("Bearer");
+    }
+
+    public String extractBearerToken(final String bearerToken) {
+        return bearerToken.split(" ")[1];
+    }
+
     private String buildToken(final Claims claims, final Long expiredTime) {
         final Date now = new Date();
 

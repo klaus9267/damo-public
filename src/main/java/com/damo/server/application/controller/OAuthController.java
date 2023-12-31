@@ -3,13 +3,11 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.oauth.jwt.JwtHeader;
 import com.damo.server.application.config.oauth.jwt.JwtToken;
 import com.damo.server.application.config.oauth.jwt.JwtTokenService;
-import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.UnauthorizedException;
 import com.damo.server.domain.user.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,21 +29,20 @@ public class OAuthController {
     }
 
     @GetMapping("token/expired")
-    public void checkExpiredToken() {
-        throw new UnauthorizedException("토큰 만료");
+    public boolean checkExpiredToken(final HttpServletRequest request) {
+        final String authorization = request.getHeader(JwtHeader.AUTHORIZATION.getKey());
+        return jwtTokenService.hasBearerToken(authorization);
     }
 
     @GetMapping("token/refresh")
     public void refreshToken(final HttpServletRequest request, final HttpServletResponse response) {
-        final String token = request.getHeader(JwtHeader.AUTHORIZATION_REFRESH.getKey());
+        final String authorization = request.getHeader(JwtHeader.AUTHORIZATION.getKey());
 
-        if (StringUtils.isEmpty(token)) {
-            throw new BadRequestException("잘못된 토큰 데이터");
-        }
-        if (!jwtTokenService.verifyToken(token)) {
-            throw new UnauthorizedException("만료 혹은 위조된 토큰 데이터");
+        if(!jwtTokenService.hasBearerToken(authorization)) {
+            throw new UnauthorizedException("잘못된 토큰 정보");
         }
 
+        final String token = jwtTokenService.extractBearerToken(authorization);
         final UserDto user = jwtTokenService.getUserFromToken(token);
         final JwtToken newJwtToken = jwtTokenService.generateToken(user);
 
