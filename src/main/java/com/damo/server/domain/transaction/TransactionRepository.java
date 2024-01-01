@@ -24,7 +24,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
            WHERE p.user.id = :userId
                 AND (:startedAt IS NULL OR t.eventDate >= :startedAt)
                 AND (:endedAt IS NULL OR t.eventDate <= :endedAt)
-                AND ('TOTAL' = :action  OR t.amount.action = :action)
+                AND ('TOTAL' = :action  OR t.transaction.action = :action)
            """)
     Page<TransactionDto> findAllByUserId(
             final Pageable pageable,
@@ -37,10 +37,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("""
            SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
                  new com.damo.server.domain.transaction.entity.TransactionAmount(
-                     SUM(CASE WHEN t.amount.action = 'GIVING' THEN t.amount.amount ELSE 0 END), 'GIVING'
+                     SUM(CASE WHEN t.transaction.action = 'GIVING' THEN t.transaction.amount ELSE 0 END), 'GIVING'
                  ),
                  new com.damo.server.domain.transaction.entity.TransactionAmount(
-                     SUM(CASE WHEN t.amount.action = 'RECEIVING' THEN t.amount.amount ELSE 0 END), 'RECEIVING'
+                     SUM(CASE WHEN t.transaction.action = 'RECEIVING' THEN t.transaction.amount ELSE 0 END), 'RECEIVING'
                  )
            )
            FROM Transaction t
@@ -52,10 +52,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("""
            SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
                  new com.damo.server.domain.transaction.entity.TransactionAmount(
-                     SUM(CASE WHEN t.amount.action = 'GIVING' THEN t.amount.amount ELSE 0 END), 'GIVING'
+                     SUM(CASE WHEN t.transaction.action = 'GIVING' THEN t.transaction.amount ELSE 0 END), 'GIVING'
                  ),
                  new com.damo.server.domain.transaction.entity.TransactionAmount(
-                     SUM(CASE WHEN t.amount.action = 'RECEIVING' THEN t.amount.amount ELSE 0 END), 'RECEIVING'
+                     SUM(CASE WHEN t.transaction.action = 'RECEIVING' THEN t.transaction.amount ELSE 0 END), 'RECEIVING'
                  )
            )
            FROM Transaction t
