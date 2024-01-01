@@ -4,8 +4,8 @@ import com.damo.server.application.controller.operation.person.PersonOperationWi
 import com.damo.server.application.controller.operation.person.PersonOperationWithNoBody;
 import com.damo.server.application.controller.operation.person.PersonOperationWithPagination;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
+import com.damo.server.domain.person.dto.PeoplePaginationResponseDto;
 import com.damo.server.domain.person.service.PersonReadService;
-import com.damo.server.domain.person.dto.PeopleWithTransactionCountDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.person.service.PersonWriteService;
 import com.damo.server.domain.user.dto.UserDto;
@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,8 +32,9 @@ public class PersonController {
             @ParameterObject @Valid final PersonPaginationParam paginationParam,
             @AuthenticationPrincipal final UserDto user
     ) {
-        final Page<PeopleWithTransactionCountDto> people = personReadService.readPeopleByUserIdAndRelation(paginationParam, user.getId());
-        return ResponseEntity.ok(people);
+        final PeoplePaginationResponseDto peoplePagination = personReadService.readPeopleByUserIdAndRelation(paginationParam, user.getId());
+
+        return ResponseEntity.ok(peoplePagination);
     }
 
     @PersonOperationWithBody(summary = "대상 추가", description = "대상을 추가함")
