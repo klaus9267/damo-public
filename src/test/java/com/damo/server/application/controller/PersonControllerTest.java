@@ -1,7 +1,6 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.handler.exception.BadRequestException;
-import com.damo.server.domain.person.PersonService;
+import com.damo.server.domain.person.service.PersonWriteService;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -35,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class PersonControllerTest {
     @MockBean
-    PersonService personService;
+    PersonWriteService personWriteService;
 
     @Autowired
     MockMvc mvc;
@@ -54,7 +53,7 @@ public class PersonControllerTest {
         @Test
         void 대상_생성() throws Exception {
             PersonDto personDto = new PersonDto(1L, "테스트 이름", "가족", "테스트 메모", now, now);
-            given(personService.save(any())).willReturn(personDto);
+            given(personWriteService.save(any())).willReturn(personDto);
 
             RequestPersonDto requestPersonDto = new RequestPersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), personDto.getId());
             ObjectMapper mapper = new ObjectMapper()
@@ -76,7 +75,7 @@ public class PersonControllerTest {
         @Test
         void 대상_수정() throws Exception {
             PersonDto personDto = new PersonDto(1L, "테스트 이름", "가족", "테스트 메모", now, now);
-            given(personService.patchPersonById(any(), any(Long.class))).willReturn(personDto);
+            given(personWriteService.patchPersonById(any(), any(Long.class))).willReturn(personDto);
 
             RequestPersonDto requestPersonDto = new RequestPersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), 1L);
             ObjectMapper mapper = new ObjectMapper()

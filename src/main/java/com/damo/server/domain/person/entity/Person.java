@@ -1,8 +1,8 @@
-package com.damo.server.domain.person;
+package com.damo.server.domain.person.entity;
 
 import com.damo.server.domain.person.dto.RequestPersonDto;
-import com.damo.server.domain.schedule.entity.Schedule;
-import com.damo.server.domain.user.User;
+import com.damo.server.domain.transaction.entity.Transaction;
+import com.damo.server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -44,7 +44,7 @@ public class Person {
     private Timestamp updatedAt;
 
     @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
-    private final List<Schedule> schedules = new ArrayList<>();
+    private final List<Transaction> transactions = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

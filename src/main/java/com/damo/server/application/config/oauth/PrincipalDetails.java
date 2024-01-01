@@ -1,15 +1,13 @@
 package com.damo.server.application.config.oauth;
 
-import com.damo.server.domain.user.UserDto;
+import com.damo.server.domain.user.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 @Data
 @AllArgsConstructor

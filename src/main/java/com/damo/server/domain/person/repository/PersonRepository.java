@@ -1,6 +1,7 @@
-package com.damo.server.domain.person;
+package com.damo.server.domain.person.repository;
 
-import com.damo.server.domain.person.dto.PeopleWithScheduleCountDto;
+import com.damo.server.domain.person.dto.PeopleWithTransactionCountDto;
+import com.damo.server.domain.person.entity.Person;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,14 +16,14 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Query(
         """
-        SELECT new com.damo.server.domain.person.dto.PeopleWithScheduleCountDto(p, COUNT(s)) 
+        SELECT new com.damo.server.domain.person.dto.PeopleWithTransactionCountDto(p, COUNT(t)) 
         FROM Person p 
-        LEFT JOIN p.schedules s 
+        LEFT JOIN p.transactions t
         WHERE p.user.id = :userId AND (:relation IS NULL OR p.relation = :relation) 
         GROUP BY p.id
         """
     )
-    Page<PeopleWithScheduleCountDto> findAllPeopleWithScheduleCount(final Pageable pageable, @Param("userId") final Long userId, @Param("relation") final String relation);
+    Page<PeopleWithTransactionCountDto> findAllPeopleWithTransactionCount(final Pageable pageable, @Param("userId") final Long userId, @Param("relation") final String relation);
 
     Optional<Person> findByIdAndUserId(final Long personId, final Long userId);
 
