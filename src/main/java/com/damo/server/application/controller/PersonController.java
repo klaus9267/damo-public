@@ -1,6 +1,5 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.application.controller.operation.person.PersonOperationWithBody;
 import com.damo.server.application.controller.operation.person.PersonOperationWithNoBody;
 import com.damo.server.application.controller.operation.person.PersonOperationWithPagination;
@@ -9,6 +8,7 @@ import com.damo.server.domain.person.service.PersonReadService;
 import com.damo.server.domain.person.dto.PeopleWithTransactionCountDto;
 import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.person.service.PersonWriteService;
+import com.damo.server.domain.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -31,9 +31,9 @@ public class PersonController {
     @GetMapping
     public ResponseEntity<?> readPeopleByUserIdAndRelation(
             @ParameterObject @Valid final PersonPaginationParam paginationParam,
-            @AuthenticationPrincipal final PrincipalDetails principalDetails
+            @AuthenticationPrincipal final UserDto user
     ) {
-        final Page<PeopleWithTransactionCountDto> people = personReadService.readPeopleByUserIdAndRelation(paginationParam, principalDetails.getUser().getId());
+        final Page<PeopleWithTransactionCountDto> people = personReadService.readPeopleByUserIdAndRelation(paginationParam, user.getId());
         return ResponseEntity.ok(people);
     }
 
@@ -42,9 +42,9 @@ public class PersonController {
     @PostMapping
     public void addPerson(
             @RequestBody @Valid final RequestPersonDto personDto,
-            @AuthenticationPrincipal final PrincipalDetails principalDetails
+            @AuthenticationPrincipal final UserDto user
     ) {
-        personWriteService.save(personDto, principalDetails.getUser().getId());
+        personWriteService.save(personDto, user.getId());
     }
 
 
@@ -54,9 +54,9 @@ public class PersonController {
     public void patchPersonById(
             @PathVariable("personId") @Valid final Long personId,
             @RequestBody final RequestPersonDto personDto,
-            @AuthenticationPrincipal final PrincipalDetails principalDetails
+            @AuthenticationPrincipal final UserDto user
     ) {
-        personWriteService.patchPersonById(personDto, personId, principalDetails.getUser().getId());
+        personWriteService.patchPersonById(personDto, personId, user.getId());
     }
 
 
@@ -65,8 +65,8 @@ public class PersonController {
     @DeleteMapping("{personId}")
     public void removePersonById(
             @PathVariable("personId") @Valid final Long personId,
-            @AuthenticationPrincipal final PrincipalDetails principalDetails
+            @AuthenticationPrincipal final UserDto user
     ) {
-        personWriteService.removePersonById(personId, principalDetails.getUser().getId());
+        personWriteService.removePersonById(personId, user.getId());
     }
 }
