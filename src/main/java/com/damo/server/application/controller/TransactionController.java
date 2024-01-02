@@ -33,7 +33,7 @@ public class TransactionController {
     @PostMapping
     @TransactionOperationWithBody(summary = "내역 추가")
     public void addTransaction(
-            @RequestBody final RequestCreateTransactionDto scheduleDto,
+            @Valid @RequestBody final RequestCreateTransactionDto scheduleDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         transactionWriteService.save(scheduleDto, user.getId());
