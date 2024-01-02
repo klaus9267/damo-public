@@ -1,6 +1,8 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.config.oauth.PrincipalDetails;
+import com.damo.server.application.controller.operation.transaction.TransactionOperationWithBody;
+import com.damo.server.application.controller.operation.transaction.TransactionOperationWithNoBody;
+import com.damo.server.application.controller.operation.transaction.TransactionOperationWithPagination;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
@@ -9,15 +11,11 @@ import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.transaction.service.TransactionReadService;
 import com.damo.server.domain.transaction.service.TransactionWriteService;
 import com.damo.server.domain.user.dto.UserDto;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +31,7 @@ public class TransactionController {
     private final TransactionWriteService transactionWriteService;
 
     @PostMapping
-    @Operation(summary = "내역 생성", description = "응답 없음")
-    @ResponseStatus(HttpStatus.CREATED)
+    @TransactionOperationWithBody(summary = "내역 추가")
     public void addTransaction(
             @RequestBody final RequestCreateTransactionDto scheduleDto,
             @AuthenticationPrincipal final UserDto user
@@ -43,16 +40,14 @@ public class TransactionController {
     }
 
     @GetMapping("/total-amounts")
-    @Operation(summary = "거래 총액 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @TransactionOperationWithBody(summary = "거래 총액 조회")
     public ResponseEntity<TransactionTotalAmount> readTotalAmounts(@AuthenticationPrincipal final UserDto user) {
         final TransactionTotalAmount amount = transactionReadService.readTotalAmounts(user.getId());
         return ResponseEntity.ok(amount);
     }
 
     @GetMapping("/term-amounts")
-    @Operation(summary = "최근 거래 총액 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @TransactionOperationWithBody(summary = "최근 거래 총액 조회")
     public ResponseEntity<TransactionTotalAmount> readRecentAmounts(
             @RequestParam(value = "startedAt", defaultValue = "#{T(java.time.LocalDateTime).now().minusMonths(1)}") final LocalDateTime startedAt,
             @AuthenticationPrincipal final UserDto user
@@ -62,8 +57,7 @@ public class TransactionController {
     }
 
     @GetMapping("{transactionId}")
-    @Operation(summary = "내역 단건 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @TransactionOperationWithBody(summary = "내역 단건 조회")
     public ResponseEntity<TransactionDto> readTransaction(
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
@@ -73,9 +67,7 @@ public class TransactionController {
     }
 
     @GetMapping
-    @Operation(summary = "내역 종류별 목록 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
-    @PageableAsQueryParam
+    @TransactionOperationWithPagination(summary = "내역 종류별 목록 조회")
     public ResponseEntity<Page<TransactionDto>> readScheduleList(
             @Valid @Parameter(hidden = true) final TransactionPaginationParam paginationParam,
             @AuthenticationPrincipal final UserDto user
@@ -85,8 +77,7 @@ public class TransactionController {
     }
 
     @PatchMapping("{transactionId}")
-    @Operation(summary = "내역 수정", description = "응답 없음")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @TransactionOperationWithBody(summary = "내역 수정")
     public void patchTransactionById(
             @RequestBody final RequestUpdateTransactionDto scheduleDto,
             @PathVariable("transactionId") final Long transactionId,
@@ -96,8 +87,7 @@ public class TransactionController {
     }
 
     @DeleteMapping("{transactionId}")
-    @Operation(summary = "내역 삭제", description = "응답 없음")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @TransactionOperationWithNoBody(summary = "내역 삭제")
     public void removeTransactionById(
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
