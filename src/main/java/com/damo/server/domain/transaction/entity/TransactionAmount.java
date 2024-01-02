@@ -3,6 +3,7 @@ package com.damo.server.domain.transaction.entity;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

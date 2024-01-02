@@ -36,7 +36,7 @@ public class TransactionController {
     @Operation(summary = "내역 생성", description = "응답 없음")
     @ResponseStatus(HttpStatus.CREATED)
     public void addTransaction(
-            @RequestBody final RequestCreateTransactionDto scheduleDto,
+            @Valid @RequestBody final RequestCreateTransactionDto scheduleDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         transactionWriteService.save(scheduleDto, user.getId());
