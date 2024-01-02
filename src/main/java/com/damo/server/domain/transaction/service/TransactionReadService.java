@@ -5,6 +5,7 @@ import com.damo.server.domain.common.pagination.param.TransactionPaginationParam
 import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.TransactionDto;
+import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,8 @@ public class TransactionReadService {
         return TransactionDto.from(transaction);
     }
 
-    public Page<TransactionDto> readTransactionList(final TransactionPaginationParam param, final Long userId) {
-        return transactionRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getAction());
+    public TransactionPaginationResponseDto readTransactionList(final TransactionPaginationParam param, final Long userId) {
+        final Page<TransactionDto> transactionPage = transactionRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getAction());
+        return TransactionPaginationResponseDto.from(transactionPage);
     }
 }
