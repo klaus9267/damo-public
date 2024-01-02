@@ -1,6 +1,5 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.config.oauth.PrincipalDetails;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
