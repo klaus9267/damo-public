@@ -24,7 +24,7 @@ public class TransactionReadService {
     }
 
     public TransactionTotalAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
-        return transactionRepository.readRecentAmounts(userId, startedAt);
+        return transactionRepository.readRecentAmounts(userId, startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt);
     }
 
     public TransactionDto readTransaction(final Long transactionId, final Long userId) {
