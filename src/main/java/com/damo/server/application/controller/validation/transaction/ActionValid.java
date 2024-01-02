@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ActionValidator.class)
-public @interface TransactionActionValid {
+public @interface ActionValid {
     String message() default "잘못된 거래 종류";
 
     Class<?>[] groups() default {};
