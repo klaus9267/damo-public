@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDateTime;
 
 
-@ParameterObject
 @Getter
 public class TransactionPaginationParam extends AbstractPaginationParam {
     @Parameter(example = "0", required = true)
