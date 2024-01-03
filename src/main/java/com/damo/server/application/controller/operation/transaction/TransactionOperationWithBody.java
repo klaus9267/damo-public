@@ -20,5 +20,6 @@ import java.lang.annotation.Target;
 )
 public @interface TransactionOperationWithBody {
     String summary() default "";
+
     String description() default "";
 }
