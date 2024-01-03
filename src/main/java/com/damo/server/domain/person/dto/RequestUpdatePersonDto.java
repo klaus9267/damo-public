@@ -15,7 +15,7 @@ public record RequestUpdatePersonDto(
         String name,
 
         @PersonRelationValid(enumClass = PersonRelation.class)
-        @Schema(description = "1자 ~ 5자 사이", example = "가족")
+        @Schema(description = "FAMILY | RELATIVE | FRIEND | ACQUAINTANCE | COMPANY | ETC", example = "FAMILY")
         @NotNull
         PersonRelation relation,
 

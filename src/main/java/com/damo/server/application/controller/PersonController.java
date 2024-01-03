@@ -28,7 +28,7 @@ public class PersonController {
     @PersonOperationWithPagination(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
     @GetMapping
     public ResponseEntity<?> readPeopleByUserIdAndRelation(
-            @ParameterObject @Valid final PersonPaginationParam paginationParam,
+            @ParameterObject final PersonPaginationParam paginationParam,
             @AuthenticationPrincipal final UserDto user
     ) {
         final PeoplePaginationResponseDto peoplePagination = personReadService.readPeopleByUserIdAndRelation(paginationParam, user.getId());
