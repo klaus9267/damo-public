@@ -1,5 +1,6 @@
 package com.damo.server.domain.transaction.service;
 
+import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionRepository;
@@ -24,7 +25,12 @@ public class TransactionReadService {
     }
 
     public TransactionTotalAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
-        return transactionRepository.readRecentAmounts(userId, startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt);
+        // controller에서 @Past(message) 작동되도록 변경
+        if (startedAt != null && startedAt.isAfter(LocalDateTime.now())) {
+            throw new BadRequestException("startedAt must be past or null");
+        }
+        final LocalDateTime startDate = startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt;
+        return transactionRepository.readRecentAmounts(userId, startDate);
     }
 
     public TransactionDto readTransaction(final Long transactionId, final Long userId) {

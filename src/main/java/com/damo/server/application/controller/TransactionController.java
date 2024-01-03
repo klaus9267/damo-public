@@ -36,10 +36,10 @@ public class TransactionController {
     @TransactionOperationWithBody(summary = "내역 추가")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addTransaction(
-            @Valid @RequestBody final RequestCreateTransactionDto scheduleDto,
+            @Valid @RequestBody final RequestCreateTransactionDto transactionDto,
             @AuthenticationPrincipal final UserDto user
     ) {
-        transactionWriteService.save(scheduleDto, user.getId());
+        transactionWriteService.save(transactionDto, user.getId());
     }
 
     @GetMapping("/total-amounts")
@@ -72,7 +72,7 @@ public class TransactionController {
 
     @GetMapping
     @TransactionOperationWithPagination(summary = "내역 종류별 목록 조회")
-    public ResponseEntity<TransactionPaginationResponseDto> readScheduleList(
+    public ResponseEntity<TransactionPaginationResponseDto> readTransactionList(
             @ParameterObject @Valid final TransactionPaginationParam paginationParam,
             @AuthenticationPrincipal final UserDto user
     ) {
@@ -85,11 +85,11 @@ public class TransactionController {
     @TransactionOperationWithBody(summary = "내역 수정")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchTransactionById(
-            @RequestBody final RequestUpdateTransactionDto scheduleDto,
+            @RequestBody final RequestUpdateTransactionDto transactionDto,
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
     ) {
-        transactionWriteService.patchTransactionById(scheduleDto, transactionId, user.getId());
+        transactionWriteService.patchTransactionById(transactionDto, transactionId, user.getId());
     }
 
     @DeleteMapping("{transactionId}")
