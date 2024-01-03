@@ -5,8 +5,9 @@ import com.damo.server.application.controller.operation.person.PersonOperationWi
 import com.damo.server.application.controller.operation.person.PersonOperationWithPagination;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeoplePaginationResponseDto;
+import com.damo.server.domain.person.dto.RequestCreatePersonDto;
+import com.damo.server.domain.person.dto.RequestUpdatePersonDto;
 import com.damo.server.domain.person.service.PersonReadService;
-import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.damo.server.domain.person.service.PersonWriteService;
 import com.damo.server.domain.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,7 +42,7 @@ public class PersonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping
     public void addPerson(
-            @RequestBody @Valid final RequestPersonDto personDto,
+            @RequestBody @Valid final RequestCreatePersonDto personDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.save(personDto, user.getId());
@@ -53,7 +54,7 @@ public class PersonController {
     @PatchMapping("{personId}")
     public void patchPersonById(
             @PathVariable("personId") @Valid final Long personId,
-            @RequestBody final RequestPersonDto personDto,
+            @RequestBody final RequestUpdatePersonDto personDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.patchPersonById(personDto, personId, user.getId());
