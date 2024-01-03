@@ -15,13 +15,13 @@ import java.beans.ConstructorProperties;
 @Getter
 public class PersonPaginationParam extends AbstractPaginationParam {
     @Parameter(name = "page", example = "0", required = true)
-    private Integer page;
+    private final Integer page;
     @Parameter(name = "size", example = "10", required = true)
-    private Integer size;
+    private final Integer size;
     @Parameter(name = "relation", example = "FAMILY", description = "null 허용")
-    private PersonRelation relation;
+    private final PersonRelation relation;
     @Parameter(name = "direction", description = "default desc")
-    private Sort.Direction direction;
+    private final Sort.Direction direction;
 
     // TODO: NAME, CREATED_AT, RELATION을 동적으로 선택할 수 있도록 변경
     @PaginationValidation(sortGroup = PaginationSortGroup.PERSON)
