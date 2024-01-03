@@ -27,7 +27,8 @@ public class Person {
     private String name;
 
     @Column(nullable = false)
-    private String relation;
+    @Enumerated(EnumType.STRING)
+    private PersonRelation relation;
 
     @Column
     private String contact;

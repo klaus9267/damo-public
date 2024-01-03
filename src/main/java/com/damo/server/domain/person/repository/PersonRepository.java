@@ -2,6 +2,7 @@ package com.damo.server.domain.person.repository;
 
 import com.damo.server.domain.person.dto.PeopleWithTransactionCountDto;
 import com.damo.server.domain.person.entity.Person;
+import com.damo.server.domain.person.entity.PersonRelation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PersonRepository extends JpaRepository<Person, Long> {
-    Boolean existsByNameAndRelationAndUserId(final String name, final String relation, final Long userId);
+    Boolean existsByNameAndRelationAndUserId(final String name, final PersonRelation relation, final Long userId);
 
     @Query(
         """

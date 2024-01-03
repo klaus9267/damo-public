@@ -1,5 +1,7 @@
 package com.damo.server.domain.person.dto;
 
+import com.damo.server.application.controller.validation.person.PersonRelationValid;
+import com.damo.server.domain.person.entity.PersonRelation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.Length;
@@ -12,10 +14,10 @@ public record RequestPersonDto(
         @Schema(description = "1자 ~ 20자 사이", example = "홍길동")
         String name,
 
-        @NotBlank(message = "relation is required")
-        @Length(min = 1, max = 5, message = "relation length 1 ~ 5")
+        @NotNull
+        @PersonRelationValid(enumClass = PersonRelation.class)
         @Schema(description = "1자 ~ 5자 사이", example = "가족")
-        String relation,
+        PersonRelation relation,
 
         @Length(max = 200, message = "memo max length 200")
         @Schema(description = "없거나 최대 200자", example = "결혼식장 뷔페 노맛")

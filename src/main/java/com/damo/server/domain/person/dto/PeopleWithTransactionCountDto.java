@@ -1,6 +1,7 @@
 package com.damo.server.domain.person.dto;
 
 import com.damo.server.domain.person.entity.Person;
+import com.damo.server.domain.person.entity.PersonRelation;
 import lombok.Getter;
 
 import java.sql.Timestamp;
@@ -10,12 +11,12 @@ public class PeopleWithTransactionCountDto {
     private final Long id;
     private final String name;
     private final String contact;
-    private final String relation;
+    private final PersonRelation relation;
     private final String memo;
     private final Timestamp createdAt;
     private final Long transactionCount;
 
-    public PeopleWithTransactionCountDto(Person person, Long transactionCount) {
+    public PeopleWithTransactionCountDto(final Person person, final Long transactionCount) {
         this.id = person.getId();
         this.name = person.getName();
         this.contact = person.getContact();
