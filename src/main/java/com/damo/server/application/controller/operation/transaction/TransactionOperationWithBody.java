@@ -1,6 +1,6 @@
 package com.damo.server.application.controller.operation.transaction;
 
-import com.damo.server.domain.person.dto.RequestPersonDto;
+import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,10 +15,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
-        requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = RequestPersonDto.class))),
-        responses = { @ApiResponse(responseCode = "204", description = "성공적으로 반영됨") }
+        requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = RequestCreateTransactionDto.class))),
+        responses = {@ApiResponse(responseCode = "204", description = "성공적으로 반영됨")}
 )
 public @interface TransactionOperationWithBody {
     String summary() default "";
+
     String description() default "";
 }
