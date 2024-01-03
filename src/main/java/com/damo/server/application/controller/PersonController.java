@@ -1,8 +1,6 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.controller.operation.person.PersonOperationWithBody;
-import com.damo.server.application.controller.operation.person.PersonOperationWithNoBody;
-import com.damo.server.application.controller.operation.person.PersonOperationWithPagination;
+import com.damo.server.application.controller.operation.person.*;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeoplePaginationResponseDto;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
@@ -38,7 +36,7 @@ public class PersonController {
         return ResponseEntity.ok(peoplePagination);
     }
 
-    @PersonOperationWithBody(summary = "대상 추가", description = "대상을 추가함")
+    @CreatePersonOperationWithBody(summary = "대상 추가", description = "대상을 추가함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping
     public void addPerson(
@@ -49,7 +47,7 @@ public class PersonController {
     }
 
 
-    @PersonOperationWithBody(summary = "대상 수정", description = "대상을 수정함")
+    @UpdatePersonOperationWithBody(summary = "대상 수정", description = "대상을 수정함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("{personId}")
     public void patchPersonById(
