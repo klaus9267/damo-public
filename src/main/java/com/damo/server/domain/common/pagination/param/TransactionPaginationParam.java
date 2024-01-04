@@ -6,9 +6,9 @@ import com.damo.server.domain.common.pagination.PaginationValidation;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.Getter;
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 
@@ -25,17 +25,22 @@ public class TransactionPaginationParam extends AbstractPaginationParam {
     private final LocalDateTime startedAt;
     @Parameter(example = "2023-12-10T:00:00:00", required = false, hidden = true)
     private final LocalDateTime endedAt;
+    @Parameter(name = "direction", description = "default desc")
+    private final Sort.Direction direction;
 
-    @Parameter(description = "대상 정렬은 TRANSACTION, EVENT_DATE만 사용 가능")
+    @Parameter(description = "대상 정렬은 ACTION, EVENT_DATE만 사용 가능")
     @PaginationValidation(sortGroup = PaginationSortGroup.TRANSACTION)
-    private final PaginationSortType field = PaginationSortType.EVENT_DATE;
+    private final PaginationSortType field;
 
-    public TransactionPaginationParam(final Integer page, final Integer size, final TransactionAction action, final LocalDateTime startedAt, final LocalDateTime endedAt) {
+    public TransactionPaginationParam(final Integer page, final Integer size, final TransactionAction action, final LocalDateTime startedAt, final LocalDateTime endedAt,
+            final PaginationSortType field, final Sort.Direction direction) {
         this.page = Math.max(page, 0);
         this.size = Math.max(size, 10);
         this.action = action;
         this.startedAt = startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt;
         this.endedAt = endedAt == null ? LocalDateTime.now() : endedAt;
+        this.field = field == null ? PaginationSortType.EVENT_DATE : field;
+        this.direction = direction == null ? Sort.Direction.DESC : direction;
     }
 
     public Pageable toPageable() {
