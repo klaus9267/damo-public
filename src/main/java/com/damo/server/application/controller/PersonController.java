@@ -43,7 +43,7 @@ public class PersonController {
             @RequestBody @Valid final RequestCreatePersonDto personDto,
             @AuthenticationPrincipal final UserDto user
     ) {
-        personWriteService.save(personDto, user.getId());
+        personWriteService.addPerson(personDto, user.getId());
     }
 
 
