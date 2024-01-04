@@ -1,6 +1,7 @@
 package com.damo.server.domain.person.entity;
 
-import com.damo.server.domain.person.dto.RequestPersonDto;
+import com.damo.server.domain.person.dto.RequestCreatePersonDto;
+import com.damo.server.domain.person.dto.RequestUpdatePersonDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -27,7 +28,8 @@ public class Person {
     private String name;
 
     @Column(nullable = false)
-    private String relation;
+    @Enumerated(EnumType.STRING)
+    private PersonRelation relation;
 
     @Column
     private String contact;
@@ -50,7 +52,7 @@ public class Person {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Person(final RequestPersonDto personDto, final Long userId) {
+    private Person(final RequestCreatePersonDto personDto, final Long userId) {
         this.name = personDto.name();
         this.contact = personDto.contact();
         this.relation = personDto.relation();
@@ -58,11 +60,11 @@ public class Person {
         this.user = User.builder().id(userId).build();
     }
 
-    public static Person toPersonFromRequest(final RequestPersonDto personDto, final Long userId) {
+    public static Person toPersonFromRequest(final RequestCreatePersonDto personDto, final Long userId) {
         return new Person(personDto, userId);
     }
 
-    public void changeInfo(final RequestPersonDto personDto) {
+    public void changeInfo(final RequestUpdatePersonDto personDto) {
         this.name = personDto.name() != null ? personDto.name() : getName();
         this.contact = personDto.contact() != null ? personDto.contact() : getContact();
         this.relation = personDto.relation() != null ? personDto.relation() : getRelation();

@@ -1,6 +1,7 @@
 package com.damo.server.domain.person.dto;
 
 import com.damo.server.domain.person.entity.Person;
+import com.damo.server.domain.person.entity.PersonRelation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,7 +13,7 @@ public class PersonDto {
     private final Long id;
     private final String name;
     private final String contact;
-    private final String relation;
+    private final PersonRelation relation;
     private final String memo;
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
