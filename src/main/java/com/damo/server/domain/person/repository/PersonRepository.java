@@ -20,11 +20,15 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
         SELECT new com.damo.server.domain.person.dto.PeopleWithTransactionCountDto(p, COUNT(t))
         FROM Person p
         LEFT JOIN p.transactions t
-        WHERE p.user.id = :userId AND (:relation IS NULL OR p.relation = :relation) 
+        WHERE p.user.id = :userId AND (:keyword IS NULL OR CONCAT(p.name, p.contact) LIKE :keyword)
         GROUP BY p.id
         """
     )
-    Page<PeopleWithTransactionCountDto> findAllPeopleWithTransactionCount(final Pageable pageable, @Param("userId") final Long userId, @Param("relation") final PersonRelation relation);
+    Page<PeopleWithTransactionCountDto> findAllPeopleWithTransactionCount(
+            final Pageable pageable,
+            @Param("userId") final Long userId,
+            @Param("keyword") final String keyword
+    );
 
     Optional<Person> findByIdAndUserId(final Long personId, final Long userId);
 

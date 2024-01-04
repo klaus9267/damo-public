@@ -14,7 +14,7 @@ public class PersonReadService {
     private final PersonRepository personRepository;
 
     public PeoplePaginationResponseDto readPeopleByUserIdAndRelation(final PersonPaginationParam paginationParam, final Long userId) {
-        final Page<PeopleWithTransactionCountDto> peoplePage = personRepository.findAllPeopleWithTransactionCount(paginationParam.toPageable(), userId, paginationParam.getRelation());
+        final Page<PeopleWithTransactionCountDto> peoplePage = personRepository.findAllPeopleWithTransactionCount(paginationParam.toPageable(), userId, paginationParam.getKeyword());
 
         return PeoplePaginationResponseDto.from(peoplePage);
     }
