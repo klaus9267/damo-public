@@ -1,6 +1,7 @@
 package com.damo.server.application.handler;
 
 
+import com.damo.server.application.handler.error.ExceptionError;
 import com.damo.server.application.handler.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
