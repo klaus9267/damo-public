@@ -5,6 +5,7 @@ import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,7 +22,9 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
            """)
     Boolean existsByPersonId(@Param("eventDate") final LocalDateTime eventDate, @Param("personId") final Long personId, @Param("event") final String event);
 
-    Optional<Transaction> findByIdAndUserId(@Param("scheduleId") final Long scheduleId, @Param("userId") final Long userId);
+
+    @EntityGraph(attributePaths = "schedule")
+    Optional<Transaction> findByIdAndUserId(@Param("id") final Long id, @Param("userId") final Long userId);
 
     @Query("""
            SELECT new com.damo.server.domain.transaction.dto.TransactionDto(t, p, s)
