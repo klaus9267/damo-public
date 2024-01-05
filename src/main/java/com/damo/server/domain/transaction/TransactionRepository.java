@@ -20,7 +20,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
            LEFT JOIN FETCH  Schedule s ON t.id = s.transaction.id
            WHERE t.person.id = :personId AND s.eventDate = :eventDate AND s.event = :event
            """)
-    Boolean existsByPersonId(@Param("eventDate") final LocalDateTime eventDate, @Param("personId") final Long personId, @Param("event") final String event);
+    Boolean existsByEventDateAndPersonIdAndEvent(@Param("eventDate") final LocalDateTime eventDate, @Param("personId") final Long personId, @Param("event") final String event);
 
 
     @EntityGraph(attributePaths = "schedule")

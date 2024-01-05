@@ -17,7 +17,7 @@ public class TransactionWriteService {
 
     @Transactional
     public void save(final RequestCreateTransactionDto transactionDto, final Long userId) {
-        if (transactionRepository.existsByPersonId(transactionDto.eventDate(), transactionDto.personId(), transactionDto.event())) {
+        if (transactionRepository.existsByEventDateAndPersonIdAndEvent(transactionDto.eventDate(), transactionDto.personId(), transactionDto.event())) {
             throw new BadRequestException("내역에서 동일한 기록이 존재");
         }
         transactionRepository.save(Transaction.from(transactionDto, userId));

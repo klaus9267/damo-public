@@ -13,7 +13,7 @@ public record RequestUpdateTransactionDto(
         Long personId,
 
         @Valid
-        @Schema(description = "거래 종류 GIVING | RECEIVING", example = "GIVING")
+        @Schema(description = "거래 종류 GIVING | RECEIVING")
         TransactionAmount transactionAmount,
 
         @Schema(description = "선물 종류 CASH | GIFT | MOBILE_VOUCHER | ETC", example = "CASH")
