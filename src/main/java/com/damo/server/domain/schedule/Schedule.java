@@ -34,7 +34,7 @@ public class Schedule {
     private String memo;
 
     @Enumerated(EnumType.STRING)
-//    @Column(nullable = false)
+    //    @Column(nullable = false)
     // 임시 null 허용 후에 사용 시 주석 해제
     private ScheduleStatus status;
 
@@ -46,17 +46,17 @@ public class Schedule {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
-    public Schedule(final RequestCreateTransactionDto transactionDto, final Long userId) {
-        this.event=transactionDto.event();
-        this.eventDate=transactionDto.eventDate();
-        this.transaction = Transaction.from(transactionDto, userId);
+    public Schedule(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
+        this.event = transactionDto.event();
+        this.eventDate = transactionDto.eventDate();
+        this.transaction = transaction;
     }
 
-    public static Schedule from(final RequestCreateTransactionDto transactionDto, final Long userId) {
-        return new Schedule(transactionDto, userId);
+    public static Schedule from(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
+        return new Schedule(transactionDto, transaction);
     }
 }

@@ -1,6 +1,5 @@
 package com.damo.server.domain.transaction.entity;
 
-import com.damo.server.application.controller.validation.transaction.ActionValid;
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.schedule.Schedule;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
@@ -54,7 +53,7 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(mappedBy = "transaction")
+    @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
     private Schedule schedule;
 
     private Transaction(final RequestCreateTransactionDto transactionDto, final Long userId) {
@@ -63,6 +62,7 @@ public class Transaction {
         this.memo = transactionDto.memo();
         this.gift = transactionDto.gift();
         this.user = User.builder().id(userId).build();
+        this.schedule = Schedule.from(transactionDto, this);
     }
 
     public static Transaction from(final RequestCreateTransactionDto transactionDto, final Long userId) {
