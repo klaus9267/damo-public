@@ -17,7 +17,7 @@ public class PersonWriteService {
     private final PersonRepository personRepository;
 
     @Transactional
-    public void save(final RequestCreatePersonDto personDto, final Long userId) {
+    public void addPerson(final RequestCreatePersonDto personDto, final Long userId) {
         // TODO: 동명이인일 경우 어떻게 해결할 것인가?
         if(personRepository.existsByNameAndRelationAndUserId(personDto.name(), personDto.relation(), userId)) {
             throw new BadRequestException("관계 내에서 동일한 이름이 존재");
