@@ -24,6 +24,9 @@ public class Schedule {
     private Long id;
 
     @Column(nullable = false)
+    private String event;
+
+    @Column(nullable = false)
     private LocalDateTime eventDate;
 
     @Column(columnDefinition = "TEXT")
@@ -41,6 +44,7 @@ public class Schedule {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    @OneToOne(mappedBy = "schedule")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 }
