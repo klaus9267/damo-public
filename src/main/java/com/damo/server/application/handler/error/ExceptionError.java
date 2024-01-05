@@ -1,4 +1,4 @@
-package com.damo.server.application.handler.exception;
+package com.damo.server.application.handler.error;
 
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
