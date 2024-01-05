@@ -43,7 +43,6 @@ public class Transaction {
     private Timestamp updatedAt;
 
     @Enumerated(EnumType.STRING)
-    @ActionValid
     @Schema(description = "거래 종류", example = "GIVING")
     private TransactionGift gift;
 
