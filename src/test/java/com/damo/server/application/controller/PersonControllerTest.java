@@ -1,5 +1,7 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.domain.person.dto.RequestCreatePersonDto;
+import com.damo.server.domain.person.entity.PersonRelation;
 import com.damo.server.domain.person.service.PersonWriteService;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -51,14 +53,14 @@ public class PersonControllerTest {
 
         @Test
         void 대상_생성() throws Exception {
-            PersonDto personDto = new PersonDto(1L, "테스트 이름", "가족", "테스트 메모", now, now);
-            given(personWriteService.save(any())).willReturn(personDto);
+            final PersonRelation relation = PersonRelation.ETC;
+            final PersonDto personDto = new PersonDto(1L, "테스트 이름", "01012345678", relation, "테스트 메모", now, now);
 
-            RequestPersonDto requestPersonDto = new RequestPersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), personDto.getId());
-            ObjectMapper mapper = new ObjectMapper()
+            final RequestCreatePersonDto requestPersonDto = new RequestCreatePersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), personDto.getContact());
+            final ObjectMapper mapper = new ObjectMapper()
                     .registerModule(new JavaTimeModule())
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            String json = mapper.writeValueAsString(requestPersonDto);
+            final String json = mapper.writeValueAsString(requestPersonDto);
 
             mvc.perform(post(END_POINT)
                             .contentType(MediaType.APPLICATION_JSON)
@@ -73,14 +75,14 @@ public class PersonControllerTest {
 
         @Test
         void 대상_수정() throws Exception {
-            PersonDto personDto = new PersonDto(1L, "테스트 이름", "가족", "테스트 메모", now, now);
-            given(personWriteService.patchPersonById(any(), any(Long.class))).willReturn(personDto);
+            final PersonRelation relation = PersonRelation.ETC;
+            final PersonDto personDto = new PersonDto(1L, "테스트 이름", "01012345678", relation, "테스트 메모", now, now);
 
-            RequestPersonDto requestPersonDto = new RequestPersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), 1L);
-            ObjectMapper mapper = new ObjectMapper()
+            final RequestCreatePersonDto requestPersonDto = new RequestCreatePersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), personDto.getContact());
+            final ObjectMapper mapper = new ObjectMapper()
                     .registerModule(new JavaTimeModule())
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            String json = mapper.writeValueAsString(requestPersonDto);
+            final String json = mapper.writeValueAsString(requestPersonDto);
 
             mvc.perform(patch(END_POINT + "/" + personDto.getId())
                             .contentType(MediaType.APPLICATION_JSON)
@@ -95,11 +97,14 @@ public class PersonControllerTest {
 
         @Test
         void 대상_삭제() throws Exception {
-            RequestPersonDto requestPersonDto = new RequestPersonDto("테스트 이름", "가족", "테스트 메모", 1L);
-            ObjectMapper mapper = new ObjectMapper()
+            final PersonRelation relation = PersonRelation.ETC;
+            final PersonDto personDto = new PersonDto(1L, "테스트 이름", "01012345678", relation, "테스트 메모", now, now);
+
+            final RequestCreatePersonDto requestPersonDto = new RequestCreatePersonDto(personDto.getName(), personDto.getRelation(), personDto.getMemo(), personDto.getContact());
+            final ObjectMapper mapper = new ObjectMapper()
                     .registerModule(new JavaTimeModule())
                     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-            String json = mapper.writeValueAsString(requestPersonDto);
+            final String json = mapper.writeValueAsString(requestPersonDto);
 
             mvc.perform(delete(END_POINT + "/" + 1L)
                             .contentType(MediaType.APPLICATION_JSON)
