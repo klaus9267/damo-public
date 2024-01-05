@@ -11,7 +11,7 @@ public enum PaginationSortType {
     RELATION("relation"),
     CREATED_AT("createdAt"),
     ACTION("transactionAmount.action"),
-    EVENT_DATE("eventDate"),
+    EVENT_DATE("schedule.eventDate"),
     EMPTY(null);
 
     private final String field;

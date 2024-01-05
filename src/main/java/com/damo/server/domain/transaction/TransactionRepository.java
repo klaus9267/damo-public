@@ -27,7 +27,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
            SELECT new com.damo.server.domain.transaction.dto.TransactionDto(t, p, s)
            FROM Transaction t
                 LEFT JOIN FETCH  Person p ON t.person.id = p.id
-                LEFT JOIN FETCH  Schedule s ON t.id = s.transaction.id
+                LEFT JOIN FETCH  Schedule s ON t.schedule.id = s.id
            WHERE p.user.id = :userId
                 AND (:startedAt IS NULL OR s.eventDate >= :startedAt)
                 AND (:endedAt IS NULL OR s.eventDate <= :endedAt)
