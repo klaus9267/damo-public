@@ -1,10 +1,12 @@
 package com.damo.server.domain.transaction.service;
 
+import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.TransactionDto;
+import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,12 @@ public class TransactionReadService {
     }
 
     public TransactionTotalAmount readRecentAmounts(final Long userId, final LocalDateTime startedAt) {
-        return transactionRepository.readRecentAmounts(userId, startedAt);
+        // controller에서 @Past(message) 작동되도록 변경
+        if (startedAt != null && startedAt.isAfter(LocalDateTime.now())) {
+            throw new BadRequestException("startedAt must be past or null");
+        }
+        final LocalDateTime startDate = startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt;
+        return transactionRepository.readRecentAmounts(userId, startDate);
     }
 
     public TransactionDto readTransaction(final Long transactionId, final Long userId) {
@@ -31,7 +38,8 @@ public class TransactionReadService {
         return TransactionDto.from(transaction);
     }
 
-    public Page<TransactionDto> readTransactionList(final TransactionPaginationParam param, final Long userId) {
-        return transactionRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getAction());
+    public TransactionPaginationResponseDto readTransactionList(final TransactionPaginationParam param, final Long userId) {
+        final Page<TransactionDto> transactionPage = transactionRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getAction());
+        return TransactionPaginationResponseDto.from(transactionPage);
     }
 }

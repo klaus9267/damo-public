@@ -2,7 +2,6 @@ package com.damo.server.application.controller;
 
 import com.damo.server.domain.person.service.PersonWriteService;
 import com.damo.server.domain.person.dto.PersonDto;
-import com.damo.server.domain.person.dto.RequestPersonDto;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

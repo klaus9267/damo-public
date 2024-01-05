@@ -1,22 +1,22 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.config.oauth.PrincipalDetails;
+import com.damo.server.application.controller.operation.transaction.TransactionOperationWithBody;
+import com.damo.server.application.controller.operation.transaction.TransactionOperationWithNoBody;
+import com.damo.server.application.controller.operation.transaction.TransactionOperationWithPagination;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import com.damo.server.domain.transaction.dto.TransactionDto;
+import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
 import com.damo.server.domain.transaction.service.TransactionReadService;
 import com.damo.server.domain.transaction.service.TransactionWriteService;
 import com.damo.server.domain.user.dto.UserDto;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springdoc.core.converters.models.PageableAsQueryParam;
-import org.springframework.data.domain.Page;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,28 +33,27 @@ public class TransactionController {
     private final TransactionWriteService transactionWriteService;
 
     @PostMapping
-    @Operation(summary = "내역 생성", description = "응답 없음")
-    @ResponseStatus(HttpStatus.CREATED)
+    @TransactionOperationWithBody(summary = "내역 추가")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addTransaction(
-            @RequestBody final RequestCreateTransactionDto scheduleDto,
+            @Valid @RequestBody final RequestCreateTransactionDto transactionDto,
             @AuthenticationPrincipal final UserDto user
     ) {
-        transactionWriteService.save(scheduleDto, user.getId());
+        transactionWriteService.save(transactionDto, user.getId());
     }
 
     @GetMapping("/total-amounts")
-    @Operation(summary = "거래 총액 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @TransactionOperationWithNoBody(summary = "거래 총액 조회")
     public ResponseEntity<TransactionTotalAmount> readTotalAmounts(@AuthenticationPrincipal final UserDto user) {
         final TransactionTotalAmount amount = transactionReadService.readTotalAmounts(user.getId());
         return ResponseEntity.ok(amount);
     }
 
     @GetMapping("/term-amounts")
-    @Operation(summary = "최근 거래 총액 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @TransactionOperationWithNoBody(summary = "최근 거래 총액 조회")
     public ResponseEntity<TransactionTotalAmount> readRecentAmounts(
-            @RequestParam(value = "startedAt", defaultValue = "#{T(java.time.LocalDateTime).now().minusMonths(1)}") final LocalDateTime startedAt,
+            @Parameter(description = "조회 시작 날짜(기본값 1달 전)", example = "2023-12-12T00:00:00")
+            @RequestParam(value = "startedAt", required = false) final LocalDateTime startedAt,
             @AuthenticationPrincipal final UserDto user
     ) {
         final TransactionTotalAmount amount = transactionReadService.readRecentAmounts(user.getId(), startedAt);
@@ -62,8 +61,7 @@ public class TransactionController {
     }
 
     @GetMapping("{transactionId}")
-    @Operation(summary = "내역 단건 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
+    @TransactionOperationWithBody(summary = "내역 단건 조회")
     public ResponseEntity<TransactionDto> readTransaction(
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
@@ -73,30 +71,29 @@ public class TransactionController {
     }
 
     @GetMapping
-    @Operation(summary = "내역 종류별 목록 조회")
-    @ApiResponse(responseCode = "200", useReturnTypeSchema = true)
-    @PageableAsQueryParam
-    public ResponseEntity<Page<TransactionDto>> readScheduleList(
-            @Valid @Parameter(hidden = true) final TransactionPaginationParam paginationParam,
+    @TransactionOperationWithPagination(summary = "내역 종류별 목록 조회")
+    public ResponseEntity<TransactionPaginationResponseDto> readTransactionList(
+            @ParameterObject @Valid final TransactionPaginationParam paginationParam,
             @AuthenticationPrincipal final UserDto user
     ) {
-        final Page<TransactionDto> transaction = transactionReadService.readTransactionList(paginationParam, user.getId());
-        return ResponseEntity.ok(transaction);
+        final TransactionPaginationResponseDto transactionPage = transactionReadService.readTransactionList(paginationParam, user.getId());
+
+        return ResponseEntity.ok(transactionPage);
     }
 
     @PatchMapping("{transactionId}")
-    @Operation(summary = "내역 수정", description = "응답 없음")
+    @TransactionOperationWithBody(summary = "내역 수정")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchTransactionById(
-            @RequestBody final RequestUpdateTransactionDto scheduleDto,
+            @RequestBody final RequestUpdateTransactionDto transactionDto,
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
     ) {
-        transactionWriteService.patchTransactionById(scheduleDto, transactionId, user.getId());
+        transactionWriteService.patchTransactionById(transactionDto, transactionId, user.getId());
     }
 
     @DeleteMapping("{transactionId}")
-    @Operation(summary = "내역 삭제", description = "응답 없음")
+    @TransactionOperationWithNoBody(summary = "내역 삭제")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeTransactionById(
             @PathVariable("transactionId") final Long transactionId,
