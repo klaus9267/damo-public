@@ -7,16 +7,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
-import java.time.LocalDateTime;
-
 public record RequestUpdateTransactionDto(
         @NotNull(message = "personId is required")
         @Schema(description = "대상 id", example = "1")
         Long personId,
-
-        @NotNull(message = "eventDate is required")
-        @Schema(description = "거래 날짜", example = "2024-01-02T12:34:56")
-        LocalDateTime eventDate,
 
         @Valid
         @Schema(description = "거래 종류 GIVING | RECEIVING", example = "GIVING")

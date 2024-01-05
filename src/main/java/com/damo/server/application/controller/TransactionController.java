@@ -1,8 +1,9 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.controller.operation.transaction.TransactionOperationWithBody;
+import com.damo.server.application.controller.operation.transaction.CreateTransactionOperationWithBody;
 import com.damo.server.application.controller.operation.transaction.TransactionOperationWithNoBody;
 import com.damo.server.application.controller.operation.transaction.TransactionOperationWithPagination;
+import com.damo.server.application.controller.operation.transaction.UpdateTransactionOperationWithBody;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
@@ -33,7 +34,7 @@ public class TransactionController {
     private final TransactionWriteService transactionWriteService;
 
     @PostMapping
-    @TransactionOperationWithBody(summary = "내역 추가")
+    @CreateTransactionOperationWithBody(summary = "내역 추가")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addTransaction(
             @Valid @RequestBody final RequestCreateTransactionDto transactionDto,
@@ -61,7 +62,7 @@ public class TransactionController {
     }
 
     @GetMapping("{transactionId}")
-    @TransactionOperationWithBody(summary = "내역 단건 조회")
+    @TransactionOperationWithNoBody(summary = "내역 단건 조회")
     public ResponseEntity<TransactionDto> readTransaction(
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
@@ -82,7 +83,7 @@ public class TransactionController {
     }
 
     @PatchMapping("{transactionId}")
-    @TransactionOperationWithBody(summary = "내역 수정")
+    @UpdateTransactionOperationWithBody(summary = "내역 수정")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchTransactionById(
             @RequestBody final RequestUpdateTransactionDto transactionDto,

@@ -2,8 +2,6 @@ package com.damo.server.domain.transaction.service;
 
 import com.damo.server.application.handler.exception.BadRequestException;
 import com.damo.server.application.handler.exception.NotFoundException;
-import com.damo.server.domain.schedule.Schedule;
-import com.damo.server.domain.schedule.ScheduleRepository;
 import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
@@ -16,14 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TransactionWriteService {
     private final TransactionRepository transactionRepository;
-    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public void save(final RequestCreateTransactionDto transactionDto, final Long userId) {
         if (transactionRepository.existsByPersonId(transactionDto.eventDate(), transactionDto.personId(), transactionDto.event())) {
             throw new BadRequestException("내역에서 동일한 기록이 존재");
         }
-        scheduleRepository.save(Schedule.from(transactionDto, userId));
+        transactionRepository.save(Transaction.from(transactionDto, userId));
     }
 
     @Transactional
