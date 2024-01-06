@@ -5,10 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum TransactionGift {
+public enum TransactionCategory {
     CASH("CASH", "현금"),
     GIFT("GIFT", "선물"),
-    MOBILE_VOUCHER("MOBILE_VOUCHER", "기프티콘"),
+    MOBILE_GIFTS("MOBILE_GIFTS", "기프티콘"),
     ETC("ETC", "기타");
 
     private final String key;

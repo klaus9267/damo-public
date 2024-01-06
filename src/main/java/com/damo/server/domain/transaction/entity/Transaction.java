@@ -5,7 +5,6 @@ import com.damo.server.domain.schedule.Schedule;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import com.damo.server.domain.user.entity.User;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,8 +41,7 @@ public class Transaction {
     private Timestamp updatedAt;
 
     @Enumerated(EnumType.STRING)
-    @Schema(description = "거래 종류", example = "GIVING")
-    private TransactionGift gift;
+    private TransactionCategory gift;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)

@@ -17,7 +17,7 @@ public record ScheduleDto(
         Timestamp createdAt,
         Timestamp updatedAt
 ) {
-    public static ScheduleDto from(Schedule schedule) {
+    public static ScheduleDto from(final Schedule schedule) {
         return ScheduleDto.builder()
                           .id(schedule.getId())
                           .title(schedule.getEvent())

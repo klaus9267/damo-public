@@ -6,7 +6,7 @@ import com.damo.server.domain.schedule.Schedule;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.transaction.entity.TransactionAmount;
-import com.damo.server.domain.transaction.entity.TransactionGift;
+import com.damo.server.domain.transaction.entity.TransactionCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class TransactionDto {
     private final PersonDto person;
     private final ScheduleDto schedule;
     private final TransactionAmount transactionAmount;
-    private final TransactionGift gift;
+    private final TransactionCategory gift;
     private final String memo;
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
@@ -37,7 +37,7 @@ public class TransactionDto {
         this.updatedAt = transaction.getUpdatedAt();
     }
 
-    public static TransactionDto from(Transaction transaction) {
+    public static TransactionDto from(final Transaction transaction) {
         return new TransactionDto(transaction, transaction.getPerson(), transaction.getSchedule());
     }
 }
