@@ -1,5 +1,6 @@
 package com.damo.server.domain.schedule;
 
+import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,13 +25,17 @@ public class Schedule {
     private Long id;
 
     @Column(nullable = false)
+    private String event;
+
+    @Column(nullable = false)
     private LocalDateTime eventDate;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    //    @Column(nullable = false)
+    // 임시 null 허용 후에 사용 시 주석 해제
     private ScheduleStatus status;
 
     @Column(name = "created_at")
@@ -41,6 +46,17 @@ public class Schedule {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
-    @OneToOne(mappedBy = "schedule")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
+
+    public Schedule(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
+        this.event = transactionDto.event();
+        this.eventDate = transactionDto.eventDate();
+        this.transaction = transaction;
+    }
+
+    public static Schedule from(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
+        return new Schedule(transactionDto, transaction);
+    }
 }

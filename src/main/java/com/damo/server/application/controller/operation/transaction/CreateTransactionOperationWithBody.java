@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
         requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = RequestCreateTransactionDto.class))),
-        responses = { @ApiResponse(responseCode = "204", description = "성공적으로 반영됨") }
+        responses = { @ApiResponse(responseCode = "201", description = "성공적으로 반영됨") }
 )
-public @interface TransactionOperationWithBody {
+public @interface CreateTransactionOperationWithBody {
     String summary() default "";
 
     String description() default "";
