@@ -21,7 +21,7 @@ public class TransactionDto {
     private final PersonDto person;
     private final ScheduleDto schedule;
     private final TransactionAmount transactionAmount;
-    private final TransactionCategory gift;
+    private final TransactionCategory category;
     private final String memo;
     private final Timestamp createdAt;
     private final Timestamp updatedAt;
@@ -31,7 +31,7 @@ public class TransactionDto {
         this.person = PersonDto.toPersonDto(person);
         this.schedule = ScheduleDto.from(schedule);
         this.transactionAmount = transaction.getTransactionAmount();
-        this.gift = transaction.getGift();
+        this.category = transaction.getCategory();
         this.memo = transaction.getMemo();
         this.createdAt = transaction.getCreatedAt();
         this.updatedAt = transaction.getUpdatedAt();

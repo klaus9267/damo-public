@@ -17,7 +17,7 @@ public record RequestUpdateTransactionDto(
         TransactionAmount transactionAmount,
 
         @Schema(description = "선물 종류 CASH | GIFT | MOBILE_VOUCHER | ETC", example = "CASH")
-        TransactionCategory gift,
+        TransactionCategory category,
 
         @Length(max = 200, message = "memo max length 200")
         @Schema(description = "없거나 최대 200자", example = "메모가 사는 곳은 메모도 메모시 memory 엌ㅋㅋㅋㅋ")

@@ -41,7 +41,7 @@ public class Transaction {
     private Timestamp updatedAt;
 
     @Enumerated(EnumType.STRING)
-    private TransactionCategory gift;
+    private TransactionCategory category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
@@ -58,7 +58,7 @@ public class Transaction {
         this.person = Person.builder().id(transactionDto.personId()).build();
         this.transactionAmount = transactionDto.transactionAmount();
         this.memo = transactionDto.memo();
-        this.gift = transactionDto.gift();
+        this.category = transactionDto.category();
         this.user = User.builder().id(userId).build();
         this.schedule = Schedule.from(transactionDto, this);
     }
