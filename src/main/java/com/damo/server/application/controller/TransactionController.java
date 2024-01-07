@@ -1,9 +1,6 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.controller.operation.transaction.CreateTransactionOperationWithBody;
-import com.damo.server.application.controller.operation.transaction.TransactionOperationWithNoBody;
-import com.damo.server.application.controller.operation.transaction.TransactionOperationWithPagination;
-import com.damo.server.application.controller.operation.transaction.UpdateTransactionOperationWithBody;
+import com.damo.server.application.controller.operation.transaction.*;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
@@ -44,14 +41,14 @@ public class TransactionController {
     }
 
     @GetMapping("/total-amounts")
-    @TransactionOperationWithNoBody(summary = "거래 총액 조회")
+    @TransactionOperationWithBody(summary = "전체 거래 총액 조회", description = "전체 내역 총액 데이터 응답")
     public ResponseEntity<TransactionTotalAmount> readTotalAmounts(@AuthenticationPrincipal final UserDto user) {
         final TransactionTotalAmount amount = transactionReadService.readTotalAmounts(user.getId());
         return ResponseEntity.ok(amount);
     }
 
     @GetMapping("/term-amounts")
-    @TransactionOperationWithNoBody(summary = "최근 거래 총액 조회")
+    @TransactionOperationWithBody(summary = "최근 거래 총액 조회", description = "최근 거래 총액 데이터 응답")
     public ResponseEntity<TransactionTotalAmount> readRecentAmounts(
             @Parameter(description = "조회 시작 날짜(기본값 1달 전)", example = "2023-12-12T00:00:00")
             @RequestParam(value = "startedAt", required = false) final LocalDateTime startedAt,
@@ -62,7 +59,7 @@ public class TransactionController {
     }
 
     @GetMapping("{transactionId}")
-    @TransactionOperationWithNoBody(summary = "내역 단건 조회")
+    @TransactionOperationWithBody(summary = "내역 단건 조회", description = "단 건 조회된 데이터 응답")
     public ResponseEntity<TransactionDto> readTransaction(
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
