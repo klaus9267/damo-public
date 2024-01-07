@@ -39,6 +39,7 @@ import java.lang.annotation.Target;
                         content = @Content(schema = @Schema(implementation = InternalServerError.class))
                 )}
 )
+@ResponseStatus(HttpStatus.NO_CONTENT)
 public @interface CreateTransactionOperationWithBody {
     String summary() default "";
 

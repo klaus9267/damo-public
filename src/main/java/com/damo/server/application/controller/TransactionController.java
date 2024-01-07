@@ -32,7 +32,6 @@ public class TransactionController {
 
     @PostMapping
     @CreateTransactionOperationWithBody(summary = "내역 추가")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addTransaction(
             @Valid @RequestBody final RequestCreateTransactionDto transactionDto,
             @AuthenticationPrincipal final UserDto user
@@ -81,7 +80,6 @@ public class TransactionController {
 
     @PatchMapping("{transactionId}")
     @UpdateTransactionOperationWithBody(summary = "내역 수정")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void patchTransactionById(
             @RequestBody final RequestUpdateTransactionDto transactionDto,
             @PathVariable("transactionId") final Long transactionId,
@@ -92,7 +90,6 @@ public class TransactionController {
 
     @DeleteMapping("{transactionId}")
     @TransactionOperationWithNoBody(summary = "내역 삭제")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeTransactionById(
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user

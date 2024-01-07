@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,6 +41,7 @@ import java.lang.annotation.Target;
                 description = "INTERNAL_SERVER_ERROR",
                 content = @Content(schema = @Schema(implementation = InternalServerError.class))
         )})
+@ResponseStatus(HttpStatus.NO_CONTENT)
 public @interface TransactionOperationWithNoBody {
     String summary() default "";
 

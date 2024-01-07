@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -43,6 +45,7 @@ import java.lang.annotation.Target;
                         content = @Content(schema = @Schema(implementation = InternalServerError.class))
                 )}
 )
+@ResponseStatus(HttpStatus.NO_CONTENT)
 public @interface UpdateTransactionOperationWithBody {
     String summary() default "";
 
