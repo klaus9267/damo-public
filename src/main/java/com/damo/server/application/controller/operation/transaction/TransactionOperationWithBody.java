@@ -1,6 +1,5 @@
 package com.damo.server.application.controller.operation.transaction;
 
-
 import com.damo.server.application.handler.error.BadRequestError;
 import com.damo.server.application.handler.error.InternalServerError;
 import com.damo.server.application.handler.error.NotFoundError;
@@ -9,8 +8,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,7 +17,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(responses = {
-        @ApiResponse(responseCode = "204", description = "응답 없음"),
+        @ApiResponse(responseCode = "200", description = "조회 데이터 응답", useReturnTypeSchema = true),
         @ApiResponse(
                 responseCode = "400",
                 description = "BAD_REQUEST",
@@ -41,8 +38,7 @@ import java.lang.annotation.Target;
                 description = "INTERNAL_SERVER_ERROR",
                 content = @Content(schema = @Schema(implementation = InternalServerError.class))
         )})
-@ResponseStatus(HttpStatus.NO_CONTENT)
-public @interface TransactionOperationWithNoBody {
+public @interface TransactionOperationWithBody {
     String summary() default "";
 
     String description() default "";

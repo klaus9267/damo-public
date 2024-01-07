@@ -58,6 +58,10 @@ public class CustomExceptionHandler {
     /* 알 수 없는 에러 */
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleUnknownException(final RuntimeException ex) {
+        // 임시 Enum 에러 핸들링 분기, TODO: enum 에러 메시지 가공
+        if(ex.getMessage().contains("Enum class")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(buildExceptionError(ex, HttpStatus.BAD_REQUEST));
+        }
         log.warn("알 수 없음, ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(buildExceptionError(ex, HttpStatus.INTERNAL_SERVER_ERROR));
     }
