@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 public class ActionValidator implements ConstraintValidator<ActionValid, TransactionAction> {
     @Override
     public boolean isValid(final TransactionAction action, final ConstraintValidatorContext context) {
-        return action != TransactionAction.TOTAL;
+        return !TransactionAction.TOTAL.equals(action);
     }
 }
 
