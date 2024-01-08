@@ -14,7 +14,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -27,15 +26,11 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime eventDate;
-
     @Embedded
-    private TransactionAmount transaction;
+    private TransactionAmount transactionAmount;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
-
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -45,6 +40,9 @@ public class Transaction {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    @Enumerated(EnumType.STRING)
+    private TransactionCategory category;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
@@ -53,25 +51,24 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
+    @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
     private Schedule schedule;
 
-    private Transaction(final RequestCreateTransactionDto scheduleDto, final Long userId) {
-        this.person = Person.builder().id(scheduleDto.personId()).build();
-        this.eventDate = scheduleDto.eventDate();
-        this.transaction = scheduleDto.transaction();
-        this.memo = scheduleDto.memo();
+    private Transaction(final RequestCreateTransactionDto transactionDto, final Long userId) {
+        this.person = Person.builder().id(transactionDto.personId()).build();
+        this.transactionAmount = transactionDto.transactionAmount();
+        this.memo = transactionDto.memo();
+        this.category = transactionDto.category();
         this.user = User.builder().id(userId).build();
+        this.schedule = Schedule.from(transactionDto, this);
     }
 
-    public static Transaction from(final RequestCreateTransactionDto scheduleDto, final Long userId) {
-        return new Transaction(scheduleDto, userId);
+    public static Transaction from(final RequestCreateTransactionDto transactionDto, final Long userId) {
+        return new Transaction(transactionDto, userId);
     }
 
-    public void changeInfo(final RequestUpdateTransactionDto scheduleDto) {
-        this.eventDate = scheduleDto.eventDate() != null ? scheduleDto.eventDate() : this.getEventDate();
-        this.transaction = scheduleDto.transaction() != null ? scheduleDto.transaction() : this.getTransaction();
-        this.memo = scheduleDto.memo() != null ? scheduleDto.memo() : this.getMemo();
+    public void changeInfo(final RequestUpdateTransactionDto transactionDto) {
+        this.transactionAmount = transactionDto.transactionAmount() != null ? transactionDto.transactionAmount() : this.getTransactionAmount();
+        this.memo = transactionDto.memo() != null ? transactionDto.memo() : this.getMemo();
     }
 }

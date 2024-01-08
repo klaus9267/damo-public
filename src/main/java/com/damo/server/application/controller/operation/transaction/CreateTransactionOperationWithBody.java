@@ -3,12 +3,14 @@ package com.damo.server.application.controller.operation.transaction;
 import com.damo.server.application.handler.error.BadRequestError;
 import com.damo.server.application.handler.error.InternalServerError;
 import com.damo.server.application.handler.error.UnauthorizedError;
-import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
+import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springdoc.core.converters.models.PageableAsQueryParam;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -18,11 +20,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
+        requestBody = @RequestBody(content = @Content(schema = @Schema(implementation = RequestCreateTransactionDto.class))),
         responses = {
-                @ApiResponse(
-                        responseCode = "200",
-                        description = "페이지네이션 처리된 데이터 응답",
-                        content = @Content(schema = @Schema(implementation = TransactionPaginationResponseDto.class))),
+                @ApiResponse(responseCode = "204", description = "성공적으로 반영됨"),
                 @ApiResponse(
                         responseCode = "400",
                         description = "BAD_REQUEST",
@@ -39,8 +39,8 @@ import java.lang.annotation.Target;
                         content = @Content(schema = @Schema(implementation = InternalServerError.class))
                 )}
 )
-@PageableAsQueryParam
-public @interface TransactionOperationWithPagination {
+@ResponseStatus(HttpStatus.NO_CONTENT)
+public @interface CreateTransactionOperationWithBody {
     String summary() default "";
 
     String description() default "";

@@ -16,11 +16,12 @@ public class TransactionAmount {
     private static final Long DEFAULT_AMOUNT = 0L;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     @ActionValid
     @Schema(description = "거래 종류", example = "GIVING")
     private final TransactionAction action;
 
-    @NotNull(message = "amount is required")
+    @NotNull
     @Schema(description = "거래 금액", example = "50000")
     private final Long amount;
 
