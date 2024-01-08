@@ -46,7 +46,7 @@ jobs:
     - name: Build with Gradle
       run: |
         sudo chmod +x ./gradlew
-        ./gradlew wrap
+        ./gradlew wrapper --gradle-version=8.4
         ./gradlew bootJar
 
     - name: docker login
