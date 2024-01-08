@@ -19,6 +19,12 @@ public class PersonBulk {
     private final JdbcTemplate jdbcTemplate;
 
     @Transactional
+    public void clear() {
+        final String sql = "DELETE FROM persons";
+        jdbcTemplate.execute(sql);
+    }
+
+    @Transactional
     public void bulkInsert(final Integer batchSize, final Long id) {
         for(int i = 1; i <= batchSize; i++) {
             batchInsert(batchSize, id);

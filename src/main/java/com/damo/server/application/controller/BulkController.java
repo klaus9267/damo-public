@@ -25,8 +25,15 @@ public class BulkController {
             @RequestParam("size")
             final Integer size,
             @AuthenticationPrincipal
-            final UserDto user) {
+            final UserDto user
+    ) {
         personBulk.bulkInsert(size, user.getId());
+    }
+
+    @DeleteMapping("/persons")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void clearPerson() {
+        personBulk.clear();
     }
 
 }
