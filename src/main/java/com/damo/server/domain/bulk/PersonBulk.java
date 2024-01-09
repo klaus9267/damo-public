@@ -54,8 +54,17 @@ public class PersonBulk {
     }
 
     private String generateRandomName() {
-        // 구현 필요: 랜덤 이름 생성 로직
-        return String.format("%08d", new Random().nextInt(100000)) + new Random().nextInt(10000);
+        Random random = new Random();
+
+        int length = random.nextInt(8) + 3; // 3~10자 사이의 길이를 랜덤으로 생성
+        StringBuilder hangulString = new StringBuilder();
+
+        for (int i = 0; i < length; i++) {
+            char randomHangulChar = (char) (0xAC00 + random.nextInt(11172)); // 한글 음절 범위 내의 랜덤 유니코드
+            hangulString.append(randomHangulChar);
+        }
+
+        return hangulString.toString();
     }
 
     private PersonRelation generateRandomRelation() {
@@ -64,12 +73,10 @@ public class PersonBulk {
     }
 
     private String generateRandomMemo() {
-        // 구현 필요: 랜덤 메모 생성 로직
         return "랜덤 메모 " + new Random().nextInt(10000);
     }
 
     private String generateRandomContact() {
-        // 구현 필요: 랜덤 전화번호 생성 로직
         return "010" + String.format("%08d", new Random().nextInt(100000000));
     }
 }
