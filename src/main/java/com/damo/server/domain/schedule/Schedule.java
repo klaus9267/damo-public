@@ -1,7 +1,9 @@
 package com.damo.server.domain.schedule;
 
+import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
+import com.damo.server.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,6 +48,10 @@ public class Schedule {
     @UpdateTimestamp
     private Timestamp updatedAt;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
@@ -56,7 +62,19 @@ public class Schedule {
         this.transaction = transaction;
     }
 
+    public Schedule(final RequestCreateScheduleDto scheduleDto, final Long userId) {
+        this.event = scheduleDto.event();
+        this.eventDate = scheduleDto.eventDate();
+        this.status = scheduleDto.status();
+        this.memo = scheduleDto.memo();
+        this.user = User.builder().id(userId).build();
+    }
+
     public static Schedule from(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
         return new Schedule(transactionDto, transaction);
+    }
+
+    public static Schedule from(final RequestCreateScheduleDto scheduleDto, final Long userId) {
+        return new Schedule(scheduleDto, userId);
     }
 }
