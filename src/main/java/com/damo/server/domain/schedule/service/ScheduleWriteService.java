@@ -12,11 +12,11 @@ import org.springframework.stereotype.Service;
 public class ScheduleWriteService {
     private final ScheduleRepository scheduleRepository;
 
-    public void addSchedule(RequestCreateScheduleDto scheduleDto, Long userId) {
+    public void addSchedule(final RequestCreateScheduleDto scheduleDto, final Long userId) {
         if (scheduleRepository.findByEventAndEventDateAndUserId(scheduleDto.event(), scheduleDto.eventDate(), userId).isPresent()) {
             throw new BadRequestException("일정 내에서 동일한 기록이 존재");
         }
-        Schedule schedule = Schedule.from(scheduleDto, userId);
+        final Schedule schedule = Schedule.from(scheduleDto, userId);
         scheduleRepository.save(schedule);
     }
 }
