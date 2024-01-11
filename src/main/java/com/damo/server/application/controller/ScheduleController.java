@@ -1,11 +1,10 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.controller.operation.transaction.TransactionOperationWithBody;
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
+import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.service.ScheduleReadService;
 import com.damo.server.domain.schedule.service.ScheduleWriteService;
-import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -41,5 +40,15 @@ public class ScheduleController {
     ) {
         final ScheduleDto scheduleDto = scheduleReadServices.readSchedule(scheduleId, user.getId());
         return ResponseEntity.ok(scheduleDto);
+    }
+
+    // swagger 추가 예정
+    @PatchMapping("{scheduleId}")
+    public void patchScheduleById(
+            @PathVariable("scheduleId") final Long scheduleId,
+            @Valid @RequestBody final RequestUpdateScheduleDto scheduleDto,
+            @AuthenticationPrincipal final UserDto user
+    ) {
+        scheduleWriteService.patchScheduleById(scheduleDto, scheduleId, user.getId());
     }
 }
