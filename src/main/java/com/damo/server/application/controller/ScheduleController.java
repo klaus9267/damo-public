@@ -1,6 +1,7 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
+import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.service.ScheduleReadService;
 import com.damo.server.domain.schedule.service.ScheduleWriteService;
@@ -41,6 +42,15 @@ public class ScheduleController {
     }
 
     // swagger 추가 예정
+    @PatchMapping("{scheduleId}")
+    public void patchScheduleById(
+            @PathVariable("scheduleId") final Long scheduleId,
+            @Valid @RequestBody final RequestUpdateScheduleDto scheduleDto,
+            @AuthenticationPrincipal final UserDto user
+    ) {
+        scheduleWriteService.patchScheduleById(scheduleDto, scheduleId, user.getId());
+    }
+  
     @DeleteMapping("{scheduleId}")
     public void removeScheduleById(
             @PathVariable("scheduleId") final Long scheduleId,

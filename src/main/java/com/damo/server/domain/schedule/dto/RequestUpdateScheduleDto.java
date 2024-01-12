@@ -1,6 +1,7 @@
 package com.damo.server.domain.schedule.dto;
 
 import com.damo.server.domain.schedule.ScheduleStatus;
+import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +9,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
-public record RequestCreateScheduleDto(
+public record RequestUpdateScheduleDto(
         @NotNull(message = "eventDate is required")
         @Schema(description = "거래 날짜", example = "2024-01-02T00:00:00")
         LocalDateTime eventDate,
@@ -22,6 +23,9 @@ public record RequestCreateScheduleDto(
         String memo,
 
         @Schema(description = "일정 중요도 ( IMPORTANT | NORMAL)", example = "NORMAL")
-        ScheduleStatus status
+        ScheduleStatus status,
+
+        @Schema(description = "내역 변경 내용")
+        RequestUpdateTransactionDto transactionDto
 ) {
 }

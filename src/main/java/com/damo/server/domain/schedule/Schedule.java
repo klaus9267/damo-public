@@ -1,6 +1,7 @@
 package com.damo.server.domain.schedule;
 
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
+import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.user.entity.User;
@@ -76,5 +77,16 @@ public class Schedule {
 
     public static Schedule from(final RequestCreateScheduleDto scheduleDto, final Long userId) {
         return new Schedule(scheduleDto, userId);
+    }
+
+    public void changeSchedule(final RequestUpdateScheduleDto scheduleDto) {
+        this.event = scheduleDto.event();
+        this.eventDate = scheduleDto.eventDate();
+        this.status = scheduleDto.status();
+        this.memo = scheduleDto.memo();
+
+        if (scheduleDto.transactionDto() != null) {
+            transaction.changeInfo(scheduleDto.transactionDto());
+        }
     }
 }
