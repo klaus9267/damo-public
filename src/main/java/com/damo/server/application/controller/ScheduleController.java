@@ -22,7 +22,6 @@ public class ScheduleController {
     private final ScheduleWriteService scheduleWriteService;
     private final ScheduleReadService scheduleReadServices;
 
-    // swagger 추가 예정
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addSchedule(
@@ -50,5 +49,13 @@ public class ScheduleController {
             @AuthenticationPrincipal final UserDto user
     ) {
         scheduleWriteService.patchScheduleById(scheduleDto, scheduleId, user.getId());
+    }
+  
+    @DeleteMapping("{scheduleId}")
+    public void removeScheduleById(
+            @PathVariable("scheduleId") final Long scheduleId,
+            @AuthenticationPrincipal final UserDto user
+    ) {
+        scheduleWriteService.removeScheduleById(scheduleId, user.getId());
     }
 }
