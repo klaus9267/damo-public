@@ -1,11 +1,9 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.controller.operation.transaction.TransactionOperationWithBody;
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.schedule.service.ScheduleReadService;
 import com.damo.server.domain.schedule.service.ScheduleWriteService;
-import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -23,7 +21,6 @@ public class ScheduleController {
     private final ScheduleWriteService scheduleWriteService;
     private final ScheduleReadService scheduleReadServices;
 
-    // swagger 추가 예정
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addSchedule(
@@ -41,5 +38,14 @@ public class ScheduleController {
     ) {
         final ScheduleDto scheduleDto = scheduleReadServices.readSchedule(scheduleId, user.getId());
         return ResponseEntity.ok(scheduleDto);
+    }
+
+    // swagger 추가 예정
+    @DeleteMapping("{scheduleId}")
+    public void removeScheduleById(
+            @PathVariable("scheduleId") final Long scheduleId,
+            @AuthenticationPrincipal final UserDto user
+    ) {
+        scheduleWriteService.removeScheduleById(scheduleId, user.getId());
     }
 }
