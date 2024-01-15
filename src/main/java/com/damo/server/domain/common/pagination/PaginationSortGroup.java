@@ -10,6 +10,7 @@ import java.util.List;
 public enum PaginationSortGroup {
     PERSON(List.of(PaginationSortType.NAME, PaginationSortType.RELATION, PaginationSortType.CREATED_AT)),
     TRANSACTION(List.of(PaginationSortType.ACTION, PaginationSortType.EVENT_DATE)),
+    SCHEDULE(List.of(PaginationSortType.EVENT_DATE)),
     EMPTY(List.of(PaginationSortType.EMPTY));
 
     private final List<PaginationSortType> sortTypes;

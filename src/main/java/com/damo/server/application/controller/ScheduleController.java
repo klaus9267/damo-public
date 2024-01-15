@@ -1,14 +1,17 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
 import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
+import com.damo.server.domain.schedule.dto.SchedulePaginationResponseDto;
 import com.damo.server.domain.schedule.service.ScheduleReadService;
 import com.damo.server.domain.schedule.service.ScheduleWriteService;
 import com.damo.server.domain.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,6 +44,15 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleDto);
     }
 
+    @GetMapping
+    public ResponseEntity<SchedulePaginationResponseDto> readScheduleListByDate(
+            @ParameterObject final SchedulePaginationParam paginationParam,
+            @AuthenticationPrincipal final UserDto user
+    ) {
+        final SchedulePaginationResponseDto scheduleDto = scheduleReadServices.readScheduleByEventDate(paginationParam, user.getId());
+        return ResponseEntity.ok(scheduleDto);
+    }
+
     // swagger 추가 예정
     @PatchMapping("{scheduleId}")
     public void patchScheduleById(
@@ -50,7 +62,7 @@ public class ScheduleController {
     ) {
         scheduleWriteService.patchScheduleById(scheduleDto, scheduleId, user.getId());
     }
-  
+
     @DeleteMapping("{scheduleId}")
     public void removeScheduleById(
             @PathVariable("scheduleId") final Long scheduleId,
