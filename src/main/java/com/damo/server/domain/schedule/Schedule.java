@@ -69,6 +69,10 @@ public class Schedule {
         this.status = scheduleDto.status();
         this.memo = scheduleDto.memo();
         this.user = User.builder().id(userId).build();
+
+        if (scheduleDto.transactionId() != null) {
+            this.transaction = Transaction.builder().id(scheduleDto.transactionId()).build();
+        }
     }
 
     public static Schedule from(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
