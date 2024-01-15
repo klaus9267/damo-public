@@ -61,6 +61,7 @@ public class Schedule {
         this.event = transactionDto.event();
         this.eventDate = transactionDto.eventDate();
         this.transaction = transaction;
+        this.user = transaction.getUser();
     }
 
     public Schedule(final RequestCreateScheduleDto scheduleDto, final Long userId) {
@@ -69,6 +70,10 @@ public class Schedule {
         this.status = scheduleDto.status();
         this.memo = scheduleDto.memo();
         this.user = User.builder().id(userId).build();
+
+        if (scheduleDto.transactionId() != null) {
+            this.transaction = Transaction.builder().id(scheduleDto.transactionId()).build();
+        }
     }
 
     public static Schedule from(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
@@ -85,8 +90,8 @@ public class Schedule {
         this.status = scheduleDto.status();
         this.memo = scheduleDto.memo();
 
-        if (scheduleDto.transactionDto() != null) {
-            transaction.changeInfo(scheduleDto.transactionDto());
+        if (scheduleDto.transactionId() != null) {
+            this.transaction = Transaction.builder().id(scheduleDto.transactionId()).build();
         }
     }
 }

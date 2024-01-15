@@ -22,6 +22,9 @@ public record RequestCreateScheduleDto(
         String memo,
 
         @Schema(description = "일정 중요도 ( IMPORTANT | NORMAL)", example = "NORMAL")
-        ScheduleStatus status
+        ScheduleStatus status,
+
+        @Schema(description = "내역 id", example = "1")
+        Long transactionId
 ) {
 }
