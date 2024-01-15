@@ -61,6 +61,7 @@ public class Schedule {
         this.event = transactionDto.event();
         this.eventDate = transactionDto.eventDate();
         this.transaction = transaction;
+        this.user = transaction.getUser();
     }
 
     public Schedule(final RequestCreateScheduleDto scheduleDto, final Long userId) {
