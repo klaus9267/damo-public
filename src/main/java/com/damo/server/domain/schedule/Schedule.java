@@ -85,8 +85,8 @@ public class Schedule {
         this.status = scheduleDto.status();
         this.memo = scheduleDto.memo();
 
-        if (scheduleDto.transactionDto() != null) {
-            transaction.changeInfo(scheduleDto.transactionDto());
+        if (scheduleDto.transactionId() != null) {
+            this.transaction = Transaction.builder().id(scheduleDto.transactionId()).build();
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.damo.server.domain.schedule.dto;
 
 import com.damo.server.domain.schedule.ScheduleStatus;
-import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +24,7 @@ public record RequestUpdateScheduleDto(
         @Schema(description = "일정 중요도 ( IMPORTANT | NORMAL)", example = "NORMAL")
         ScheduleStatus status,
 
-        @Schema(description = "내역 변경 내용")
-        RequestUpdateTransactionDto transactionDto
+        @Schema(description = "내역 id", example = "1")
+        Long transactionId
 ) {
 }
