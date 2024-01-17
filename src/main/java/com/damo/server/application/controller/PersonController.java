@@ -37,7 +37,7 @@ public class PersonController {
     }
 
     @CreatePersonOperationWithBody(summary = "대상 추가", description = "대상을 추가함")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void addPerson(
             @RequestBody @Valid final RequestCreatePersonDto personDto,
