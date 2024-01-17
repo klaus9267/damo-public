@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @Service
 public class ScheduleReadService {
@@ -21,9 +23,8 @@ public class ScheduleReadService {
     }
 
     public SchedulePaginationResponseDto readScheduleByEventDate(final SchedulePaginationParam paginationParam, final Long userId) {
-        int year = paginationParam.getDate().getYear();
-        int month = paginationParam.getDate().getMonthValue();
-        final Page<ScheduleDto> schedulePage = scheduleRepository.findAllScheduleByEventDate(paginationParam.toPageable(), userId, year, month);
+        LocalDate paginationDate = paginationParam.getDate();
+        final Page<ScheduleDto> schedulePage = scheduleRepository.findAllScheduleByEventDate(paginationParam.toPageable(), userId, paginationDate.getYear(), paginationDate.getMonthValue());
         return SchedulePaginationResponseDto.from(schedulePage);
     }
 }

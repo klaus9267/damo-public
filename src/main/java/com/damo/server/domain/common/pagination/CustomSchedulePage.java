@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageImpl;
 public class CustomSchedulePage extends PageImpl<TransactionWithScheduleDto> {
     private final TransactionTotalAmount amounts;
 
-    public CustomSchedulePage(Page<TransactionWithScheduleDto> page) {
+    public CustomSchedulePage(final Page<TransactionWithScheduleDto> page) {
         super(page.getContent(), page.getPageable(), page.getTotalElements());
         this.amounts = null;
     }
