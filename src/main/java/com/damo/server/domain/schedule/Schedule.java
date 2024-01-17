@@ -1,6 +1,7 @@
 package com.damo.server.domain.schedule;
 
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
+import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.user.entity.User;
@@ -60,6 +61,7 @@ public class Schedule {
         this.event = transactionDto.event();
         this.eventDate = transactionDto.eventDate();
         this.transaction = transaction;
+        this.user = transaction.getUser();
     }
 
     public Schedule(final RequestCreateScheduleDto scheduleDto, final Long userId) {
@@ -68,6 +70,10 @@ public class Schedule {
         this.status = scheduleDto.status();
         this.memo = scheduleDto.memo();
         this.user = User.builder().id(userId).build();
+
+        if (scheduleDto.transactionId() != null) {
+            this.transaction = Transaction.builder().id(scheduleDto.transactionId()).build();
+        }
     }
 
     public static Schedule from(final RequestCreateTransactionDto transactionDto, final Transaction transaction) {
@@ -76,5 +82,16 @@ public class Schedule {
 
     public static Schedule from(final RequestCreateScheduleDto scheduleDto, final Long userId) {
         return new Schedule(scheduleDto, userId);
+    }
+
+    public void changeSchedule(final RequestUpdateScheduleDto scheduleDto) {
+        this.event = scheduleDto.event();
+        this.eventDate = scheduleDto.eventDate();
+        this.status = scheduleDto.status();
+        this.memo = scheduleDto.memo();
+
+        if (scheduleDto.transactionId() != null) {
+            this.transaction = Transaction.builder().id(scheduleDto.transactionId()).build();
+        }
     }
 }

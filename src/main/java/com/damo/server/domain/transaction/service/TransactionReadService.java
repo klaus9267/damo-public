@@ -5,7 +5,7 @@ import com.damo.server.application.handler.exception.NotFoundException;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.TransactionTotalAmount;
-import com.damo.server.domain.transaction.dto.TransactionDto;
+import com.damo.server.domain.transaction.dto.TransactionWithScheduleDto;
 import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import lombok.AllArgsConstructor;
@@ -33,13 +33,13 @@ public class TransactionReadService {
         return transactionRepository.readRecentAmounts(userId, startDate);
     }
 
-    public TransactionDto readTransaction(final Long transactionId, final Long userId) {
+    public TransactionWithScheduleDto readTransaction(final Long transactionId, final Long userId) {
         final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId).orElseThrow(() -> new NotFoundException("조회할 대상을 찾을 수 없음"));
-        return TransactionDto.from(transaction);
+        return TransactionWithScheduleDto.from(transaction);
     }
 
     public TransactionPaginationResponseDto readTransactionList(final TransactionPaginationParam param, final Long userId) {
-        final Page<TransactionDto> transactionPage = transactionRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getAction());
+        final Page<TransactionWithScheduleDto> transactionPage = transactionRepository.findAllByUserId(param.toPageable(), userId, param.getStartedAt(), param.getEndedAt(), param.getAction());
         return TransactionPaginationResponseDto.from(transactionPage);
     }
 }

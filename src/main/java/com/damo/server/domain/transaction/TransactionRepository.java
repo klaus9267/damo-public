@@ -1,6 +1,6 @@
 package com.damo.server.domain.transaction;
 
-import com.damo.server.domain.transaction.dto.TransactionDto;
+import com.damo.server.domain.transaction.dto.TransactionWithScheduleDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     Optional<Transaction> findByIdAndUserId(@Param("id") final Long id, @Param("userId") final Long userId);
 
     @Query("""
-           SELECT new com.damo.server.domain.transaction.dto.TransactionDto(t, p, s)
+           SELECT new com.damo.server.domain.transaction.dto.TransactionWithScheduleDto(t, p, s)
            FROM Transaction t
                 LEFT JOIN FETCH  Person p ON t.person.id = p.id
                 LEFT JOIN FETCH  Schedule s ON t.schedule.id = s.id
@@ -36,7 +36,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 AND (:endedAt IS NULL OR s.eventDate <= :endedAt)
                 AND ('TOTAL' = :action  OR t.transactionAmount.action = :action)
            """)
-    Page<TransactionDto> findAllByUserId(
+    Page<TransactionWithScheduleDto> findAllByUserId(
             final Pageable pageable,
             @Param("userId") final Long userId,
             @Param("startedAt") final LocalDateTime startedAt,

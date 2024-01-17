@@ -8,7 +8,7 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
 
-public record RequestCreateScheduleDto(
+public record RequestUpdateScheduleDto(
         @NotNull(message = "eventDate is required")
         @Schema(description = "거래 날짜", example = "2024-01-02T00:00:00")
         LocalDateTime eventDate,
