@@ -49,7 +49,7 @@ import java.lang.annotation.Target;
                 )
         }
 )
-public @interface CreatePersonOperation {
+public @interface PersonCreateOperation {
     String summary() default "";
     String description() default "";
 }

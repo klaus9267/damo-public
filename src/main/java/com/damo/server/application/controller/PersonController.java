@@ -25,7 +25,7 @@ public class PersonController {
     private final PersonWriteService personWriteService;
     private final PersonReadService personReadService;
 
-    @PaginationPersonOperation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
+    @PersonPaginationOperation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
     @GetMapping
     public ResponseEntity<?> readPeopleByUserIdAndRelation(
             @ParameterObject final PersonPaginationParam paginationParam,
@@ -47,7 +47,7 @@ public class PersonController {
     }
 
 
-    @UpdatePersonOperation(summary = "대상 수정", description = "대상을 수정함")
+    @PersonUpdateOperation(summary = "대상 수정", description = "대상을 수정함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("{personId}")
     public void patchPersonById(
@@ -59,7 +59,7 @@ public class PersonController {
     }
 
 
-    @DeletePersonOperation(summary = "대상 제거", description = "대상 제거함")
+    @PersonDeleteOperation(summary = "대상 제거", description = "대상 제거함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{personId}")
     public void removePersonById(

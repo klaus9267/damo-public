@@ -50,7 +50,7 @@ import java.lang.annotation.Target;
         }
 )
 @PageableAsQueryParam
-public @interface PaginationPersonOperation {
+public @interface PersonPaginationOperation {
     String summary() default "";
     String description() default "";
 }

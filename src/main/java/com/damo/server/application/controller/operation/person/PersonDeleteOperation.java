@@ -51,7 +51,7 @@ import java.lang.annotation.Target;
         )
     }
 )
-public @interface DeletePersonOperation {
+public @interface PersonDeleteOperation {
     String summary() default "";
     String description() default "";
 }

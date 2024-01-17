@@ -57,7 +57,7 @@ import java.lang.annotation.Target;
                 )
         }
 )
-public @interface UpdatePersonOperation {
+public @interface PersonUpdateOperation {
     String summary() default "";
     String description() default "";
 }
