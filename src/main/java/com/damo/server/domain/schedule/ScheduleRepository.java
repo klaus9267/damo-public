@@ -21,8 +21,15 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
                 LEFT JOIN FETCH  s.transaction t
                 LEFT JOIN FETCH  t.person p
            WHERE p.user.id = :userId
-                AND FUNCTION('MONTH', s.eventDate) = :month
-                AND FUNCTION('YEAR', s.eventDate) = :year
+                AND (:month IS NULL OR FUNCTION('MONTH', s.eventDate) = :month)
+                AND (:year IS NULL OR FUNCTION('YEAR', s.eventDate) = :year)
+                AND  (:keyword IS NULL OR s.event LIKE :keyword)
            """)
-    Page<ScheduleDto> findAllScheduleByEventDate(final Pageable pageable, @Param("userId") final Long userId, @Param("year") final int year, @Param("month") final int month);
+    Page<ScheduleDto> findAllScheduleByEventDate(
+            final Pageable pageable,
+            @Param("userId") final Long userId,
+            @Param("year") final Integer year,
+            @Param("month") final Integer month,
+            @Param("keyword") final String keyword
+    );
 }
