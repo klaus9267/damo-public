@@ -5,7 +5,7 @@ import com.damo.server.domain.common.pagination.param.TransactionPaginationParam
 import com.damo.server.domain.transaction.TransactionTotalAmount;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
-import com.damo.server.domain.transaction.dto.TransactionDto;
+import com.damo.server.domain.transaction.dto.TransactionWithScheduleDto;
 import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
 import com.damo.server.domain.transaction.service.TransactionReadService;
 import com.damo.server.domain.transaction.service.TransactionWriteService;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -59,12 +58,12 @@ public class TransactionController {
 
     @GetMapping("{transactionId}")
     @TransactionOperationWithBody(summary = "내역 단건 조회", description = "단 건 조회된 데이터 응답")
-    public ResponseEntity<TransactionDto> readTransaction(
+    public ResponseEntity<TransactionWithScheduleDto> readTransaction(
             @PathVariable("transactionId") final Long transactionId,
             @AuthenticationPrincipal final UserDto user
     ) {
-        final TransactionDto transactionDto = transactionReadService.readTransaction(transactionId, user.getId());
-        return ResponseEntity.ok(transactionDto);
+        final TransactionWithScheduleDto transactionWithScheduleDto = transactionReadService.readTransaction(transactionId, user.getId());
+        return ResponseEntity.ok(transactionWithScheduleDto);
     }
 
     @GetMapping
