@@ -34,9 +34,9 @@ public class TransactionReadService {
         return transactionRepository.readRecentAmounts(userId, startDate);
     }
 
-    public TransactionDto readTransaction(final Long transactionId, final Long userId) {
+    public TransactionWithScheduleDto readTransaction(final Long transactionId, final Long userId) {
         final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, userId).orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND, "조회할 거래 내역을 찾을 수 없음"));
-        return TransactionDto.from(transaction);
+        return TransactionWithScheduleDto.from(transaction);
     }
 
     public TransactionPaginationResponseDto readTransactionList(final TransactionPaginationParam param, final Long userId) {
