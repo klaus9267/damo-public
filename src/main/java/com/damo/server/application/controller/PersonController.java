@@ -36,7 +36,7 @@ public class PersonController {
         return ResponseEntity.ok(peoplePagination);
     }
 
-    @CreatePersonOperationWithBody(summary = "대상 추가", description = "대상을 추가함")
+    @CreatePersonOperation(summary = "대상 추가", description = "대상을 추가함")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void addPerson(
@@ -59,7 +59,7 @@ public class PersonController {
     }
 
 
-    @PersonOperationWithNoBody(summary = "대상 제거", description = "대상 제거함")
+    @DeletePersonOperation(summary = "대상 제거", description = "대상 제거함")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{personId}")
     public void removePersonById(
