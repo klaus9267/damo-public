@@ -1,6 +1,5 @@
 package com.damo.server.application.controller.operation.person;
 
-import com.damo.server.application.handler.error.*;
 import com.damo.server.application.handler.exception.ResponseCustomException;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,7 +49,7 @@ import java.lang.annotation.Target;
                 )
         }
 )
-public @interface CreatePersonOperationWithBody {
+public @interface CreatePersonOperation {
     String summary() default "";
     String description() default "";
 }
