@@ -37,10 +37,10 @@ public class TransactionWithScheduleDto {
         this.updatedAt = transaction.getUpdatedAt();
     }
 
-    public TransactionWithScheduleDto(final Transaction transaction, final Person person) {
+    private TransactionWithScheduleDto(final Transaction transaction) {
         this.id = transaction.getId();
-        this.person = PersonDto.toPersonDto(person);
-        this.schedule = null;
+        this.person = PersonDto.toPersonDto(transaction.getPerson());
+        this.schedule = ScheduleDto.from(transaction.getSchedule());
         this.transactionAmount = transaction.getTransactionAmount();
         this.category = transaction.getCategory();
         this.memo = transaction.getMemo();
@@ -49,6 +49,6 @@ public class TransactionWithScheduleDto {
     }
 
     public static TransactionWithScheduleDto from(final Transaction transaction) {
-        return new TransactionWithScheduleDto(transaction, transaction.getPerson(), transaction.getSchedule());
+        return new TransactionWithScheduleDto(transaction);
     }
 }
