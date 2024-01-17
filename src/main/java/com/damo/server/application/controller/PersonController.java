@@ -25,7 +25,7 @@ public class PersonController {
     private final PersonWriteService personWriteService;
     private final PersonReadService personReadService;
 
-    @PersonOperationWithPagination(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
+    @PaginationPersonOperation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
     @GetMapping
     public ResponseEntity<?> readPeopleByUserIdAndRelation(
             @ParameterObject final PersonPaginationParam paginationParam,
