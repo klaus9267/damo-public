@@ -30,7 +30,7 @@ public class Schedule {
     @Column(nullable = false)
     private String event;
 
-    @Column(nullable = false)
+    @Column(nullable = false,name = "event_date")
     private LocalDateTime eventDate;
 
     @Column(columnDefinition = "TEXT")
