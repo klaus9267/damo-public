@@ -37,35 +37,38 @@ public class PersonController {
     }
 
     @PersonCreateOperation(summary = "대상 추가", description = "대상을 추가함")
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public void addPerson(
+    public ResponseEntity<?> addPerson(
             @RequestBody @Valid final RequestCreatePersonDto personDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.addPerson(personDto, user.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
     @PersonUpdateOperation(summary = "대상 수정", description = "대상을 수정함")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("{personId}")
-    public void patchPersonById(
+    public ResponseEntity<?> patchPersonById(
             @PathVariable("personId") @Valid final Long personId,
             @RequestBody final RequestUpdatePersonDto personDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.patchPersonById(personDto, personId, user.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
     @PersonDeleteOperation(summary = "대상 제거", description = "대상 제거함")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("{personId}")
-    public void removePersonById(
+    public ResponseEntity<?> removePersonById(
             @PathVariable("personId") @Valid final Long personId,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.removePersonById(personId, user.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
