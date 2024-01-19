@@ -3,7 +3,8 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.oauth.jwt.JwtHeader;
 import com.damo.server.application.config.oauth.jwt.JwtToken;
 import com.damo.server.application.config.oauth.jwt.JwtTokenService;
-import com.damo.server.application.handler.exception.UnauthorizedException;
+import com.damo.server.application.handler.exception.CustomErrorCode;
+import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.domain.user.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,7 +23,7 @@ public class OAuthController {
     public boolean checkExpiredToken(final HttpServletRequest request) {
         final String authorization = request.getHeader(JwtHeader.AUTHORIZATION.getKey());
         if(!jwtTokenService.hasBearerToken(authorization)) {
-            throw new UnauthorizedException("잘못된 토큰 정보");
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED, "잘못된 토큰 정보");
         }
         final String token = jwtTokenService.extractBearerToken(authorization);
         return jwtTokenService.verifyToken(token);
@@ -33,7 +34,7 @@ public class OAuthController {
         final String authorization = request.getHeader(JwtHeader.AUTHORIZATION.getKey());
 
         if(!jwtTokenService.hasBearerToken(authorization)) {
-            throw new UnauthorizedException("잘못된 토큰 정보");
+            throw new CustomException(CustomErrorCode.UNAUTHORIZED, "잘못된 토큰 정보");
         }
 
         final String token = jwtTokenService.extractBearerToken(authorization);
