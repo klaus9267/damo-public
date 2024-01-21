@@ -32,6 +32,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         final JwtToken jwtToken = jwtTokenService.generateToken(userDto);
         log.info("{}", jwtToken);
 
+        response.sendRedirect("http://localhost:3000"); // TODO: 추후 환경변수로 변경 필요
         writeTokenResponse(response, jwtToken);
     }
 
