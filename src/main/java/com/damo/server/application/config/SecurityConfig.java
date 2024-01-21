@@ -5,7 +5,6 @@ import com.damo.server.application.config.oauth.OAuth2SuccessHandler;
 import com.damo.server.application.config.oauth.OAuth2UserService;
 import com.damo.server.application.config.oauth.jwt.JwtTokenService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -25,7 +24,6 @@ public class SecurityConfig {
     private final OAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler successHandler;
     private final JwtTokenService jwtTokenService;
-    private final CorsFilter corsFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,15 +36,15 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 쿠키 대신 토큰 사용
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/v3/**", "/swagger-ui/**", "/oauth/token/**").permitAll() // swagger 허용
-                        .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
+                                .requestMatchers("/**").permitAll()
+//                        .requestMatchers("/v3/**", "/swagger-ui/**", "/oauth/token/**").permitAll() // swagger 허용
+//                        .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(successHandler)
                         .userInfoEndpoint(endPoint -> endPoint.userService(oAuth2UserService))
                 )
                 .addFilterBefore(new JwtTokenFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
-                .addFilter(corsFilter)
                 .build();
     }
 }

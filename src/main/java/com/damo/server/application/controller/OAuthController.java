@@ -5,19 +5,44 @@ import com.damo.server.application.config.oauth.jwt.JwtToken;
 import com.damo.server.application.config.oauth.jwt.JwtTokenService;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.oauth.OAuthProviderType;
+import com.damo.server.domain.oauth.OAuthService;
 import com.damo.server.domain.user.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.SneakyThrows;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping("oauth")
 public class OAuthController {
     private final JwtTokenService jwtTokenService;
+    private final OAuthService oAuthService;
+
+    @SneakyThrows
+    @GetMapping("{oAuthProviderType}")
+    public ResponseEntity<Void> redirectAuthCodeRequestUrl(
+            @PathVariable("oAuthProviderType") final OAuthProviderType oAuthProviderType,
+            final HttpServletResponse response
+    ) {
+        final String redirectUrl = oAuthService.getAuthCodeRequestUrl(oAuthProviderType);
+
+        response.sendRedirect(redirectUrl);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/login/{oAuthProviderType}")
+    public ResponseEntity<Long> login(
+            @PathVariable("oAuthProviderType") final OAuthProviderType oAuthProviderType,
+            @RequestParam("code") final String code
+    ) {
+        final Long login = oAuthService.login(oAuthProviderType, code);
+        return ResponseEntity.ok(login);
+    }
 
     @GetMapping("token/expired")
     public boolean checkExpiredToken(final HttpServletRequest request) {
