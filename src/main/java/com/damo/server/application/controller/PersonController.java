@@ -25,7 +25,7 @@ public class PersonController {
     private final PersonWriteService personWriteService;
     private final PersonReadService personReadService;
 
-    @PersonOperationWithPagination(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
+    @PersonPaginationOperation(summary = "대상 목록 조회 페이지네이션", description = "대상 목록 페이지네이션")
     @GetMapping
     public ResponseEntity<?> readPeopleByUserIdAndRelation(
             @ParameterObject final PersonPaginationParam paginationParam,
@@ -36,36 +36,39 @@ public class PersonController {
         return ResponseEntity.ok(peoplePagination);
     }
 
-    @CreatePersonOperationWithBody(summary = "대상 추가", description = "대상을 추가함")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PersonCreateOperation(summary = "대상 추가", description = "대상을 추가함")
     @PostMapping
-    public void addPerson(
+    public ResponseEntity<?> addPerson(
             @RequestBody @Valid final RequestCreatePersonDto personDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.addPerson(personDto, user.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
-    @UpdatePersonOperationWithBody(summary = "대상 수정", description = "대상을 수정함")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PersonUpdateOperation(summary = "대상 수정", description = "대상을 수정함")
     @PatchMapping("{personId}")
-    public void patchPersonById(
+    public ResponseEntity<?> patchPersonById(
             @PathVariable("personId") @Valid final Long personId,
             @RequestBody final RequestUpdatePersonDto personDto,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.patchPersonById(personDto, personId, user.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 
-    @PersonOperationWithNoBody(summary = "대상 제거", description = "대상 제거함")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PersonDeleteOperation(summary = "대상 제거", description = "대상 제거함")
     @DeleteMapping("{personId}")
-    public void removePersonById(
+    public ResponseEntity<?> removePersonById(
             @PathVariable("personId") @Valid final Long personId,
             @AuthenticationPrincipal final UserDto user
     ) {
         personWriteService.removePersonById(personId, user.getId());
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

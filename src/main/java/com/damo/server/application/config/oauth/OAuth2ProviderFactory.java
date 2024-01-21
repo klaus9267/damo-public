@@ -6,7 +6,8 @@ import com.damo.server.application.config.oauth.strategy.GoogleProviderStrategy;
 import com.damo.server.application.config.oauth.strategy.KakaoProviderStrategy;
 import com.damo.server.application.config.oauth.strategy.NaverProviderStrategy;
 import com.damo.server.application.config.oauth.strategy.OAuth2ProviderStrategy;
-import com.damo.server.application.handler.exception.NotFoundException;
+import com.damo.server.application.handler.exception.CustomErrorCode;
+import com.damo.server.application.handler.exception.CustomException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class OAuth2ProviderFactory {
 
     public OAuth2Provider getOAuth2Provider(String registrationId, Map<String, Object> attributes) {
         if (!strategies.containsKey(registrationId)) {
-            throw new NotFoundException("프로바이더를 찾을 수 없습니다");
+            throw new CustomException(CustomErrorCode.NOT_FOUND, "프로바이더를 찾을 수 없습니다");
         }
         return strategies.get(registrationId).getProvider(attributes);
     }
