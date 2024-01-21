@@ -1,6 +1,7 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.domain.bulk.PersonBulk;
+import com.damo.server.domain.bulk.ScheduleBulk;
 import com.damo.server.domain.bulk.TransactionBulk;
 import com.damo.server.domain.user.dto.UserDto;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 public class BulkController {
     private final PersonBulk personBulk;
     private final TransactionBulk transactionBulk;
+    private final ScheduleBulk scheduleBulk;
 
     @PostMapping("/persons")
     @ResponseStatus(HttpStatus.CREATED)
@@ -49,6 +51,22 @@ public class BulkController {
         transactionBulk.bulkInsertWithSchedule(size, user.getId(), personId, start, end);
     }
 
+    @PostMapping("/schedules")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void bulkSchedule(
+            @Parameter(example = "1000", description = "size^2 만큼 데이터가 저장됩니다. 1000 입력시 1,000,000개 저장, 1000보다 큰 값 입력시 먹통될 수 있어서 제한합니다.")
+            @Valid
+            @Max(1000)
+            @RequestParam("size") final Integer size,
+            @Parameter(example = "2023-10-01T00:00:00", description = "랜덤 날짜 시작일")
+            @RequestParam("start") final LocalDateTime start,
+            @Parameter(example = "2024-02-01T00:00:00", description = "랜덤 날짜 종료일")
+            @RequestParam("end") final LocalDateTime end,
+            @AuthenticationPrincipal final UserDto user
+    ) {
+        scheduleBulk.bulkInsertWithSchedule(size, user.getId(), start, end);
+    }
+
     @DeleteMapping("/persons")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void clearPerson() {
@@ -59,5 +77,11 @@ public class BulkController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void clearTransaction() {
         transactionBulk.clear();
+    }
+
+    @DeleteMapping("/schedules")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void clearSchedule() {
+        scheduleBulk.clear();
     }
 }
