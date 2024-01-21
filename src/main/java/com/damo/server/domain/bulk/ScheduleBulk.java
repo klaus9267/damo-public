@@ -1,8 +1,6 @@
 package com.damo.server.domain.bulk;
 
 import com.damo.server.domain.schedule.ScheduleStatus;
-import com.damo.server.domain.transaction.entity.TransactionAction;
-import com.damo.server.domain.transaction.entity.TransactionCategory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -58,17 +56,12 @@ public class ScheduleBulk {
         });
     }
 
-    public LocalDateTime generateRandomLocalDateTime(LocalDateTime start, LocalDateTime end) {
+    private LocalDateTime generateRandomLocalDateTime(LocalDateTime start, LocalDateTime end) {
         long startEpochSecond = start.toEpochSecond(ZoneOffset.UTC);
         long endEpochSecond = end.toEpochSecond(ZoneOffset.UTC);
         long randomEpochSecond = ThreadLocalRandom.current().nextLong(startEpochSecond, endEpochSecond);
 
         return LocalDateTime.ofEpochSecond(randomEpochSecond, 0, ZoneOffset.UTC);
-    }
-
-    private TransactionCategory generateRandomCategory() {
-        final TransactionCategory[] categories = TransactionCategory.values();
-        return categories[new Random().nextInt(categories.length)];
     }
 
     private ScheduleStatus generateRandomStatus() {
