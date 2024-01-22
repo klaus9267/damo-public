@@ -1,7 +1,7 @@
 package com.damo.server.application.config.oauth.kakao;
 
 import com.damo.server.domain.oauth.OAuthMember;
-import com.damo.server.application.config.oauth.OAuthMemberClient;
+import com.damo.server.application.config.oauth.OAuthUserClient;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.config.KakaoOAuthConfig;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.util.MultiValueMap;
 
 @Component
 @RequiredArgsConstructor
-public class KakaoMemberClient implements OAuthMemberClient {
+public class KakaoUserClient implements OAuthUserClient {
     private final KakaoApiClient kakaoApiClient;
     private final KakaoOAuthConfig kakaoOAuthConfig;
 
@@ -23,7 +23,7 @@ public class KakaoMemberClient implements OAuthMemberClient {
     @Override
     public OAuthMember fetch(final String authCode) {
         final KakaoToken kakaoToken = kakaoApiClient.fetchToken(getTokenRequestParam(authCode));
-        final KakaoMemberResponse kakaoMemberResponse = kakaoApiClient.fetchMember("Bearer " + kakaoToken.accessToken());
+        final KakaoUserResponse kakaoMemberResponse = kakaoApiClient.fetchMember("Bearer " + kakaoToken.accessToken());
         return kakaoMemberResponse.toDomain();  // (3)
     }
 

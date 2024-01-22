@@ -13,18 +13,18 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-public class OAuthMemberClientComposite {
-    private final Map<OAuthProviderType, OAuthMemberClient> map;
+public class OAuthUserClientComposite {
+    private final Map<OAuthProviderType, OAuthUserClient> map;
 
-    public OAuthMemberClientComposite(final Set<OAuthMemberClient> clients) {
-        this.map = clients.stream().collect(Collectors.toMap(OAuthMemberClient::providerType, Function.identity()));
+    public OAuthUserClientComposite(final Set<OAuthUserClient> clients) {
+        this.map = clients.stream().collect(Collectors.toMap(OAuthUserClient::providerType, Function.identity()));
     }
 
     public OAuthMember fetch(final OAuthProviderType oAuthProviderType, final String authCode) {
         return getClient(oAuthProviderType).fetch(authCode);
     }
 
-    private OAuthMemberClient getClient(OAuthProviderType oAuthProviderType) {
+    private OAuthUserClient getClient(OAuthProviderType oAuthProviderType) {
         return Optional.ofNullable(map.get(oAuthProviderType))
                 .orElseThrow(() -> new CustomException(CustomErrorCode.UNAUTHORIZED, "지원하지 않는 소셜 로그인"));
     }

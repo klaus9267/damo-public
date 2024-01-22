@@ -12,5 +12,5 @@ public interface GoogleApiClient {
     GoogleToken fetchToken(@RequestParam("params") final MultiValueMap<String, String> params);
 
     @GetExchange("https://www.googleapis.com/oauth2/v2/userinfo")
-    GoogleMemberResponse fetchMember(@RequestHeader(name = HttpHeaders.AUTHORIZATION) final String bearerToken);
+    GoogleUserResponse fetchMember(@RequestHeader(name = HttpHeaders.AUTHORIZATION) final String bearerToken);
 }

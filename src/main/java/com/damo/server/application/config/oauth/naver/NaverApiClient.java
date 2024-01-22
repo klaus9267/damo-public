@@ -12,5 +12,5 @@ public interface NaverApiClient {
     NaverToken fetchToken(@RequestParam("params") final MultiValueMap<String, String> params);
 
     @GetExchange("https://openapi.naver.com/v1/nid/me")
-    NaverMemberResponse fetchMember(@RequestHeader(name = HttpHeaders.AUTHORIZATION) final String bearerToken);
+    NaverUserResponse fetchMember(@RequestHeader(name = HttpHeaders.AUTHORIZATION) final String bearerToken);
 }

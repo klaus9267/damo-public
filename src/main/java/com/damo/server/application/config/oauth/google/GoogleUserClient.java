@@ -1,7 +1,7 @@
 package com.damo.server.application.config.oauth.google;
 
 import com.damo.server.domain.oauth.OAuthMember;
-import com.damo.server.application.config.oauth.OAuthMemberClient;
+import com.damo.server.application.config.oauth.OAuthUserClient;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.config.GoogleOAuthConfig;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.util.MultiValueMap;
 
 @Component
 @RequiredArgsConstructor
-public class GoogleMemberClient implements OAuthMemberClient {
+public class GoogleUserClient implements OAuthUserClient {
     private final GoogleApiClient googleApiClient;
     private final GoogleOAuthConfig googleOAuthConfig;
 
@@ -23,7 +23,7 @@ public class GoogleMemberClient implements OAuthMemberClient {
     @Override
     public OAuthMember fetch(final String authCode) {
         final GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode));
-        final GoogleMemberResponse googleMemberResponse = googleApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
+        final GoogleUserResponse googleMemberResponse = googleApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
         return googleMemberResponse.toDomain();
     }
 

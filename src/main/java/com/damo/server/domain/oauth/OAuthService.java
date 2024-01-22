@@ -1,7 +1,7 @@
 package com.damo.server.domain.oauth;
 
 import com.damo.server.application.config.jwt.JwtTokenService;
-import com.damo.server.application.config.oauth.OAuthMemberClientComposite;
+import com.damo.server.application.config.oauth.OAuthUserClientComposite;
 import com.damo.server.application.config.oauth.provider.OAuthCodeRequestUrlProviderComposite;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.jwt.JwtToken;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class OAuthService {
     private final OAuthCodeRequestUrlProviderComposite oAuthCodeRequestUrlProviderComposite;
-    private final OAuthMemberClientComposite oauthMemberClientComposite;
+    private final OAuthUserClientComposite oauthMemberClientComposite;
     private final OAuthMemberRepository oauthMemberRepository;
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
