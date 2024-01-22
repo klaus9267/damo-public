@@ -9,7 +9,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 @RequiredArgsConstructor
 public class KakaoOAuthCodeRequestUrlProvider implements OAuthCodeRequestUrlProvider {
-    private final KakaoOAuthConfig kakaoOauthConfig;
+    private final KakaoOAuthConfig kakaoOAuthConfig;
 
     @Override
     public OAuthProviderType providerType() {
@@ -18,13 +18,12 @@ public class KakaoOAuthCodeRequestUrlProvider implements OAuthCodeRequestUrlProv
 
     @Override
     public String provide() {
-        System.out.println(kakaoOauthConfig.scope());
         return UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com/oauth/authorize")
                 .queryParam("response_type", "code")
-                .queryParam("client_id", kakaoOauthConfig.clientId())
-                .queryParam("redirect_uri", kakaoOauthConfig.redirectUri())
-                .queryParam("scope", String.join(",", kakaoOauthConfig.scope()))
+                .queryParam("client_id", kakaoOAuthConfig.clientId())
+                .queryParam("redirect_uri", kakaoOAuthConfig.redirectUri())
+                .queryParam("scope", String.join(",", kakaoOAuthConfig.scope()))
                 .toUriString();
     }
 }
