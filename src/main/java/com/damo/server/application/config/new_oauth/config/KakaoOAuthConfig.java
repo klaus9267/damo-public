@@ -1,9 +1,9 @@
-package com.damo.server.domain.oauth.google;
+package com.damo.server.application.config.new_oauth.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "oauth.google")
-public record GoogleOAuthConfig (
+@ConfigurationProperties(prefix = "oauth.kakao")
+public record KakaoOAuthConfig (
         String redirectUri,
         String clientId,
         String clientSecret,

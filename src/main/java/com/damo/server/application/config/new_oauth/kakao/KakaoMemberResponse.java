@@ -1,9 +1,9 @@
-package com.damo.server.domain.oauth.kakao;
+package com.damo.server.application.config.new_oauth.kakao;
 
 
 import com.damo.server.domain.oauth.OAuthId;
 import com.damo.server.domain.oauth.OAuthMember;
-import com.damo.server.domain.oauth.OAuthProviderType;
+import com.damo.server.application.config.new_oauth.provider.OAuthProviderType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 

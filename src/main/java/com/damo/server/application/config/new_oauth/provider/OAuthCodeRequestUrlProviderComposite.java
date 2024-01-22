@@ -1,4 +1,4 @@
-package com.damo.server.domain.oauth;
+package com.damo.server.application.config.new_oauth.provider;
 
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;

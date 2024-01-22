@@ -1,8 +1,8 @@
-package com.damo.server.domain.oauth;
+package com.damo.server.application.config.new_oauth.config;
 
-import com.damo.server.domain.oauth.google.GoogleApiClient;
-import com.damo.server.domain.oauth.kakao.KakaoApiClient;
-import com.damo.server.domain.oauth.naver.NaverApiClient;
+import com.damo.server.application.config.new_oauth.google.GoogleApiClient;
+import com.damo.server.application.config.new_oauth.kakao.KakaoApiClient;
+import com.damo.server.application.config.new_oauth.naver.NaverApiClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;

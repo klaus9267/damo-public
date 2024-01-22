@@ -1,6 +1,6 @@
 package com.damo.server.application.config;
 
-import com.damo.server.domain.oauth.OAuthProviderTypeConverter;
+import com.damo.server.application.config.new_oauth.OAuthProviderTypeConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpMethod;

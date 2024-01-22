@@ -1,7 +1,6 @@
-package com.damo.server.domain.oauth.kakao;
+package com.damo.server.application.config.new_oauth.provider;
 
-import com.damo.server.domain.oauth.OAuthCodeRequestUrlProvider;
-import com.damo.server.domain.oauth.OAuthProviderType;
+import com.damo.server.application.config.new_oauth.config.KakaoOAuthConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;

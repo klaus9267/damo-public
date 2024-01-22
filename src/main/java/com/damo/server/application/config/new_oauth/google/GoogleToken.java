@@ -1,10 +1,10 @@
-package com.damo.server.domain.oauth.naver;
+package com.damo.server.application.config.new_oauth.google;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record NaverToken(
+public record GoogleToken (
         String accessToken,
         String refreshToken,
         String tokenType,

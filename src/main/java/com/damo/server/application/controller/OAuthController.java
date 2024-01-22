@@ -5,7 +5,7 @@ import com.damo.server.application.config.oauth.jwt.JwtToken;
 import com.damo.server.application.config.oauth.jwt.JwtTokenService;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
-import com.damo.server.domain.oauth.OAuthProviderType;
+import com.damo.server.application.config.new_oauth.provider.OAuthProviderType;
 import com.damo.server.domain.oauth.OAuthService;
 import com.damo.server.domain.user.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;

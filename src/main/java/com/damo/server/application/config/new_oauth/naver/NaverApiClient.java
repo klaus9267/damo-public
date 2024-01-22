@@ -1,4 +1,4 @@
-package com.damo.server.domain.oauth.naver;
+package com.damo.server.application.config.new_oauth.naver;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;

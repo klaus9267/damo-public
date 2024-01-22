@@ -1,5 +1,8 @@
 package com.damo.server.domain.oauth;
 
+import com.damo.server.application.config.new_oauth.OAuthMemberClientComposite;
+import com.damo.server.application.config.new_oauth.provider.OAuthCodeRequestUrlProviderComposite;
+import com.damo.server.application.config.new_oauth.provider.OAuthProviderType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.damo.server.domain.oauth.kakao;
+package com.damo.server.application.config.new_oauth.kakao;
 
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 

@@ -1,5 +1,6 @@
 package com.damo.server.domain.oauth;
 
+import com.damo.server.application.config.new_oauth.provider.OAuthProviderType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

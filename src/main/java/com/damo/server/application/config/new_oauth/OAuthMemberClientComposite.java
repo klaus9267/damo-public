@@ -1,7 +1,9 @@
-package com.damo.server.domain.oauth;
+package com.damo.server.application.config.new_oauth;
 
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.application.config.new_oauth.provider.OAuthProviderType;
+import com.damo.server.domain.oauth.OAuthMember;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -15,8 +17,7 @@ public class OAuthMemberClientComposite {
     private final Map<OAuthProviderType, OAuthMemberClient> map;
 
     public OAuthMemberClientComposite(final Set<OAuthMemberClient> clients) {
-        this.map = clients.stream()
-                .collect(Collectors.toMap(OAuthMemberClient::providerType, Function.identity()));
+        this.map = clients.stream().collect(Collectors.toMap(OAuthMemberClient::providerType, Function.identity()));
     }
 
     public OAuthMember fetch(final OAuthProviderType oAuthProviderType, final String authCode) {

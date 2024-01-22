@@ -1,4 +1,4 @@
-package com.damo.server.domain.oauth.google;
+package com.damo.server.application.config.new_oauth.google;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
