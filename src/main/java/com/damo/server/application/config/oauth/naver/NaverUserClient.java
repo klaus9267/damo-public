@@ -1,9 +1,9 @@
 package com.damo.server.application.config.oauth.naver;
 
-import com.damo.server.domain.oauth.OAuthMember;
 import com.damo.server.application.config.oauth.OAuthUserClient;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.config.NaverOAuthConfig;
+import com.damo.server.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -20,7 +20,7 @@ public class NaverUserClient implements OAuthUserClient {
         return OAuthProviderType.NAVER;
     }
     @Override
-    public OAuthMember fetch(final String authCode) {
+    public User fetch(final String authCode) {
         final NaverToken tokenInfo = naverApiClient.fetchToken(tokenRequestParams(authCode));
         final NaverUserResponse naverMemberResponse = naverApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
         return naverMemberResponse.toDomain();

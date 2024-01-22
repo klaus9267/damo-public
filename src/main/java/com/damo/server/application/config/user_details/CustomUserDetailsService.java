@@ -19,14 +19,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public CustomUserDetails loadUserByUsername(final String providerId) {
-        return userRepository.findOneByProviderId(providerId)
+    public CustomUserDetails loadUserByUsername(final String username) {
+        return userRepository.findOneByUsername(username)
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.UNAUTHORIZED, "유저 정보를 찾을 수 없습니다."));
     }
 
     private CustomUserDetails createUserDetails(final User user) {
-        final Collection<? extends GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().getKey()));
+        final Collection<? extends GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole().getKey()));
 
         return new CustomUserDetails(user.getUsername(), user.getProviderId(), authorities, user.getId(), user.getName());
     }

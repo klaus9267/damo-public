@@ -1,9 +1,9 @@
 package com.damo.server.application.config.oauth.kakao;
 
-import com.damo.server.domain.oauth.OAuthMember;
 import com.damo.server.application.config.oauth.OAuthUserClient;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.config.KakaoOAuthConfig;
+import com.damo.server.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -21,10 +21,10 @@ public class KakaoUserClient implements OAuthUserClient {
     }
 
     @Override
-    public OAuthMember fetch(final String authCode) {
+    public User fetch(final String authCode) {
         final KakaoToken kakaoToken = kakaoApiClient.fetchToken(getTokenRequestParam(authCode));
         final KakaoUserResponse kakaoMemberResponse = kakaoApiClient.fetchMember("Bearer " + kakaoToken.accessToken());
-        return kakaoMemberResponse.toDomain();  // (3)
+        return kakaoMemberResponse.toDomain();
     }
 
     private MultiValueMap<String, String> getTokenRequestParam(final String authCode) {

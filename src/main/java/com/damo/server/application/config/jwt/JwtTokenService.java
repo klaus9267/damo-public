@@ -51,13 +51,17 @@ public class JwtTokenService {
         final CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         final Long id = userDetails.getId();
         final String name = userDetails.getName();
+        final String username = userDetails.getUsername();
+
+        final Long now = new Date().getTime();
 
         final String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim("id", id)
                 .claim("name", name)
+                .claim("username", username)
                 .claim("authorities", authorities)
-                .setExpiration(new Date(ACCESS_TOKEN_EXPIRED_TIME))
+                .setExpiration(new Date(now + ACCESS_TOKEN_EXPIRED_TIME))
                 .signWith(secretKey)
                 .compact();
 
@@ -65,8 +69,9 @@ public class JwtTokenService {
                 .setSubject(authentication.getName())
                 .claim("id", id)
                 .claim("name", name)
+                .claim("username", username)
                 .claim("authorities", authorities)
-                .setExpiration(new Date(REFRESH_TOKEN_EXPIRED_TIME))
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRED_TIME))
                 .signWith(secretKey)
                 .compact();
 

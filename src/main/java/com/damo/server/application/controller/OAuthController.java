@@ -2,7 +2,7 @@ package com.damo.server.application.controller;
 
 import com.damo.server.application.config.jwt.JwtToken;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
-import com.damo.server.domain.oauth.OAuthService;
+import com.damo.server.application.config.oauth.OAuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -34,6 +34,7 @@ public class OAuthController {
             @RequestParam("code") final String code
     ) {
         final JwtToken jwtToken = oAuthService.login(oAuthProviderType, code);
+
         return ResponseEntity.ok(jwtToken);
     }
 }

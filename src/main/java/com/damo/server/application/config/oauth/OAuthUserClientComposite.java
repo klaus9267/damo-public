@@ -3,7 +3,7 @@ package com.damo.server.application.config.oauth;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
-import com.damo.server.domain.oauth.OAuthMember;
+import com.damo.server.domain.user.entity.User;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -20,7 +20,7 @@ public class OAuthUserClientComposite {
         this.map = clients.stream().collect(Collectors.toMap(OAuthUserClient::providerType, Function.identity()));
     }
 
-    public OAuthMember fetch(final OAuthProviderType oAuthProviderType, final String authCode) {
+    public User fetch(final OAuthProviderType oAuthProviderType, final String authCode) {
         return getClient(oAuthProviderType).fetch(authCode);
     }
 

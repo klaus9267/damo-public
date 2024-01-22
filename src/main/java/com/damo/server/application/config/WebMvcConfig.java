@@ -1,6 +1,8 @@
 package com.damo.server.application.config;
 
 import com.damo.server.application.config.oauth.OAuthProviderTypeConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpMethod;
@@ -28,5 +30,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addFormatters(final FormatterRegistry registry) {
         registry.addConverter(new OAuthProviderTypeConverter());
+    }
+    
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 }

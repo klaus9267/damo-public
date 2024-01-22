@@ -13,12 +13,12 @@ public class CustomUserDetails extends User {
 
     public CustomUserDetails(
             final String username,
-            final String password,
+            final String providerId,
             final Collection<? extends GrantedAuthority> authorities,
             final Long id,
             final String name
     ) {
-        super(username, password, authorities);
+        super(username, providerId, authorities);
         this.id = id;
         this.name = name;
     }

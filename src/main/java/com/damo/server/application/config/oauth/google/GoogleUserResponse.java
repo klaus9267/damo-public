@@ -1,8 +1,8 @@
 package com.damo.server.application.config.oauth.google;
 
-import com.damo.server.domain.oauth.OAuthId;
-import com.damo.server.domain.oauth.OAuthMember;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
+import com.damo.server.domain.user.UserRole;
+import com.damo.server.domain.user.entity.User;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -17,11 +17,15 @@ public record GoogleUserResponse(
         String picture,
         String locale
 ) {
-    public OAuthMember toDomain() {
-        return OAuthMember.builder()
-                .oAuthId(new OAuthId(String.valueOf(id), OAuthProviderType.GOOGLE))
-                .nickname(name)
-                .profileImageUrl(picture)
+    public User toDomain() {
+        return User.builder()
+                .name(name)
+                .email(email)
+                .role(UserRole.USER)
+                .username(id + "_" + OAuthProviderType.KAKAO.getKey())
+                .providerId(id)
+                .providerType(OAuthProviderType.GOOGLE)
+                .profileUrl(picture)
                 .build();
     }
 }

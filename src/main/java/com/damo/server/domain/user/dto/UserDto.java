@@ -1,6 +1,6 @@
 package com.damo.server.domain.user.dto;
 
-import com.damo.server.application.config.oauth.provider.ProviderType;
+import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.domain.user.UserRole;
 import com.damo.server.domain.user.entity.User;
 import lombok.Getter;
@@ -12,11 +12,11 @@ import java.sql.Timestamp;
 @ToString
 public class UserDto {
     private Long id;
-    private String username; // 고유 식별값
     private String name;
     private String email;
+    private String username;
     private UserRole role;
-    private ProviderType provider;
+    private OAuthProviderType providerType;
     private String providerId;
     private Timestamp createdAt;
 
@@ -29,11 +29,11 @@ public class UserDto {
 
     private UserDto(final User user) {
         this.id = user.getId();
-        this.username = user.getUsername();
         this.name = user.getName();
         this.email = user.getEmail();
+        this.username = user.getUsername();
         this.role = user.getRole();
-        this.provider = user.getProvider();
+        this.providerType = user.getProviderType();
         this.providerId = user.getProviderId();
         this.createdAt = user.getCreatedAt();
     }

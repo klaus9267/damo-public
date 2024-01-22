@@ -1,5 +1,6 @@
 package com.damo.server.domain.user.entity;
 
+import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.user.UserRole;
 import jakarta.persistence.*;
@@ -23,7 +24,7 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String username; // 고유 식별값
+    private String username;
 
     @Column(nullable = false)
     private String name;
@@ -35,25 +36,42 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private ProviderType provider;
+    @Column(name = "profile_url", nullable = false)
+    private String profileUrl;
 
     @Column(name = "provider_id", nullable = false)
     private String providerId;
+
+    @Column(name = "provider_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OAuthProviderType providerType;
 
     @CreationTimestamp
     @Column(name = "created_at")
     private Timestamp createdAt;
 
     @Builder
-    public User(Long id, String username, String name, String email, UserRole role, ProviderType provider, String providerId) {
+    public User(
+            final Long id,
+            final String name,
+            final String email,
+            final UserRole role,
+            final String username,
+            final String profileUrl,
+            final OAuthProviderType providerType,
+            final String providerId
+    ) {
         this.id = id;
-        this.username = username;
         this.name = name;
         this.email = email;
         this.role = role;
-        this.provider = provider;
+        this.username = username;
+        this.profileUrl = profileUrl;
+        this.providerType = providerType;
+        this.providerId = providerId;
+    }
+
+    public void changeProviderId(final String providerId) {
         this.providerId = providerId;
     }
 
