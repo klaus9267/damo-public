@@ -1,6 +1,6 @@
 package com.damo.server.domain.oauth;
 
-import com.damo.server.application.config.new_oauth.provider.OAuthProviderType;
+import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;

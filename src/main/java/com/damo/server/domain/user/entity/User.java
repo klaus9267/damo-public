@@ -6,6 +6,7 @@ import com.damo.server.domain.user.UserRole;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -13,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Data
 @NoArgsConstructor
 @Entity(name = "users")
