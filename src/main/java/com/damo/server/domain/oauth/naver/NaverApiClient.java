@@ -9,7 +9,7 @@ import org.springframework.web.service.annotation.PostExchange;
 
 public interface NaverApiClient {
     @PostExchange(url = "https://nid.naver.com/oauth2.0/token")
-    NaverToken fetchToken(@RequestParam final MultiValueMap<String, String> params);
+    NaverToken fetchToken(@RequestParam("params") final MultiValueMap<String, String> params);
 
     @GetExchange("https://openapi.naver.com/v1/nid/me")
     NaverMemberResponse fetchMember(@RequestHeader(name = HttpHeaders.AUTHORIZATION) final String bearerToken);
