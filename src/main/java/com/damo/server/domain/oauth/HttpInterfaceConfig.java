@@ -1,5 +1,6 @@
 package com.damo.server.domain.oauth;
 
+import com.damo.server.domain.oauth.google.GoogleApiClient;
 import com.damo.server.domain.oauth.kakao.KakaoApiClient;
 import com.damo.server.domain.oauth.naver.NaverApiClient;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,11 @@ public class HttpInterfaceConfig {
     @Bean
     public NaverApiClient naverApiClient() {
         return createHttpInterface(NaverApiClient.class);
+    }
+
+    @Bean
+    public GoogleApiClient googleApiClient() {
+        return createHttpInterface(GoogleApiClient.class);
     }
 
     private <T> T createHttpInterface(final Class<T> clazz) {
