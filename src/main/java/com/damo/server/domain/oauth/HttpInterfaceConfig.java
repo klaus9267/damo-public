@@ -1,6 +1,7 @@
 package com.damo.server.domain.oauth;
 
 import com.damo.server.domain.oauth.kakao.KakaoApiClient;
+import com.damo.server.domain.oauth.naver.NaverApiClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,6 +12,11 @@ public class HttpInterfaceConfig {
     @Bean
     public KakaoApiClient kakaoApiClient() {
         return createHttpInterface(KakaoApiClient.class);
+    }
+
+    @Bean
+    public NaverApiClient naverApiClient() {
+        return createHttpInterface(NaverApiClient.class);
     }
 
     private <T> T createHttpInterface(final Class<T> clazz) {
