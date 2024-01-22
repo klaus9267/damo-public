@@ -8,9 +8,9 @@ import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.PostExchange;
 
 public interface GoogleApiClient {
-    @PostExchange(url = "https://nid.naver.com/oauth2.0/token")
-    GoogleToken fetchToken(@RequestParam final MultiValueMap<String, String> params);
+    @PostExchange(url = "https://oauth2.googleapis.com/token")
+    GoogleToken fetchToken(@RequestParam("params") final MultiValueMap<String, String> params);
 
-    @GetExchange("https://openapi.naver.com/v1/nid/me")
+    @GetExchange("https://www.googleapis.com/oauth2/v2/userinfo")
     GoogleMemberResponse fetchMember(@RequestHeader(name = HttpHeaders.AUTHORIZATION) final String bearerToken);
 }

@@ -19,12 +19,11 @@ public class GoogleOAuthCodeRequestUrlProvider implements OAuthCodeRequestUrlPro
     @Override
     public String provide() {
         return UriComponentsBuilder
-                // TODO: UriString 수정
-                .fromUriString("https://kauth.kakao.com/oauth/authorize")
+                .fromUriString("https://accounts.google.com/o/oauth2/auth")
                 .queryParam("response_type", "code")
                 .queryParam("client_id", googleOAuthConfig.clientId())
                 .queryParam("redirect_uri", googleOAuthConfig.redirectUri())
-                .queryParam("scope", String.join(",", googleOAuthConfig.scope()))
+                .queryParam("scope", String.join(" ", googleOAuthConfig.scope()))
                 .toUriString();
     }
 }

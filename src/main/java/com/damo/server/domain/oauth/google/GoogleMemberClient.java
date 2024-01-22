@@ -32,6 +32,7 @@ public class GoogleMemberClient implements OAuthMemberClient {
         params.add("grant_type", "authorization_code");
         params.add("client_id", googleOAuthConfig.clientId());
         params.add("client_secret", googleOAuthConfig.clientSecret());
+        params.add("redirect_uri", googleOAuthConfig.redirectUri());
         params.add("code", authCode);
 
         return params;

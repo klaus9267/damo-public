@@ -8,31 +8,20 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleMemberResponse(
-        String resultcode,
-        String message,
-        Response response
+        String id,
+        String email,
+        Boolean verifiedEmail,
+        String name,
+        String givenName,
+        String familyName,
+        String picture,
+        String locale
 ) {
-
     public OAuthMember toDomain() {
         return OAuthMember.builder()
-                .oAuthId(new OAuthId(String.valueOf(response.id), OAuthProviderType.GOOGLE))
-                .nickname(response.nickname)
-                .profileImageUrl(response.profileImage)
+                .oAuthId(new OAuthId(String.valueOf(id), OAuthProviderType.GOOGLE))
+                .nickname(name)
+                .profileImageUrl(picture)
                 .build();
-    }
-
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public record Response(
-            String id,
-            String nickname,
-            String name,
-            String email,
-            String gender,
-            String age,
-            String birthday,
-            String profileImage,
-            String birthyear,
-            String mobile
-    ) {
     }
 }
