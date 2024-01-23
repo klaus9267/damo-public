@@ -23,7 +23,8 @@ public class OAuthController {
             final HttpServletRequest request,
             final HttpServletResponse response
     ) {
-        final boolean isDev = request.getRequestURL().toString().contains("localhost");
+        final String requestUrl = request.getRequestURL().toString();
+        final boolean isDev = requestUrl.contains("localhost") || requestUrl.contains("127.0.0.1");
         final String redirectUrl = oAuthService.getAuthCodeRequestUrl(oAuthProviderType, isDev);
 
         response.sendRedirect(redirectUrl);
