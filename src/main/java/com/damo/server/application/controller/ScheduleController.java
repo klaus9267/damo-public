@@ -32,7 +32,6 @@ public class ScheduleController {
         scheduleWriteService.addSchedule(scheduleDto);
     }
 
-    // swagger 추가 예정
     @GetMapping("{scheduleId}")
     @ScheduleOperationWithBody(summary = "일정 단건 조회")
     public ResponseEntity<ScheduleDto> readSchedule(@PathVariable("scheduleId") final Long scheduleId) {
@@ -47,7 +46,6 @@ public class ScheduleController {
         return ResponseEntity.ok(scheduleDto);
     }
 
-    // swagger 추가 예정
     @PatchMapping("{scheduleId}")
     @UpdateScheduleOperationWithBody(summary = "일정 수정", description = "내역 생략 가능")
     public void patchScheduleById(
