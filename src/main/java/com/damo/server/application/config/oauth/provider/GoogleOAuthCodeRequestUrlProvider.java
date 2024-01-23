@@ -16,12 +16,12 @@ public class GoogleOAuthCodeRequestUrlProvider implements OAuthCodeRequestUrlPro
     }
 
     @Override
-    public String provide() {
+    public String provide(final boolean isDev) {
         return UriComponentsBuilder
                 .fromUriString("https://accounts.google.com/o/oauth2/auth")
                 .queryParam("response_type", "code")
                 .queryParam("client_id", googleOAuthConfig.clientId())
-                .queryParam("redirect_uri", googleOAuthConfig.redirectUri())
+                .queryParam("redirect_uri", isDev ? googleOAuthConfig.devRedirectUri() : googleOAuthConfig.redirectUri())
                 .queryParam("scope", String.join(" ", googleOAuthConfig.scope()))
                 .toUriString();
     }

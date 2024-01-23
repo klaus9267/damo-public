@@ -16,12 +16,12 @@ public class NaverOAuthCodeRequestUrlProvider implements OAuthCodeRequestUrlProv
     }
 
     @Override
-    public String provide() {
+    public String provide(final boolean isDev) {
         return UriComponentsBuilder
                 .fromUriString("https://nid.naver.com/oauth2.0/authorize")
                 .queryParam("response_type", "code")
                 .queryParam("client_id", naverOAuthConfig.clientId())
-                .queryParam("redirect_uri", naverOAuthConfig.redirectUri())
+                .queryParam("redirect_uri", isDev ? naverOAuthConfig.devRedirectUri() : naverOAuthConfig.redirectUri())
                 .queryParam("state", "samplestate") // 이건 나중에 따로 찾아보고 설정해서 쓰세용!
                 .build()
                 .toUriString();

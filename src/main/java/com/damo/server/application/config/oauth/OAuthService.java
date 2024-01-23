@@ -1,7 +1,6 @@
 package com.damo.server.application.config.oauth;
 
 import com.damo.server.application.config.jwt.JwtTokenService;
-import com.damo.server.application.config.oauth.OAuthUserClientComposite;
 import com.damo.server.application.config.oauth.provider.OAuthCodeRequestUrlProviderComposite;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.jwt.JwtToken;
@@ -12,7 +11,6 @@ import com.damo.server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,12 +23,11 @@ public class OAuthService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenService jwtTokenService;
     private final AuthenticationManager authenticationManager;
 
-    public String getAuthCodeRequestUrl(final OAuthProviderType oAuthProviderType) {
-        return oAuthCodeRequestUrlProviderComposite.provide(oAuthProviderType);
+    public String getAuthCodeRequestUrl(final OAuthProviderType oAuthProviderType, final boolean isDev) {
+        return oAuthCodeRequestUrlProviderComposite.provide(oAuthProviderType, isDev);
     }
 
     public JwtToken login(final OAuthProviderType oAuthProviderType, final String authCode) {

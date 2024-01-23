@@ -18,8 +18,8 @@ public class OAuthCodeRequestUrlProviderComposite {
         this.map = providers.stream().collect(Collectors.toMap(OAuthCodeRequestUrlProvider::providerType, Function.identity()));
     }
 
-    public String provide(final OAuthProviderType oAuthProviderType) {
-        return getProvider(oAuthProviderType).provide();
+    public String provide(final OAuthProviderType oAuthProviderType, final boolean isDev) {
+        return getProvider(oAuthProviderType).provide(isDev);
     }
 
     private OAuthCodeRequestUrlProvider getProvider(final OAuthProviderType oAuthProviderType) {
