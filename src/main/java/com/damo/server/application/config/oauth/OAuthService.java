@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +31,9 @@ public class OAuthService {
         return oAuthCodeRequestUrlProviderComposite.provide(oAuthProviderType, isDev);
     }
 
-    public JwtToken login(final OAuthProviderType oAuthProviderType, final String authCode) {
-        final User user = oauthMemberClientComposite.fetch(oAuthProviderType, authCode);
+    @Transactional
+    public JwtToken login(final OAuthProviderType oAuthProviderType, final String authCode, final boolean isDev) {
+        final User user = oauthMemberClientComposite.fetch(oAuthProviderType, authCode, isDev);
         final String originProviderId = user.getProviderId();
         final User saved = userRepository.findOneByUsername(user.getUsername())
                 .orElseGet(() -> {

@@ -21,19 +21,19 @@ public class GoogleUserClient implements OAuthUserClient {
     }
 
     @Override
-    public User fetch(final String authCode) {
-        final GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode));
+    public User fetch(final String authCode, final boolean isDev) {
+        final GoogleToken tokenInfo = googleApiClient.fetchToken(tokenRequestParams(authCode, isDev));
         final GoogleUserResponse googleMemberResponse = googleApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
         return googleMemberResponse.toDomain();
     }
 
-    private MultiValueMap<String, String> tokenRequestParams(final String authCode) {
+    private MultiValueMap<String, String> tokenRequestParams(final String authCode, final boolean isDev) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         params.add("grant_type", "authorization_code");
         params.add("client_id", googleOAuthConfig.clientId());
         params.add("client_secret", googleOAuthConfig.clientSecret());
-        params.add("redirect_uri", googleOAuthConfig.redirectUri());
+        params.add("redirect_uri", isDev ? googleOAuthConfig.devRedirectUri() : googleOAuthConfig.redirectUri());
         params.add("code", authCode);
 
         return params;

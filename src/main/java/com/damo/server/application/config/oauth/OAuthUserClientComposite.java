@@ -20,8 +20,8 @@ public class OAuthUserClientComposite {
         this.map = clients.stream().collect(Collectors.toMap(OAuthUserClient::providerType, Function.identity()));
     }
 
-    public User fetch(final OAuthProviderType oAuthProviderType, final String authCode) {
-        return getClient(oAuthProviderType).fetch(authCode);
+    public User fetch(final OAuthProviderType oAuthProviderType, final String authCode, final boolean isDev) {
+        return getClient(oAuthProviderType).fetch(authCode, isDev);
     }
 
     private OAuthUserClient getClient(OAuthProviderType oAuthProviderType) {

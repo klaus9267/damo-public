@@ -20,18 +20,20 @@ public class NaverUserClient implements OAuthUserClient {
         return OAuthProviderType.NAVER;
     }
     @Override
-    public User fetch(final String authCode) {
-        final NaverToken tokenInfo = naverApiClient.fetchToken(tokenRequestParams(authCode));
+    public User fetch(final String authCode, final boolean isDev) {
+        final NaverToken tokenInfo = naverApiClient.fetchToken(tokenRequestParams(authCode, isDev));
         final NaverUserResponse naverMemberResponse = naverApiClient.fetchMember("Bearer " + tokenInfo.accessToken());
         return naverMemberResponse.toDomain();
     }
 
-    private MultiValueMap<String, String> tokenRequestParams(final String authCode) {
+    private MultiValueMap<String, String> tokenRequestParams(final String authCode, final boolean isDev) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
         params.add("grant_type", "authorization_code");
         params.add("client_id", naverOAuthConfig.clientId());
         params.add("client_secret", naverOAuthConfig.clientSecret());
+        // 네이버는 redirect_uri가 필요 없지만 구글이 필요해서 일단 형식을 맞춤
+        params.add("redirect_uri", isDev ? naverOAuthConfig.devRedirectUri() : naverOAuthConfig.redirectUri());
         params.add("code", authCode);
         params.add("state", naverOAuthConfig.state());
 

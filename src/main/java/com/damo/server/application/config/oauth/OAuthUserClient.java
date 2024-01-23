@@ -5,5 +5,5 @@ import com.damo.server.domain.user.entity.User;
 
 public interface OAuthUserClient {
     OAuthProviderType providerType();
-    User fetch(final String code);
+    User fetch(final String code, final boolean isDev);
 }
