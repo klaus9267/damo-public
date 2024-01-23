@@ -23,8 +23,7 @@ public class OAuthController {
             final HttpServletRequest request,
             final HttpServletResponse response
     ) {
-        final String requestUrl = request.getRequestURL().toString();
-        final boolean isDev = requestUrl.contains("localhost") || requestUrl.contains("127.0.0.1");
+        final boolean isDev = checkIfDevelopEnvironment(request.getRequestURL().toString());
         final String redirectUrl = oAuthService.getAuthCodeRequestUrl(oAuthProviderType, isDev);
 
         response.sendRedirect(redirectUrl);
@@ -35,10 +34,16 @@ public class OAuthController {
     @GetMapping("/login/{oAuthProviderType}")
     public ResponseEntity<?> login(
             @PathVariable("oAuthProviderType") final OAuthProviderType oAuthProviderType,
-            @RequestParam("code") final String code
+            @RequestParam("code") final String code,
+            final HttpServletRequest request
     ) {
-        final JwtToken jwtToken = oAuthService.login(oAuthProviderType, code);
+        final boolean isDev = checkIfDevelopEnvironment(request.getRequestURL().toString());
+        final JwtToken jwtToken = oAuthService.login(oAuthProviderType, code, isDev);
 
         return ResponseEntity.ok(jwtToken);
+    }
+
+    private boolean checkIfDevelopEnvironment(final String requestUrl) {
+        return requestUrl.contains("localhost") || requestUrl.contains("127.0.0.1");
     }
 }
