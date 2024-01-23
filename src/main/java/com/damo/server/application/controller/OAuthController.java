@@ -3,6 +3,7 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.jwt.JwtToken;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.OAuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -19,9 +20,11 @@ public class OAuthController {
     @GetMapping("{oAuthProviderType}")
     public ResponseEntity<Void> redirectAuthCodeRequestUrl(
             @PathVariable("oAuthProviderType") final OAuthProviderType oAuthProviderType,
+            final HttpServletRequest request,
             final HttpServletResponse response
     ) {
-        final String redirectUrl = oAuthService.getAuthCodeRequestUrl(oAuthProviderType);
+        final boolean isDev = request.getRequestURL().toString().contains("localhost");
+        final String redirectUrl = oAuthService.getAuthCodeRequestUrl(oAuthProviderType, isDev);
 
         response.sendRedirect(redirectUrl);
 

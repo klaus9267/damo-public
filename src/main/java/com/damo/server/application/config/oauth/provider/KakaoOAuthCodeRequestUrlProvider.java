@@ -16,12 +16,12 @@ public class KakaoOAuthCodeRequestUrlProvider implements OAuthCodeRequestUrlProv
     }
 
     @Override
-    public String provide() {
+    public String provide(final boolean isDev) {
         return UriComponentsBuilder
                 .fromUriString("https://kauth.kakao.com/oauth/authorize")
                 .queryParam("response_type", "code")
                 .queryParam("client_id", kakaoOAuthConfig.clientId())
-                .queryParam("redirect_uri", kakaoOAuthConfig.redirectUri())
+                .queryParam("redirect_uri", isDev ? kakaoOAuthConfig.devRedirectUri() : kakaoOAuthConfig.redirectUri())
                 .queryParam("scope", String.join(",", kakaoOAuthConfig.scope()))
                 .toUriString();
     }
