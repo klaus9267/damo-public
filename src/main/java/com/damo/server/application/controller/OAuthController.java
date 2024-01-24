@@ -3,12 +3,16 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.jwt.JwtToken;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.OAuthService;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
 
 @AllArgsConstructor
 @RestController
@@ -45,5 +49,22 @@ public class OAuthController {
 
     private boolean checkIfDevelopEnvironment(final String requestUrl) {
         return requestUrl.contains("localhost") || requestUrl.contains("127.0.0.1");
+    }
+
+    /**
+     * 백엔드 전용 oauth redirect api
+     */
+    @Hidden
+    @GetMapping("/back/{provider}")
+    public void redirectAuthCodeForBack(
+            @PathVariable("provider") final OAuthProviderType oAuthProviderType,
+            @RequestParam("code") final String code,
+            final HttpServletResponse response
+    ) throws IOException {
+        final String redirectUri = UriComponentsBuilder
+                .fromUriString("http://localhost:8080/oauth/login/" + oAuthProviderType.getKey())
+                .queryParam("code", code)
+                .toUriString();
+        response.sendRedirect(redirectUri);
     }
 }
