@@ -6,6 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record KakaoOAuthConfig (
         String redirectUri,
         String devRedirectUri,
+        String backRedirectUri,
         String clientId,
         String clientSecret,
         String[] scope

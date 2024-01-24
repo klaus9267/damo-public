@@ -5,6 +5,7 @@ import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.config.GoogleOAuthConfig;
 import com.damo.server.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -14,6 +15,9 @@ import org.springframework.util.MultiValueMap;
 public class GoogleUserClient implements OAuthUserClient {
     private final GoogleApiClient googleApiClient;
     private final GoogleOAuthConfig googleOAuthConfig;
+
+    @Value("${oauth.is-back}")
+    private boolean isBack;
 
     @Override
     public OAuthProviderType providerType() {
@@ -33,7 +37,12 @@ public class GoogleUserClient implements OAuthUserClient {
         params.add("grant_type", "authorization_code");
         params.add("client_id", googleOAuthConfig.clientId());
         params.add("client_secret", googleOAuthConfig.clientSecret());
-        params.add("redirect_uri", isDev ? googleOAuthConfig.devRedirectUri() : googleOAuthConfig.redirectUri());
+        final String redirectUri = isBack
+                ? googleOAuthConfig.backRedirectUri()
+                : isDev
+                ? googleOAuthConfig.devRedirectUri()
+                : googleOAuthConfig.redirectUri();
+        params.add("redirect_uri", redirectUri);
         params.add("code", authCode);
 
         return params;

@@ -5,6 +5,7 @@ import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.oauth.config.KakaoOAuthConfig;
 import com.damo.server.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -14,6 +15,9 @@ import org.springframework.util.MultiValueMap;
 public class KakaoUserClient implements OAuthUserClient {
     private final KakaoApiClient kakaoApiClient;
     private final KakaoOAuthConfig kakaoOAuthConfig;
+
+    @Value("${oauth.is-back}")
+    private boolean isBack;
 
     @Override
     public OAuthProviderType providerType() {
@@ -33,7 +37,12 @@ public class KakaoUserClient implements OAuthUserClient {
         params.add("grant_type", "authorization_code");
         params.add("client_id", kakaoOAuthConfig.clientId());
         // 카카오는 redirect_uri가 필요 없지만 구글이 필요해서 일단 형식을 맞춤
-        params.add("redirect_uri", isDev ? kakaoOAuthConfig.devRedirectUri() : kakaoOAuthConfig.redirectUri());
+        final String redirectUri = isBack
+                ? kakaoOAuthConfig.backRedirectUri()
+                : isDev
+                ? kakaoOAuthConfig.devRedirectUri()
+                : kakaoOAuthConfig.redirectUri();
+        params.add("redirect_uri", redirectUri);
         params.add("code", authCode);
         params.add("client_secret", kakaoOAuthConfig.clientSecret());
 
