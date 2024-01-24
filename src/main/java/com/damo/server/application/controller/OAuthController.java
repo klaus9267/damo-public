@@ -17,9 +17,9 @@ public class OAuthController {
     private final OAuthService oAuthService;
 
     @SneakyThrows
-    @GetMapping("{oAuthProviderType}")
+    @GetMapping("{provider}")
     public ResponseEntity<Void> redirectAuthCodeRequestUrl(
-            @PathVariable("oAuthProviderType") final OAuthProviderType oAuthProviderType,
+            @PathVariable("provider") final OAuthProviderType oAuthProviderType,
             final HttpServletRequest request,
             final HttpServletResponse response
     ) {
@@ -31,9 +31,9 @@ public class OAuthController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/login/{oAuthProviderType}")
+    @GetMapping("/login/{provider}")
     public ResponseEntity<?> login(
-            @PathVariable("oAuthProviderType") final OAuthProviderType oAuthProviderType,
+            @PathVariable("provider") final OAuthProviderType oAuthProviderType,
             @RequestParam("code") final String code,
             final HttpServletRequest request
     ) {
