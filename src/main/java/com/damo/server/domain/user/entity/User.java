@@ -36,7 +36,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Column(name = "profile_url", nullable = false)
+    @Column(name = "profile_url")
     private String profileUrl;
 
     @Column(name = "provider_id", nullable = false)
