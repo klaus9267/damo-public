@@ -93,12 +93,19 @@ public class OAuthController {
    * 요청에서 토큰을 추출하고, 토큰이 없으면 예외를 발생시킴.
    */
   @GetMapping("/token/expired")
-  public ResponseEntity<UserWithTokenDto> reauthenticateToken(final HttpServletRequest request) {
+  public ResponseEntity<UserWithTokenDto> reauthenticateToken(
+      final HttpServletRequest request,
+      final HttpServletResponse response
+  ) {
     final String token = request.getHeader(JwtToken.HEADER_KEY);
     if (token == null) {
       throw new CustomException(CustomErrorCode.UNAUTHORIZED, "토큰을 확인해 주세요.");
     }
 
-    return ResponseEntity.ok(authService.reauthenticateToken(token));
+    final UserWithTokenDto userWithTokenDto = authService.reauthenticateToken(token);
+
+    response.setHeader(JwtToken.HEADER_KEY, userWithTokenDto.getAccessToken());
+
+    return ResponseEntity.ok(userWithTokenDto);
   }
 }
