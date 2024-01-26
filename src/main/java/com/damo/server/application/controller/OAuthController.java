@@ -21,7 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("oauth")
 public class OAuthController {
-  private final OAuthService oAuthService;
+  private final OAuthService authService;
 
   /**
    * OAuth 인증 코드 요청의 리디렉션을 처리합니다.
@@ -35,8 +35,8 @@ public class OAuthController {
       final HttpServletRequest request,
       final HttpServletResponse response
   ) {
-    final boolean isDev = checkIfDevelopEnvironment(request.getRequestURL().toString());
-    final String redirectUrl = oAuthService.getAuthCodeRequestUrl(providerType, isDev);
+    final boolean isDev = checkLocalhostFromRequest(request);
+    final String redirectUrl = authService.getAuthCodeRequestUrl(providerType, isDev);
 
     response.sendRedirect(redirectUrl);
 
@@ -53,14 +53,16 @@ public class OAuthController {
       @RequestParam("code") final String code,
       final HttpServletRequest request
   ) {
-    final boolean isDev = checkIfDevelopEnvironment(request.getRequestURL().toString());
-    final JwtToken jwtToken = oAuthService.login(providerType, code, isDev);
+    final boolean isDev = checkLocalhostFromRequest(request);
+    final JwtToken jwtToken = authService.login(providerType, code, isDev);
 
     return ResponseEntity.ok(jwtToken);
   }
 
-  private boolean checkIfDevelopEnvironment(final String requestUrl) {
-    return requestUrl.contains("localhost") || requestUrl.contains("127.0.0.1");
+  private boolean checkLocalhostFromRequest(final HttpServletRequest request) {
+    final String referer = request.getHeader("Referer");
+    return referer != null
+      && (referer.contains("localhost") || referer.contains("127.0.0.1"));
   }
 
   /**
