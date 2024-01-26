@@ -88,15 +88,17 @@ public class OAuthController {
     response.sendRedirect(redirectUri);
   }
 
+  /**
+   * 만료된 JWT 토큰을 다시 인증하고 새 토큰을 발급하여 반환하는 API.
+   * 요청에서 토큰을 추출하고, 토큰이 없으면 예외를 발생시킴.
+   */
   @GetMapping("/token/expired")
-  public ResponseEntity<JwtToken> reauthenticateToken(final HttpServletRequest request) {
+  public ResponseEntity<UserWithTokenDto> reauthenticateToken(final HttpServletRequest request) {
     final String token = request.getHeader(JwtToken.HEADER_KEY);
     if (token == null) {
       throw new CustomException(CustomErrorCode.UNAUTHORIZED, "토큰을 확인해 주세요.");
     }
 
-    final JwtToken jwtToken = authService.reauthenticateToken(token);
-
-    return ResponseEntity.ok(jwtToken);
+    return ResponseEntity.ok(authService.reauthenticateToken(token));
   }
 }

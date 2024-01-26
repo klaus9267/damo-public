@@ -37,7 +37,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       SecurityContextHolder.getContext().setAuthentication(authentication);
     } else {
       final CustomException customException =
-          new CustomException(CustomErrorCode.UNAUTHORIZED, "유저 인증 정보가 잘못됐습니다.");
+          new CustomException(CustomErrorCode.UNAUTHORIZED, "잘못된 토큰입니다.");
       final String body =
           objectMapper.writeValueAsString(ResponseCustomException.of(customException));
 

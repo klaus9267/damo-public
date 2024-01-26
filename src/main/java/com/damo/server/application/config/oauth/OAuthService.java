@@ -1,9 +1,10 @@
 package com.damo.server.application.config.oauth;
 
+import com.damo.server.application.config.jwt.JwtToken;
 import com.damo.server.application.config.jwt.JwtTokenService;
 import com.damo.server.application.config.oauth.provider.OAuthCodeRequestUrlProviderComposite;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
-import com.damo.server.application.config.jwt.JwtToken;
+import com.damo.server.application.config.user_details.CustomUserDetails;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.domain.user.dto.UserWithTokenDto;
@@ -11,6 +12,7 @@ import com.damo.server.domain.user.entity.RefreshToken;
 import com.damo.server.domain.user.entity.User;
 import com.damo.server.domain.user.repository.RefreshTokenRepository;
 import com.damo.server.domain.user.repository.UserRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,8 +21,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 
+/**
+ * 외부 OAuth 서비스로부터 인증 코드를 받아와 로그인을 수행하고, 새로운 액세스 토큰 및 리프레시 토큰을 반환합니다.
+ * 사용자가 이미 존재할 경우 새로운 로그인 기록 생성 없이 기존 사용자 정보를 사용하며,
+ * 새로운 사용자일 경우 사용자 정보를 저장하고 패스워드 인코딩을 적용합니다.
+ * 토큰 발급에 성공하면 새로운 리프레시 토큰이 저장되거나 갱신됩니다.
+ */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
@@ -37,8 +45,18 @@ public class OAuthService {
     return requestUrlProviderComposite.provide(providerType, isDev);
   }
 
+  /**
+   * 외부 OAuth 서비스로부터 받은 인증 코드를 사용하여 로그인을 수행하고, 새로운 액세스 토큰 및 리프레시 토큰을 반환합니다.
+   * 사용자가 이미 존재하는 경우, 새로운 로그인 기록이 생성되지 않고 기존 사용자 정보가 사용됩니다.
+   * 새로운 사용자인 경우, 사용자 정보가 저장되고 패스워드 인코딩이 적용됩니다.
+   * 토큰 발급에 성공하면, 새로운 리프레시 토큰이 저장되거나 갱신됩니다.
+   */
   @Transactional
-  public UserWithTokenDto login(final OAuthProviderType providerType, final String authCode, final boolean isDev) {
+  public UserWithTokenDto login(
+      final OAuthProviderType providerType,
+      final String authCode,
+      final boolean isDev
+  ) {
     final User fetchedUser = oauthMemberClientComposite.fetch(providerType, authCode, isDev);
     final String originProviderId = fetchedUser.getProviderId();
     final User user = userRepository.findOneByUsername(fetchedUser.getUsername())
@@ -70,15 +88,43 @@ public class OAuthService {
     }
   }
 
-  public JwtToken reauthenticateToken(final String token) {
+  /**
+   * 주어진 JWT 토큰을 재인증하고 새로운 액세스 토큰 및 리프레시 토큰을 반환하는 메서드.
+   * 토큰 해석, 사용자 정보 확인 및 유효성 검사 후, 새로운 토큰 발급.
+   * 만료된 경우 리프레시 토큰을 사용하여 갱신.
+   * 만약 실패하면 예외 발생.
+   */
+  public UserWithTokenDto reauthenticateToken(final String token) {
     final String resolvedToken = jwtTokenService.resolveToken(token);
+    final Authentication authentication = jwtTokenService.getAuthentication(resolvedToken);
+    final CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+    final String username = customUserDetails.getUsername();
+
+    final User user = userRepository.findOneByUsername(username).orElseThrow(
+        () -> new CustomException(CustomErrorCode.NOT_FOUND, "유저 정보를 찾을 수 없습니다.")
+    );
+
     if (jwtTokenService.validateToken(resolvedToken)) {
-      return JwtToken.builder().accessToken(resolvedToken).build();
+      return UserWithTokenDto.from(user, resolvedToken);
+    }
+
+
+    final RefreshToken refreshToken = refreshTokenRepository
+        .findOneByUsername(username)
+        .orElseThrow(
+          () -> new CustomException(CustomErrorCode.UNAUTHORIZED, "Refresh Token이 존재하지 않습니다.")
+        );
+    if (!jwtTokenService.validateToken(refreshToken.getToken())) {
+      throw new CustomException(CustomErrorCode.UNAUTHORIZED, "리프레쉬 토큰이 만료되었습니다.");
     }
 
     try {
-      final Authentication authentication = jwtTokenService.getAuthentication(resolvedToken);
-      return jwtTokenService.generateToken(authentication);
+      final JwtToken jwtToken = jwtTokenService.generateToken(authentication);
+      final String newRefreshToken = jwtToken.getRefreshToken();
+
+      refreshToken.changeRefreshToken(newRefreshToken);
+
+      return UserWithTokenDto.from(user, jwtToken.getAccessToken());
     } catch (final Exception e) {
       throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, "토큰 발급에 실패했습니다.");
     }
