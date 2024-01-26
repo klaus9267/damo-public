@@ -99,7 +99,7 @@ public class JwtTokenService {
    * 사용자 정보와 권한을 포함한 CustomUserDetails 객체를 생성하여 UsernamePasswordAuthenticationToken 반환합니다.
    */
   public Authentication getAuthentication(final String token) {
-    final Claims claims = parseClaims(token);
+    final Claims claims = extractClaims(token);
 
     if (claims.get(AUTHORITIES_KEY) == null) {
       throw new CustomException(CustomErrorCode.UNAUTHORIZED, "유저 인증 정보가 없습니다.");
@@ -126,19 +126,28 @@ public class JwtTokenService {
   public boolean validateToken(final String token) {
     try {
       Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
-      return true;
+      return !checkIfTokenExpired(token);
     } catch (final Exception e) {
       log.error(Arrays.toString(e.getStackTrace()));
     }
     return false;
   }
 
-  private Claims parseClaims(final String token) {
+  private Claims extractClaims(final String token) {
     try {
       return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody();
     } catch (final ExpiredJwtException e) {
       return e.getClaims();
     }
+  }
+
+  private Boolean checkIfTokenExpired(String token) {
+    final Date expirationDate = extractExpiration(token);
+    return expirationDate.before(new Date());
+  }
+
+  private Date extractExpiration(String token) {
+    return extractClaims(token).getExpiration();
   }
 
   /**

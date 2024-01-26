@@ -19,35 +19,49 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
-    private final OAuthCodeRequestUrlProviderComposite oAuthCodeRequestUrlProviderComposite;
-    private final OAuthUserClientComposite oauthMemberClientComposite;
-    private final UserRepository userRepository;
+  private final OAuthCodeRequestUrlProviderComposite requestUrlProviderComposite;
+  private final OAuthUserClientComposite oauthMemberClientComposite;
+  private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenService jwtTokenService;
-    private final AuthenticationManager authenticationManager;
+  private final PasswordEncoder passwordEncoder;
+  private final JwtTokenService jwtTokenService;
+  private final AuthenticationManager authenticationManager;
 
-    public String getAuthCodeRequestUrl(final OAuthProviderType oAuthProviderType, final boolean isDev) {
-        return oAuthCodeRequestUrlProviderComposite.provide(oAuthProviderType, isDev);
+  public String getAuthCodeRequestUrl(final OAuthProviderType providerType, final boolean isDev) {
+    return requestUrlProviderComposite.provide(providerType, isDev);
+  }
+
+  @Transactional
+  public JwtToken login(final OAuthProviderType providerType, final String authCode, final boolean isDev) {
+    final User user = oauthMemberClientComposite.fetch(providerType, authCode, isDev);
+    final String originProviderId = user.getProviderId();
+    final User saved = userRepository.findOneByUsername(user.getUsername())
+        .orElseGet(() -> {
+          user.changeProviderId(passwordEncoder.encode(user.getProviderId()));
+          return userRepository.save(user);
+        });
+
+    final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(saved.getUsername(), originProviderId);
+    final Authentication authentication = authenticationManager.authenticate(authenticationToken);
+
+    try {
+      return jwtTokenService.generateToken(authentication);
+    } catch (final Exception e) {
+      throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, "토큰 발급에 실패했습니다.");
+    }
+  }
+
+  public JwtToken reauthenticateToken(final String token) {
+    final String resolvedToken = jwtTokenService.resolveToken(token);
+    if (jwtTokenService.validateToken(resolvedToken)) {
+      return JwtToken.builder().accessToken(resolvedToken).build();
     }
 
-    @Transactional
-    public JwtToken login(final OAuthProviderType oAuthProviderType, final String authCode, final boolean isDev) {
-        final User user = oauthMemberClientComposite.fetch(oAuthProviderType, authCode, isDev);
-        final String originProviderId = user.getProviderId();
-        final User saved = userRepository.findOneByUsername(user.getUsername())
-                .orElseGet(() -> {
-                    user.changeProviderId(passwordEncoder.encode(user.getProviderId()));
-                    return userRepository.save(user);
-                });
-
-        final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(saved.getUsername(), originProviderId);
-        final Authentication authentication = authenticationManager.authenticate(authenticationToken);
-
-        try {
-            return jwtTokenService.generateToken(authentication);
-        } catch (final Exception e) {
-            throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, "토큰 발급에 실패했습니다.");
-        }
+    try {
+      final Authentication authentication = jwtTokenService.getAuthentication(resolvedToken);
+      return jwtTokenService.generateToken(authentication);
+    } catch (final Exception e) {
+      throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, "토큰 발급에 실패했습니다.");
     }
+  }
 }

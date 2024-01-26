@@ -3,6 +3,8 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.jwt.JwtToken;
 import com.damo.server.application.config.oauth.OAuthService;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
+import com.damo.server.application.handler.exception.CustomErrorCode;
+import com.damo.server.application.handler.exception.CustomException;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -80,5 +82,17 @@ public class OAuthController {
         .queryParam("code", code)
         .toUriString();
     response.sendRedirect(redirectUri);
+  }
+
+  @GetMapping("/token/expired")
+  public ResponseEntity<JwtToken> reauthenticateToken(final HttpServletRequest request) {
+    final String token = request.getHeader("Authorization");
+    if (token == null) {
+      throw new CustomException(CustomErrorCode.UNAUTHORIZED, "토큰을 확인해 주세요.");
+    }
+
+    final JwtToken jwtToken = authService.reauthenticateToken(token);
+
+    return ResponseEntity.ok(jwtToken);
   }
 }
