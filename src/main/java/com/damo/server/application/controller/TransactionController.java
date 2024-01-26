@@ -12,6 +12,7 @@ import com.damo.server.domain.transaction.service.TransactionWriteService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
@@ -43,8 +44,8 @@ public class TransactionController {
     @GetMapping("/term-amounts")
     @TransactionOperationWithBody(summary = "최근 거래 총액 조회", description = "최근 거래 총액 데이터 응답")
     public ResponseEntity<TransactionTotalAmount> readRecentAmounts(
-            @Parameter(description = "조회 시작 날짜(기본값 1달 전)", example = "2023-12-12T00:00:00")
-            @RequestParam(value = "startedAt", required = false) final LocalDateTime startedAt
+            @Parameter(description = "조회 시작 날짜(기본값 1달 전) | null 입력 시 기본값으로 조회", example = "2023-12-12T00:00:00")
+            @Past(message = "과거 날짜만 입력 가능") @RequestParam(value = "startedAt", required = false) final LocalDateTime startedAt
     ) {
         final TransactionTotalAmount amount = transactionReadService.readRecentAmounts(startedAt);
         return ResponseEntity.ok(amount);
