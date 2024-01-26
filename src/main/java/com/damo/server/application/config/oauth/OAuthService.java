@@ -6,7 +6,10 @@ import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.config.jwt.JwtToken;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.user.dto.UserWithTokenDto;
+import com.damo.server.domain.user.entity.RefreshToken;
 import com.damo.server.domain.user.entity.User;
+import com.damo.server.domain.user.repository.RefreshTokenRepository;
 import com.damo.server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,12 +19,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
   private final OAuthCodeRequestUrlProviderComposite requestUrlProviderComposite;
   private final OAuthUserClientComposite oauthMemberClientComposite;
   private final UserRepository userRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
 
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenService jwtTokenService;
@@ -32,20 +38,33 @@ public class OAuthService {
   }
 
   @Transactional
-  public JwtToken login(final OAuthProviderType providerType, final String authCode, final boolean isDev) {
-    final User user = oauthMemberClientComposite.fetch(providerType, authCode, isDev);
-    final String originProviderId = user.getProviderId();
-    final User saved = userRepository.findOneByUsername(user.getUsername())
+  public UserWithTokenDto login(final OAuthProviderType providerType, final String authCode, final boolean isDev) {
+    final User fetchedUser = oauthMemberClientComposite.fetch(providerType, authCode, isDev);
+    final String originProviderId = fetchedUser.getProviderId();
+    final User user = userRepository.findOneByUsername(fetchedUser.getUsername())
         .orElseGet(() -> {
-          user.changeProviderId(passwordEncoder.encode(user.getProviderId()));
-          return userRepository.save(user);
+          fetchedUser.changeProviderId(passwordEncoder.encode(fetchedUser.getProviderId()));
+          return userRepository.save(fetchedUser);
         });
+    final String username = user.getUsername();
 
-    final UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(saved.getUsername(), originProviderId);
+    final UsernamePasswordAuthenticationToken authenticationToken =
+        new UsernamePasswordAuthenticationToken(username, originProviderId);
     final Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
     try {
-      return jwtTokenService.generateToken(authentication);
+      final JwtToken jwtToken = jwtTokenService.generateToken(authentication);
+      final String refreshToken = jwtToken.getRefreshToken();
+
+      final Optional<RefreshToken> foundRefreshToken =
+          refreshTokenRepository.findOneByUsername(username);
+      if (foundRefreshToken.isEmpty()) {
+        refreshTokenRepository.save(new RefreshToken(refreshToken, username));
+      } else {
+        foundRefreshToken.get().changeRefreshToken(refreshToken);
+      }
+
+      return UserWithTokenDto.from(user, jwtToken.getAccessToken());
     } catch (final Exception e) {
       throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, "토큰 발급에 실패했습니다.");
     }

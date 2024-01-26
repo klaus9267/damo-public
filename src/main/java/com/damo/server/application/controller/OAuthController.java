@@ -5,6 +5,7 @@ import com.damo.server.application.config.oauth.OAuthService;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.user.dto.UserWithTokenDto;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -50,15 +51,18 @@ public class OAuthController {
    * 특정 제공자 유형과 받은 인증 코드를 기반으로 사용자를 인증하고, JwtToken 을 생성하여 반환합니다.
    */
   @GetMapping("/login/{provider}")
-  public ResponseEntity<JwtToken> login(
+  public ResponseEntity<UserWithTokenDto> login(
       @PathVariable("provider") final OAuthProviderType providerType,
       @RequestParam("code") final String code,
-      final HttpServletRequest request
+      final HttpServletRequest request,
+      final HttpServletResponse response
   ) {
     final boolean isDev = checkLocalhostFromRequest(request);
-    final JwtToken jwtToken = authService.login(providerType, code, isDev);
+    final UserWithTokenDto userWithTokenDto = authService.login(providerType, code, isDev);
 
-    return ResponseEntity.ok(jwtToken);
+    response.setHeader(JwtToken.HEADER_KEY, userWithTokenDto.getAccessToken());
+
+    return ResponseEntity.ok(userWithTokenDto);
   }
 
   private boolean checkLocalhostFromRequest(final HttpServletRequest request) {
@@ -86,7 +90,7 @@ public class OAuthController {
 
   @GetMapping("/token/expired")
   public ResponseEntity<JwtToken> reauthenticateToken(final HttpServletRequest request) {
-    final String token = request.getHeader("Authorization");
+    final String token = request.getHeader(JwtToken.HEADER_KEY);
     if (token == null) {
       throw new CustomException(CustomErrorCode.UNAUTHORIZED, "토큰을 확인해 주세요.");
     }

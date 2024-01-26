@@ -29,7 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
           final HttpServletResponse response,
           final AuthenticationException authException
   ) throws IOException {
-    final String authorization = request.getHeader("Authorization");
+    final String authorization = request.getHeader(JwtToken.HEADER_KEY);
     final String token = jwtTokenService.resolveToken(authorization);
 
     if (token != null && jwtTokenService.validateToken(token)) {
@@ -41,7 +41,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       final String body =
           objectMapper.writeValueAsString(ResponseCustomException.of(customException));
 
-      response.setContentType("application/json;charset=UTF-8");
+      response.setContentType(JwtToken.CONTENT_TYPE);
       response.setStatus(customException.getCustomErrorCode().getStatusCode());
       response.getWriter().write(body);
     }
