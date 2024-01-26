@@ -27,10 +27,6 @@ public class TransactionReadService {
     }
 
     public TransactionTotalAmount readRecentAmounts(final LocalDateTime startedAt) {
-        // controller에서 @Past(message) 작동되도록 변경
-        if (startedAt != null && startedAt.isAfter(LocalDateTime.now())) {
-            throw new CustomException(CustomErrorCode.BAD_REQUEST, "startedAt must be past or null");
-        }
         final LocalDateTime startDate = startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt;
         return transactionRepository.readRecentAmounts(securityUserUtil.getId(), startDate);
     }
