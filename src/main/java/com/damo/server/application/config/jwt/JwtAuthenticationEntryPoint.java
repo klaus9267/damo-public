@@ -29,7 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
           final HttpServletResponse response,
           final AuthenticationException authException
   ) throws IOException {
-    final String authorization = request.getHeader("Authorization");
+    final String authorization = request.getHeader(JwtToken.HEADER_KEY);
     final String token = jwtTokenService.resolveToken(authorization);
 
     if (token != null && jwtTokenService.validateToken(token)) {
@@ -37,11 +37,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
       SecurityContextHolder.getContext().setAuthentication(authentication);
     } else {
       final CustomException customException =
-          new CustomException(CustomErrorCode.UNAUTHORIZED, "유저 인증 정보가 잘못됐습니다.");
+          new CustomException(CustomErrorCode.UNAUTHORIZED, "잘못된 토큰입니다.");
       final String body =
           objectMapper.writeValueAsString(ResponseCustomException.of(customException));
 
-      response.setContentType("application/json;charset=UTF-8");
+      response.setContentType(JwtToken.CONTENT_TYPE);
       response.setStatus(customException.getCustomErrorCode().getStatusCode());
       response.getWriter().write(body);
     }
