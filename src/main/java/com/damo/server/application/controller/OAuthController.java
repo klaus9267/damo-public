@@ -7,6 +7,7 @@ import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.domain.user.dto.UserWithTokenDto;
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -60,7 +61,8 @@ public class OAuthController {
     final boolean isDev = checkLocalhostFromRequest(request);
     final UserWithTokenDto userWithTokenDto = authService.login(providerType, code, isDev);
 
-    response.setHeader(JwtToken.HEADER_KEY, userWithTokenDto.getAccessToken());
+    final Cookie cookie = createCookieWithToken(userWithTokenDto.getAccessToken());
+    response.addCookie(cookie);
 
     return ResponseEntity.ok(userWithTokenDto);
   }
@@ -104,8 +106,20 @@ public class OAuthController {
 
     final UserWithTokenDto userWithTokenDto = authService.reauthenticateToken(token);
 
-    response.setHeader(JwtToken.HEADER_KEY, userWithTokenDto.getAccessToken());
+    final Cookie cookie = createCookieWithToken(userWithTokenDto.getAccessToken());
+    response.addCookie(cookie);
 
     return ResponseEntity.ok(userWithTokenDto);
+  }
+
+  // TODO: Cookie를 위한 클래스 구현
+  private Cookie createCookieWithToken(final String token) {
+    final Cookie cookie = new Cookie(JwtToken.HEADER_KEY, token);
+
+    cookie.setMaxAge(1000 * 60 * 60 * 24 * 14); // TODO: 환경변수값으로 변경해야 함
+    cookie.setSecure(true);
+    cookie.setHttpOnly(true);
+
+    return cookie;
   }
 }
