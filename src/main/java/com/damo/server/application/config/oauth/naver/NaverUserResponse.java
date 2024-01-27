@@ -14,7 +14,6 @@ public record NaverUserResponse(
 ) {
 
     public User toDomain() {
-        System.out.println(response.toString());
         return User.builder()
                 .name(response.name)
                 .email(response.email)

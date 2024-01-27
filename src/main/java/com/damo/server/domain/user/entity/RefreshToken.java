@@ -18,7 +18,7 @@ public class RefreshToken {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "refresh_token", nullable = false)
+  @Column(name = "refresh_token", nullable = false, length = 500) // TODO: 추후 토큰 길이 다시 고려해봐야 함
   private String token;
 
   @Column(unique = true)
