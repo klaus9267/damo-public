@@ -8,24 +8,24 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record GoogleUserResponse(
-        String id,
-        String email,
-        Boolean verifiedEmail,
-        String name,
-        String givenName,
-        String familyName,
-        String picture,
-        String locale
+    String id,
+    String email,
+    Boolean verifiedEmail,
+    String name,
+    String givenName,
+    String familyName,
+    String picture,
+    String locale
 ) {
-    public User toDomain() {
-        return User.builder()
-                .name(name)
-                .email(email)
-                .role(UserRole.USER)
-                .username(id + "_" + OAuthProviderType.GOOGLE.getKey())
-                .providerId(id)
-                .providerType(OAuthProviderType.GOOGLE)
-                .profileUrl(picture)
-                .build();
-    }
+  public User toDomain() {
+    return User.builder()
+      .name(name)
+      .email(email)
+      .role(UserRole.USER)
+      .username(id + "_" + OAuthProviderType.GOOGLE.getKey())
+      .providerId(id)
+      .providerType(OAuthProviderType.GOOGLE)
+      .profileImageUrl(picture)
+      .build();
+  }
 }

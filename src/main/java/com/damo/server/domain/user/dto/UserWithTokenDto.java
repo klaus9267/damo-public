@@ -10,14 +10,14 @@ public class UserWithTokenDto {
   @JsonIgnore
   private final String accessToken;
   private final Long id;
-  private final String profileUrl;
+  private final String profileImageUrl;
   private final String name;
   private final String email;
   private final OAuthProviderType providerType;
 
   private UserWithTokenDto(final User user, final String token) {
     this.id = user.getId();
-    this.profileUrl = user.getProfileUrl();
+    this.profileImageUrl = user.getProfileImageUrl();
     this.name = user.getName();
     this.email = user.getEmail();
     this.providerType = user.getProviderType();

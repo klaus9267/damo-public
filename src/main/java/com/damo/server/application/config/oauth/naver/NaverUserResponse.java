@@ -8,35 +8,34 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record NaverUserResponse(
-        String resultCode,
-        String message,
-        Response response
+    String resultCode,
+    String message,
+    Response response
 ) {
-
-    public User toDomain() {
-        return User.builder()
-                .name(response.name)
-                .email(response.email)
-                .role(UserRole.USER)
-                .username(response.id + "_" + OAuthProviderType.GOOGLE.getKey())
-                .providerId(response.id)
-                .providerType(OAuthProviderType.NAVER)
-                .profileUrl(response.profileImage)
-                .build();
+  public User toDomain() {
+    return User.builder()
+      .name(response.name)
+      .email(response.email)
+      .role(UserRole.USER)
+      .username(response.id + "_" + OAuthProviderType.GOOGLE.getKey())
+      .providerId(response.id)
+      .providerType(OAuthProviderType.NAVER)
+      .profileImageUrl(response.profileImage)
+      .build();
     }
 
-    @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-    public record Response(
-            String id,
-            String nickname,
-            String name,
-            String email,
-            String gender,
-            String age,
-            String birthday,
-            String profileImage,
-            String birthyear,
-            String mobile
-    ) {
+  @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
+  public record Response(
+      String id,
+      String nickname,
+      String name,
+      String email,
+      String gender,
+      String age,
+      String birthday,
+      String profileImage,
+      String birthyear,
+      String mobile
+  ) {
     }
 }
