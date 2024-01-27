@@ -18,7 +18,7 @@ public record NaverUserResponse(
                 .name(response.name)
                 .email(response.email)
                 .role(UserRole.USER)
-                .username(response.id + "_" + OAuthProviderType.KAKAO.getKey())
+                .username(response.id + "_" + OAuthProviderType.GOOGLE.getKey())
                 .providerId(response.id)
                 .providerType(OAuthProviderType.NAVER)
                 .profileUrl(response.profileImage)

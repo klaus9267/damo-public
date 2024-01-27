@@ -22,7 +22,7 @@ public record GoogleUserResponse(
                 .name(name)
                 .email(email)
                 .role(UserRole.USER)
-                .username(id + "_" + OAuthProviderType.KAKAO.getKey())
+                .username(id + "_" + OAuthProviderType.GOOGLE.getKey())
                 .providerId(id)
                 .providerType(OAuthProviderType.GOOGLE)
                 .profileUrl(picture)
