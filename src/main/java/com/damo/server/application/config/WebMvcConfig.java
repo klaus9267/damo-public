@@ -11,29 +11,30 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("/*")    // 외부에서 들어오는 모둔 url 을 허용
-                .allowedMethods(
-                        HttpMethod.GET.name(),
-                        HttpMethod.POST.name(),
-                        HttpMethod.PUT.name(),
-                        HttpMethod.DELETE.name(),
-                        HttpMethod.PATCH.name()
-                )
-                .allowedHeaders("*")    // 허용되는 헤더
-                .allowCredentials(true)    // 자격증명 허용
-                .maxAge(3600);   // 허용 시간
-    }
+  @Override
+  public void addCorsMappings(CorsRegistry registry) {
+    // TODO: 추후 배포시 cors 설정 제대로 검토해야 함
+    registry.addMapping("/**")
+        .allowedOrigins("*")    // 외부에서 들어오는 모둔 url 을 허용
+        .allowedMethods(
+          HttpMethod.GET.name(),
+          HttpMethod.POST.name(),
+          HttpMethod.PUT.name(),
+          HttpMethod.DELETE.name(),
+          HttpMethod.PATCH.name()
+        )
+        .allowedHeaders("*")    // 허용되는 헤더
+        .allowCredentials(true)    // 자격증명 허용
+        .maxAge(3600);   // 허용 시간
+  }
 
-    @Override
-    public void addFormatters(final FormatterRegistry registry) {
-        registry.addConverter(new OAuthProviderTypeConverter());
-    }
+  @Override
+  public void addFormatters(final FormatterRegistry registry) {
+    registry.addConverter(new OAuthProviderTypeConverter());
+  }
     
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
+  @Bean
+  public ObjectMapper objectMapper() {
+    return new ObjectMapper();
+  }
 }
