@@ -7,7 +7,7 @@ import com.damo.server.application.controller.operation.schedule.UpdateScheduleO
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
 import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
-import com.damo.server.domain.schedule.dto.ScheduleDto;
+import com.damo.server.domain.schedule.dto.ScheduleWithTransactionDto;
 import com.damo.server.domain.schedule.dto.SchedulePaginationResponseDto;
 import com.damo.server.domain.schedule.service.ScheduleReadService;
 import com.damo.server.domain.schedule.service.ScheduleWriteService;
@@ -34,9 +34,9 @@ public class ScheduleController {
 
     @GetMapping("{scheduleId}")
     @ScheduleOperationWithBody(summary = "일정 단건 조회")
-    public ResponseEntity<ScheduleDto> readSchedule(@PathVariable("scheduleId") final Long scheduleId) {
-        final ScheduleDto scheduleDto = scheduleReadServices.readSchedule(scheduleId);
-        return ResponseEntity.ok(scheduleDto);
+    public ResponseEntity<ScheduleWithTransactionDto> readSchedule(@PathVariable("scheduleId") final Long scheduleId) {
+        final ScheduleWithTransactionDto scheduleWithTransactionDto = scheduleReadServices.readSchedule(scheduleId);
+        return ResponseEntity.ok(scheduleWithTransactionDto);
     }
 
     @GetMapping

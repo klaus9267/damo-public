@@ -15,9 +15,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 @Slf4j
 @RestControllerAdvice
 public class CustomExceptionHandler {
-    /**
-     * custom 예외 핸들러
-     */
+    /** custom 예외 핸들러 */
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ResponseCustomException> handleException(final CustomException exception, final HttpServletRequest request) {
         log.error("[code] {}, [url] {}, [message] {}", exception.getCustomErrorCode(), request.getRequestURI(), exception.getMessage());
@@ -25,9 +23,7 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(exception.getCustomErrorCode().getStatusCode()).body(ResponseCustomException.of(exception));
     }
 
-    /**
-     * validation 예외 핸들러
-     */
+    /** validation 예외 핸들러 */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ResponseCustomException> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         log.error("[MethodArgumentNotValidException] " + exception.getMessage());
@@ -36,9 +32,7 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(customException.getCustomErrorCode().getStatusCode()).body(ResponseCustomException.of(customException));
     }
 
-    /**
-     * parameter validation 예외 핸들러
-     */
+    /** parameter validation 예외 핸들러 */
     @ExceptionHandler(HandlerMethodValidationException.class)
     protected ResponseEntity<ResponseCustomException> handleHandlerMethodValidationException(HandlerMethodValidationException exception) {
         final String message = exception.getAllValidationResults().get(0).getResolvableErrors().get(0).getDefaultMessage();
