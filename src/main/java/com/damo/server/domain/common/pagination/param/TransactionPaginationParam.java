@@ -39,7 +39,7 @@ public class TransactionPaginationParam extends AbstractPaginationParam {
         this.action = action;
         this.startedAt = startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt;
         this.endedAt = endedAt == null ? LocalDateTime.now() : endedAt;
-        this.field = field == null ? PaginationSortType.EVENT_DATE : field;
+        this.field = field == null ? PaginationSortType.SCHEDULE_EVENT_DATE : field;
         this.direction = direction == null ? Sort.Direction.DESC : direction;
     }
 
