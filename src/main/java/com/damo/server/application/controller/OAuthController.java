@@ -55,14 +55,10 @@ public class OAuthController {
   public ResponseEntity<UserWithTokenDto> login(
       @PathVariable("provider") final OAuthProviderType providerType,
       @RequestParam("code") final String code,
-      final HttpServletRequest request,
-      final HttpServletResponse response
+      final HttpServletRequest request
   ) {
     final boolean isDev = checkLocalhostFromRequest(request);
     final UserWithTokenDto userWithTokenDto = authService.login(providerType, code, isDev);
-
-    final Cookie cookie = createCookieWithToken(userWithTokenDto.getAccessToken());
-    response.addCookie(cookie);
 
     return ResponseEntity.ok(userWithTokenDto);
   }
@@ -95,10 +91,7 @@ public class OAuthController {
    * 요청에서 토큰을 추출하고, 토큰이 없으면 예외를 발생시킴.
    */
   @GetMapping("/token/expired")
-  public ResponseEntity<UserWithTokenDto> reauthenticateToken(
-      final HttpServletRequest request,
-      final HttpServletResponse response
-  ) {
+  public ResponseEntity<UserWithTokenDto> reauthenticateToken(final HttpServletRequest request) {
     final String token = request.getHeader(JwtToken.HEADER_KEY);
     if (token == null) {
       throw new CustomException(CustomErrorCode.UNAUTHORIZED, "토큰을 확인해 주세요.");
@@ -106,20 +99,6 @@ public class OAuthController {
 
     final UserWithTokenDto userWithTokenDto = authService.reauthenticateToken(token);
 
-    final Cookie cookie = createCookieWithToken(userWithTokenDto.getAccessToken());
-    response.addCookie(cookie);
-
     return ResponseEntity.ok(userWithTokenDto);
-  }
-
-  // TODO: Cookie를 위한 클래스 구현
-  private Cookie createCookieWithToken(final String token) {
-    final Cookie cookie = new Cookie(JwtToken.HEADER_KEY, token);
-
-    cookie.setMaxAge(1000 * 60 * 60 * 24 * 14); // TODO: 환경변수값으로 변경해야 함
-    cookie.setSecure(true);
-    cookie.setHttpOnly(true);
-
-    return cookie;
   }
 }

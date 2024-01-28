@@ -2,12 +2,10 @@ package com.damo.server.domain.user.dto;
 
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.domain.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 @Getter
 public class UserWithTokenDto {
-  @JsonIgnore
   private final String accessToken;
   private final Long id;
   private final String profileImageUrl;
