@@ -45,10 +45,9 @@ public class BulkController {
             @Parameter(example = "2023-10-01T00:00:00", description = "랜덤 날짜 시작일")
             @RequestParam("start") final LocalDateTime start,
             @Parameter(example = "2024-02-01T00:00:00", description = "랜덤 날짜 종료일")
-            @RequestParam("end") final LocalDateTime end,
-            @AuthenticationPrincipal final UserDto user
+            @RequestParam("end") final LocalDateTime end
     ) {
-        transactionBulk.bulkInsertWithSchedule(size, user.getId(), personId, start, end);
+        transactionBulk.bulkInsertWithSchedule(size, personId, start, end);
     }
 
     @PostMapping("/schedules")
@@ -61,10 +60,9 @@ public class BulkController {
             @Parameter(example = "2023-10-01T00:00:00", description = "랜덤 날짜 시작일")
             @RequestParam("start") final LocalDateTime start,
             @Parameter(example = "2024-02-01T00:00:00", description = "랜덤 날짜 종료일")
-            @RequestParam("end") final LocalDateTime end,
-            @AuthenticationPrincipal final UserDto user
+            @RequestParam("end") final LocalDateTime end
     ) {
-        scheduleBulk.bulkInsertWithSchedule(size, user.getId(), start, end);
+        scheduleBulk.bulkInsertWithSchedule(size, start, end);
     }
 
     @DeleteMapping("/persons")

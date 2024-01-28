@@ -1,5 +1,6 @@
 package com.damo.server.domain.bulk;
 
+import com.damo.server.application.config.user_details.SecurityUserUtil;
 import com.damo.server.domain.schedule.ScheduleStatus;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
@@ -26,6 +27,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 public class TransactionBulk {
     private final JdbcTemplate jdbcTemplate;
+    private final SecurityUserUtil securityUserUtil;
 
     @Transactional
     public void clear() {
@@ -34,9 +36,9 @@ public class TransactionBulk {
     }
 
     @Transactional
-    public void bulkInsertWithSchedule(final Integer batchSize, final Long userId, final Long personId, final LocalDateTime start, final LocalDateTime end) {
+    public void bulkInsertWithSchedule(final Integer batchSize, final Long personId, final LocalDateTime start, final LocalDateTime end) {
         for (int i = 1; i <= batchSize; i++) {
-            batchInsert(batchSize, userId, personId, start, end);
+            batchInsert(batchSize, securityUserUtil.getId(), personId, start, end);
         }
     }
 

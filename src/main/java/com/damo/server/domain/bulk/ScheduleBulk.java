@@ -1,5 +1,6 @@
 package com.damo.server.domain.bulk;
 
+import com.damo.server.application.config.user_details.SecurityUserUtil;
 import com.damo.server.domain.schedule.ScheduleStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -19,6 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 public class ScheduleBulk {
     private final JdbcTemplate jdbcTemplate;
+    private final SecurityUserUtil securityUserUtil;
 
     @Transactional
     public void clear() {
@@ -27,9 +29,9 @@ public class ScheduleBulk {
     }
 
     @Transactional
-    public void bulkInsertWithSchedule(final Integer batchSize, final Long userId, final LocalDateTime start, final LocalDateTime end) {
+    public void bulkInsertWithSchedule(final Integer batchSize,  final LocalDateTime start, final LocalDateTime end) {
         for (int i = 1; i <= batchSize; i++) {
-            batchInsert(batchSize, userId, start, end);
+            batchInsert(batchSize, securityUserUtil.getId(), start, end);
         }
     }
 
