@@ -28,7 +28,7 @@ public class TransactionPaginationParam extends AbstractPaginationParam {
     @Parameter(name = "direction", description = "default desc")
     private final Sort.Direction direction;
 
-    @Parameter(description = "대상 정렬은 ACTION만 사용 가능")
+    @Parameter(description = "대상 정렬은 ACTION, SCHEDULE_EVENT_DATE만 사용 가능 | null 입력시 SCHEDULE_EVENT_DATE로 설정")
     @PaginationValidation(sortGroup = PaginationSortGroup.TRANSACTION)
     private final PaginationSortType field;
 
