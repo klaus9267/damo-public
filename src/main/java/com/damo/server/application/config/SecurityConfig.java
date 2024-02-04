@@ -24,7 +24,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
-
+/**
+ * {@code SecurityConfig} 클래스는 Spring Security 설정을 담당하는 클래스입니다.
+ */
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity // 시큐리티 활성화 -> 기본 스프링 필터체인에 등록
@@ -34,6 +36,13 @@ public class SecurityConfig {
   private final ObjectMapper objectMapper;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+  /**
+   * Spring Security 필터 체인을 설정하고 반환하는 메서드입니다.
+   *
+   * @param http {@code HttpSecurity} 객체
+   * @return 설정된 Spring Security 필터 체인
+   * @throws Exception 필터 체인 설정 중 발생하는 예외
+   */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
