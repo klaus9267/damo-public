@@ -55,10 +55,7 @@ public record GoogleOAuthConfig(
       && Arrays.equals(scope, that.scope);
   }
 
-  /**
-   * 객체의 해시 코드를 생성하는 메서드입니다. 객체의 각 필드에 대한 해시 코드를 조합하여 반환하며,
-   * 배열 필드인 scope는 Arrays.hashCode를 통해 내용을 기반으로 한 해시 코드를 추가합니다.
-   */
+  @Override
   public int hashCode() {
     int result = Objects.hash(
         redirectUri,
