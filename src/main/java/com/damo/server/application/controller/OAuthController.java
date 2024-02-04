@@ -3,15 +3,19 @@ package com.damo.server.application.controller;
 import com.damo.server.application.config.jwt.JwtToken;
 import com.damo.server.application.config.oauth.OAuthService;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
+import com.damo.server.application.controller.operation.oauth.OAuthProviderOperation;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.domain.user.dto.UserWithTokenDto;
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
  * OAuthController 는 대문자 연속을 허용하는 게 더 깔끔해 보여서 SuppressWarnings 어노테이션 적용.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
+@Tag(name = "OAUTH")
 @AllArgsConstructor
 @RestController
 @RequestMapping("oauth")
@@ -35,10 +40,11 @@ public class OAuthController {
    * 특정 제공자 유형에 기반하여 인증 코드 요청 URL 생성하고 사용자를 인가 서버로 리디렉션합니다.
    * SneakyThrows 어노테이션을 사용하여 체크된 예외를 처리합니다.
    */
+  @OAuthProviderOperation(summary = "OAuth 로그인 페이지 리다이렉트", description = "provider에 맞는 로그인 페이지로 리다이렉트 시켜줍니다.")
   @SneakyThrows
   @GetMapping("{provider}")
   public ResponseEntity<Void> redirectAuthCodeRequestUrl(
-      @PathVariable("provider") final OAuthProviderType providerType,
+      @PathVariable("provider") final @Valid OAuthProviderType providerType,
       final HttpServletRequest request,
       final HttpServletResponse response
   ) {
@@ -47,7 +53,7 @@ public class OAuthController {
 
     response.sendRedirect(redirectUrl);
 
-    return ResponseEntity.ok().build();
+    return ResponseEntity.status(HttpStatus.FOUND).build();
   }
 
   /**
