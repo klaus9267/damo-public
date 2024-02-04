@@ -7,14 +7,17 @@ import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.domain.user.dto.UserWithTokenDto;
 import io.swagger.v3.oas.annotations.Hidden;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -100,5 +103,17 @@ public class OAuthController {
     final UserWithTokenDto userWithTokenDto = authService.reauthenticateToken(token);
 
     return ResponseEntity.ok(userWithTokenDto);
+  }
+
+  /**
+   * HTTP 요청에서 JWT 토큰을 추출하고 해당 토큰이 유효한지 검증하는 메서드입니다.
+   */
+  @GetMapping("/token/validated")
+  public ResponseEntity<Boolean> validateToken(final HttpServletRequest request) {
+    final String token = request.getHeader(JwtToken.HEADER_KEY);
+
+    authService.validateToken(token);
+
+    return ResponseEntity.noContent().build();
   }
 }

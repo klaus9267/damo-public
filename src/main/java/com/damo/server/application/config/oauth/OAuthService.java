@@ -20,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -127,6 +128,19 @@ public class OAuthService {
       return UserWithTokenDto.from(user, jwtToken.getAccessToken());
     } catch (final Exception e) {
       throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, "토큰 발급에 실패했습니다.");
+    }
+  }
+
+  /**
+   * 주어진 토큰이 유효한지 검증하는 메서드입니다.
+   * 토큰이 비어있지 않고 유효한 경우 true를 반환하며, 그렇지 않으면 false를 반환합니다.
+   */
+  public void validateToken(final String token) {
+    final boolean isValid = StringUtils.hasText(token)
+      && jwtTokenService.validateToken(jwtTokenService.resolveToken(token));
+
+    if (!isValid) {
+      throw new CustomException(CustomErrorCode.UNAUTHORIZED, "잘못된 토큰입니다.");
     }
   }
 }
