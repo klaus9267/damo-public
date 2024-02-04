@@ -32,11 +32,20 @@ public record KakaoOAuthConfig(
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    KakaoOAuthConfig that = (KakaoOAuthConfig) o;
-    return Objects.equals(redirectUri, that.redirectUri) && Objects.equals(devRedirectUri, that.devRedirectUri) && Objects.equals(backRedirectUri, that.backRedirectUri) && Objects.equals(clientId, that.clientId) && Objects.equals(clientSecret, that.clientSecret) && Arrays.equals(scope, that.scope);
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    final KakaoOAuthConfig that = (KakaoOAuthConfig) o;
+    return Objects.equals(redirectUri, that.redirectUri)
+      && Objects.equals(devRedirectUri, that.devRedirectUri)
+      && Objects.equals(backRedirectUri, that.backRedirectUri)
+      && Objects.equals(clientId, that.clientId)
+      && Objects.equals(clientSecret, that.clientSecret)
+      && Arrays.equals(scope, that.scope);
   }
 
   @Override
