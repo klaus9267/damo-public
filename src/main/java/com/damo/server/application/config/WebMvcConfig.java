@@ -10,6 +10,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * {@code WebMvcConfig} 클래스는 Spring Web MVC 설정을 담당하는 클래스입니다.
+ */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
   @Override
