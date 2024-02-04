@@ -8,7 +8,6 @@ import lombok.Getter;
 
 /**
  * {@code OAuthProviderType} 열거형은 지원하는 다양한 OAuth 공급자의 타입을 정의합니다.
- * {@code checkstyle:AbbreviationAsWordInName} 경고를 무시하는 애너테이션을 사용하였습니다.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @AllArgsConstructor

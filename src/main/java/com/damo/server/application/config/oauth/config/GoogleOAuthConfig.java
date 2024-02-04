@@ -8,13 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Google OAuth 설정을 나타내는 불변(immutable) 레코드 클래스입니다.
  * {@code ConfigurationProperties} 애너테이션을 통해 프로퍼티 값들을 읽어오며, 프로퍼티의 prefix는 "oauth.google" 입니다.
  * 대상 필드들은 {@code toString}, {@code equals}, {@code hashCode} 메서드에서 고려됩니다.
- *
- * @param redirectUri      OAuth 리다이렉트 URI
- * @param devRedirectUri   개발 환경에서 사용되는 OAuth 리다이렉트 URI
- * @param backRedirectUri  백엔드 서버에서 사용되는 OAuth 리다이렉트 URI
- * @param clientId         OAuth 클라이언트 ID
- * @param clientSecret     OAuth 클라이언트 시크릿
- * @param scope            OAuth 스코프를 담고 있는 배열
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @ConfigurationProperties(prefix = "oauth.google")

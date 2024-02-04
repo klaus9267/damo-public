@@ -10,7 +10,6 @@ import org.springframework.web.util.UriComponentsBuilder;
  * {@code NaverOAuthCodeRequestUrlProvider} 클래스는 Naver OAuth의 코드 요청 URL을 제공하는 컴포넌트입니다.
  * {@code OAuthCodeRequestUrlProvider} 인터페이스를 구현하며, Naver OAuth에 특화된 설정을 이용하여
  * 코드 요청 URL을 생성합니다.
- * {@code checkstyle:AbbreviationAsWordInName} 경고를 무시하는 애너테이션을 사용하였습니다.
  */
 @SuppressWarnings("checkstyle:AbbreviationAsWordInName")
 @Component
