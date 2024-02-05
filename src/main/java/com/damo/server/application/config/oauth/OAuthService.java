@@ -137,7 +137,7 @@ public class OAuthService {
    */
   public void validateToken(final String token) {
     final boolean isValid = StringUtils.hasText(token)
-      && jwtTokenService.validateToken(jwtTokenService.resolveToken(token));
+        && jwtTokenService.validateToken(jwtTokenService.resolveToken(token));
 
     if (!isValid) {
       throw new CustomException(CustomErrorCode.UNAUTHORIZED, "잘못된 토큰입니다.");
