@@ -7,13 +7,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import org.springdoc.core.converters.models.PageableAsQueryParam;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 
+/**
+ * {@code PersonPaginationOperation} 어노테이션은 페이지네이션 처리된 데이터 응답을 설명하는 OpenAPI Operation을 정의합니다.
+ */
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Operation(
@@ -51,6 +53,17 @@ import java.lang.annotation.Target;
 )
 @PageableAsQueryParam
 public @interface PersonPaginationOperation {
-    String summary() default "";
-    String description() default "";
+  /**
+   * OpenAPI Operation의 요약(summary) 정보를 설정합니다.
+   *
+   * @return Operation 요약 정보
+   */
+  String summary() default "";
+
+  /**
+   * OpenAPI Operation의 설명(description) 정보를 설정합니다.
+   *
+   * @return Operation 설명 정보
+   */
+  String description() default "";
 }
