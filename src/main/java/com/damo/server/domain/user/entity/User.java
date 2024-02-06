@@ -21,7 +21,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
-
+/**
+ * `User` 엔터티 클래스는 사용자 정보를 나타내는 엔터티입니다.
+ */
 @Getter
 @Data
 @NoArgsConstructor
@@ -58,6 +60,18 @@ public class User {
   @Column(name = "created_at")
   private Timestamp createdAt;
 
+  /**
+   * 빌더 패턴을 사용하여 `User` 객체를 생성하는 생성자입니다.
+   *
+   * @param id             사용자 식별자
+   * @param name           사용자 이름
+   * @param email          사용자 이메일
+   * @param role           사용자 역할
+   * @param username       사용자 아이디
+   * @param profileImageUrl 사용자 프로필 이미지 URL
+   * @param providerType   OAuth 공급자 타입
+   * @param providerId     OAuth 공급자 식별자
+   */
   @Builder
   public User(
       final Long id,
