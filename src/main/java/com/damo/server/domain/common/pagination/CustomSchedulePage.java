@@ -1,6 +1,6 @@
 package com.damo.server.domain.common.pagination;
 
-import com.damo.server.domain.transaction.TransactionTotalAmount;
+import com.damo.server.domain.transaction.dto.TransactionTotalAmountDto;
 import com.damo.server.domain.transaction.dto.TransactionWithScheduleDto;
 import lombok.Getter;
 import org.springframework.data.domain.Page;
@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
  */
 @Getter
 public class CustomSchedulePage extends PageImpl<TransactionWithScheduleDto> {
-  private final TransactionTotalAmount amounts;
+  private final TransactionTotalAmountDto amounts;
 
   /**
    * CustomSchedulePage의 생성자로, 주어진 페이지의 내용과 페이징 정보를 사용하여 객체를 초기화합니다.
@@ -29,13 +29,13 @@ public class CustomSchedulePage extends PageImpl<TransactionWithScheduleDto> {
    * CustomSchedulePage의 생성자로, 주어진 페이지의 내용과 페이징 정보, 그리고 거래 총액 정보를 사용하여 객체를 초기화합니다.
    *
    * @param page           Spring Data의 Page 객체
-   * @param transactionTotalAmount 거래 총액 정보
+   * @param transactionTotalAmountDto 거래 총액 정보
    */
   public CustomSchedulePage(
       final Page<TransactionWithScheduleDto> page,
-      final TransactionTotalAmount transactionTotalAmount
+      final TransactionTotalAmountDto transactionTotalAmountDto
   ) {
     super(page.getContent(), page.getPageable(), page.getTotalElements());
-    this.amounts = transactionTotalAmount;
+    this.amounts = transactionTotalAmountDto;
   }
 }
