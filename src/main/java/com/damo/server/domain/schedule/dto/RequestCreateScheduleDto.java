@@ -1,6 +1,6 @@
 package com.damo.server.domain.schedule.dto;
 
-import com.damo.server.domain.schedule.ScheduleStatus;
+import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

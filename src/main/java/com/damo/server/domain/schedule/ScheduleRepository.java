@@ -1,6 +1,7 @@
 package com.damo.server.domain.schedule;
 
 import com.damo.server.domain.schedule.dto.ScheduleWithTransactionDto;
+import com.damo.server.domain.schedule.entity.Schedule;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.damo.server.domain.schedule.dto;
 
-import com.damo.server.domain.schedule.Schedule;
-import com.damo.server.domain.schedule.ScheduleStatus;
+import com.damo.server.domain.schedule.entity.Schedule;
+import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.damo.server.domain.bulk;
 
 import com.damo.server.application.config.user_details.SecurityUserUtil;
-import com.damo.server.domain.schedule.ScheduleStatus;
+import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
 import java.math.BigInteger;
