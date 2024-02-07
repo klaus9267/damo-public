@@ -11,42 +11,43 @@ import lombok.Getter;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
+/**
+ * {@code ScheduleWithTransactionDto}는 내역을 포함한 일정의 DTO 클래스입니다.
+ */
 @Builder
 @AllArgsConstructor
 @Getter
 public class ScheduleWithTransactionDto {
-    private final Long id;
-    private final String event;
-    private final LocalDateTime eventDate;
-    private final String memo;
-    private final ScheduleStatus status;
-    private final TransactionDto transaction;
-    private final Timestamp createdAt;
-    private final Timestamp updatedAt;
-
-    public ScheduleWithTransactionDto(final Schedule schedule, final Transaction transaction) {
-        this.id = schedule.getId();
-        this.event = schedule.getEvent();
-        this.eventDate = schedule.getEventDate();
-        this.memo = schedule.getMemo();
-        this.status = schedule.getStatus();
-        this.transaction = TransactionDto.from(transaction);
-        this.createdAt = schedule.getCreatedAt();
-        this.updatedAt = schedule.getUpdatedAt();
-    }
-
-    public static ScheduleWithTransactionDto from(final Schedule schedule) {
-        TransactionDto transactionDto = schedule.getTransaction() == null ? null : TransactionDto.from(schedule.getTransaction());
-
-        return ScheduleWithTransactionDto.builder()
-                                         .id(schedule.getId())
-                                         .event(schedule.getEvent())
-                                         .eventDate(schedule.getEventDate())
-                                         .memo(schedule.getMemo())
-                                         .status(schedule.getStatus())
-                                         .transaction(transactionDto)
-                                         .createdAt(schedule.getCreatedAt())
-                                         .updatedAt(schedule.getUpdatedAt())
-                                         .build();
-    }
+  private final Long id;
+  private final String event;
+  private final LocalDateTime eventDate;
+  private final String memo;
+  private final ScheduleStatus status;
+  private final TransactionDto transaction;
+  private final Timestamp createdAt;
+  private final Timestamp updatedAt;
+  
+  /**
+   * 주어진 일정과 내역으로 {@code ScheduleWithTransactionDto}를 생성합니다.
+   */
+  public ScheduleWithTransactionDto(final Schedule schedule, final Transaction transaction) {
+    this.id = schedule.getId();
+    this.event = schedule.getEvent();
+    this.eventDate = schedule.getEventDate();
+    this.memo = schedule.getMemo();
+    this.status = schedule.getStatus();
+    this.transaction = schedule.getTransaction() == null ? null : TransactionDto.from(transaction);
+    this.createdAt = schedule.getCreatedAt();
+    this.updatedAt = schedule.getUpdatedAt();
+  }
+  
+  /**
+   * 주어진 {@code Schedule} 객체를 {@code ScheduleWithTransactionDto}로 변환합니다.
+   *
+   * @param schedule 변환할 대상 객체
+   * @return 변환된 {@code ScheduleWithTransactionDto}
+   */
+  public static ScheduleWithTransactionDto from(final Schedule schedule) {
+    return new ScheduleWithTransactionDto(schedule, schedule.getTransaction());
+  }
 }
