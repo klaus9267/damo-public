@@ -11,29 +11,32 @@ import lombok.Getter;
 
 import java.sql.Timestamp;
 
+/**
+ * {@code TransactionDto}는 내역 정보를 포함한 DTO 클래스입니다.
+ */
 @Getter
 @AllArgsConstructor
 @Builder
 public class TransactionDto {
-    private final Long id;
-    private final PersonDto person;
-    private final TransactionAmount transactionAmount;
-    private final TransactionCategory category;
-    private final String memo;
-    private final Timestamp createdAt;
-    private final Timestamp updatedAt;
-
-    public TransactionDto(final Transaction transaction, final Person person) {
-        this.id = transaction.getId();
-        this.person = PersonDto.toPersonDto(person);
-        this.transactionAmount = transaction.getTransactionAmount();
-        this.category = transaction.getCategory();
-        this.memo = transaction.getMemo();
-        this.createdAt = transaction.getCreatedAt();
-        this.updatedAt = transaction.getUpdatedAt();
-    }
-
-    public static TransactionDto from(final Transaction transaction) {
-        return new TransactionDto(transaction, transaction.getPerson());
-    }
+  private final Long id;
+  private final PersonDto person;
+  private final TransactionAmount transactionAmount;
+  private final TransactionCategory category;
+  private final String memo;
+  private final Timestamp createdAt;
+  private final Timestamp updatedAt;
+  
+  public TransactionDto(final Transaction transaction, final Person person) {
+    this.id = transaction.getId();
+    this.person = PersonDto.toPersonDto(person);
+    this.transactionAmount = transaction.getTransactionAmount();
+    this.category = transaction.getCategory();
+    this.memo = transaction.getMemo();
+    this.createdAt = transaction.getCreatedAt();
+    this.updatedAt = transaction.getUpdatedAt();
+  }
+  
+  public static TransactionDto from(final Transaction transaction) {
+    return new TransactionDto(transaction, transaction.getPerson());
+  }
 }
