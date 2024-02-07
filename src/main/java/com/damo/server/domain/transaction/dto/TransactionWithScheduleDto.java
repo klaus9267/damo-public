@@ -2,7 +2,7 @@ package com.damo.server.domain.transaction.dto;
 
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.entity.Person;
-import com.damo.server.domain.schedule.Schedule;
+import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.dto.ScheduleDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.transaction.entity.TransactionAmount;
