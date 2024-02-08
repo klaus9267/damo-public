@@ -1,0 +1,10 @@
+management:
+  endpoints:
+    web:
+      base-path: "/watchers"
+      exposure:
+        include: "prometheus"
+server:
+  tomcat:
+    mbeanregistry:
+      enabled: true
