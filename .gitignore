@@ -59,10 +59,6 @@ local.properties
 # ignore properties file
 config.properties
 /src/main/resources/config/**
-/src/main/resources/config/application-db.yml
-/src/main/resources/config/application-oauth.yml
-/src/main/resources/config/application-server.yml
-/src/main/resources/config/application-monitor.yml
 
 # External tool builders
 .externalToolBuilders/
