@@ -53,11 +53,12 @@ local.properties
 .recommenders
 .target/
 
+# monitor
+/grafana-data/**
+
 # ignore properties file
 config.properties
-/src/main/resources/config/application-db.yml
-/src/main/resources/config/application-oauth.yml
-/src/main/resources/config/application-server.yml
+/src/main/resources/config/**
 
 # External tool builders
 .externalToolBuilders/
