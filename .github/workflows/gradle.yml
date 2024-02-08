@@ -51,6 +51,14 @@ jobs:
         cat ./application-server.yml
       shell: bash
 
+    - name: make application-monitoring.yml
+      run: |
+        cd ./src/main/resources
+        touch ./application-monitoring.yml
+        echo "${{ secrets.MONITOR }}" >> ./application-monitoring.yml
+        cat ./application-monitoring.yml
+      shell: bash
+
     - name: Build with Gradle
       run: |
         sudo chmod +x ./gradlew
