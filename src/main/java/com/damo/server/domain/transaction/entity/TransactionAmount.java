@@ -28,4 +28,15 @@ public class TransactionAmount {
   @NotNull
   @Schema(description = "거래 금액", example = "50000")
   private final Long amount;
+  
+  /**
+   * 'TransactionRepository'에서 금액 조회할 때  시용되는 생성자
+   *
+   * @param amount 거래 총액
+   * @param action 거래 종류
+   */
+  public TransactionAmount(Long amount, String action) {
+    this.amount = amount == null ? DEFAULT_AMOUNT : amount;
+    this.action = TransactionAction.valueOf(action);
+  }
 }

@@ -79,7 +79,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
    * @return 전체 거래 총액
    */
   @Query("""
-         SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
+         SELECT new com.damo.server.domain.transaction.dto.TransactionTotalAmountDto(
                new com.damo.server.domain.transaction.entity.TransactionAmount(
                    SUM(CASE WHEN t.transactionAmount.action = 'GIVING' THEN t.transactionAmount.amount ELSE 0 END), 'GIVING'
                ),
@@ -101,7 +101,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
    * @return 최근 거래 총액
    */
   @Query("""
-         SELECT new com.damo.server.domain.transaction.TransactionTotalAmount(
+         SELECT new com.damo.server.domain.transaction.dto.TransactionTotalAmountDto(
                new com.damo.server.domain.transaction.entity.TransactionAmount(
                    SUM(CASE WHEN t.transactionAmount.action = 'GIVING' THEN t.transactionAmount.amount ELSE 0 END), 'GIVING'
                ),
