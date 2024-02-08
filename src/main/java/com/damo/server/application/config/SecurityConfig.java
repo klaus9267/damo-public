@@ -6,6 +6,7 @@ import com.damo.server.application.config.jwt.JwtTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,6 +37,9 @@ public class SecurityConfig {
   private final ObjectMapper objectMapper;
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+  @Value("${management.endpoints.web.base-path}")
+  private String monitorEndPoint;
+
   /**
    * Spring Security 필터 체인을 설정하고 반환하는 메서드입니다.
    *
@@ -59,7 +63,7 @@ public class SecurityConfig {
           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)  // 쿠키 대신 토큰 사용
       )
       .authorizeHttpRequests(authorize -> authorize
-          .requestMatchers("/oauth/**", "/v3/**", "/swagger-ui/**").permitAll() // swagger 허용
+          .requestMatchers(monitorEndPoint + "/**", "/oauth/**", "/v3/**", "/swagger-ui/**").permitAll() // swagger 허용
           .requestMatchers("/**").hasAnyRole("USER", "ADMIN")
       )
       .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
