@@ -53,6 +53,9 @@ local.properties
 .recommenders
 .target/
 
+# monitor
+/grafana-data/**
+
 # ignore properties file
 config.properties
 /src/main/resources/config/**
