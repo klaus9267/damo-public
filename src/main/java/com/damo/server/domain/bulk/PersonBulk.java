@@ -1,5 +1,6 @@
 package com.damo.server.domain.bulk;
 
+import com.damo.server.application.config.user_details.SecurityUserUtil;
 import com.damo.server.domain.person.entity.PersonRelation;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class PersonBulk {
   private final JdbcTemplate jdbcTemplate;
+  private final SecurityUserUtil securityUserUtil;
 
   /**
    * 데이터베이스에서 persons 테이블의 모든 데이터를 삭제합니다.
@@ -35,9 +37,10 @@ public class PersonBulk {
    * @param id  사용자 ID
    */
   @Transactional
-  public void bulkInsert(final Integer batchSize, final Long id) {
+  public void bulkInsert(final Integer batchSize) {
+    final Long userId = securityUserUtil.getId();
     for(int i = 1; i <= batchSize; i++) {
-      batchInsert(batchSize, id);
+      batchInsert(batchSize, userId);
     }
   }
 

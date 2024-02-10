@@ -41,10 +41,9 @@ public class BulkController {
       @Parameter(example = "1000", description = "size^2 만큼 데이터가 저장됩니다. 1000 입력시 1,000,000개 저장, 1000보다 큰 값 입력시 먹통될 수 있어서 제한합니다.")
       @Valid
       @Max(1000)
-      @RequestParam("size") final Integer size,
-      @AuthenticationPrincipal final UserDto user
+      @RequestParam("size") final Integer size
   ) {
-    personBulk.bulkInsert(size, user.getId());
+    personBulk.bulkInsert(size);
   }
 
 

@@ -55,6 +55,7 @@ local.properties
 
 # monitor
 /grafana-data/**
+/monitoring/**
 
 # ignore properties file
 config.properties
