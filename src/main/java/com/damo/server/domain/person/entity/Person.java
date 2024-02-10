@@ -61,7 +61,7 @@ public class Person {
   @UpdateTimestamp
   private Timestamp updatedAt;
 
-  @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
+  @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Transaction> transactions = new ArrayList<>();
 
   @ManyToOne(fetch = FetchType.LAZY)
