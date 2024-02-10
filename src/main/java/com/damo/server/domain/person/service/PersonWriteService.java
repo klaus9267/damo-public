@@ -3,6 +3,7 @@ package com.damo.server.domain.person.service;
 import com.damo.server.application.config.user_details.SecurityUserUtil;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
 import com.damo.server.domain.person.dto.RequestUpdatePersonDto;
 import com.damo.server.domain.person.entity.Person;
@@ -27,14 +28,12 @@ public class PersonWriteService {
    */
   @Transactional
   public void addPerson(final RequestCreatePersonDto personDto) {
-    // TODO: 동명이인일 경우 어떻게 해결할 것인가?
-    if (Boolean.TRUE.equals(
-        personRepository.existsByNameAndRelationAndUserId(
-            personDto.name(),
-            personDto.relation(),
-            securityUserUtil.getId())
-        )
-    ) {
+    final boolean isExistedPerson = personRepository.existsByNameAndRelationAndUserId(
+        personDto.name(),
+        personDto.relation(),
+        securityUserUtil.getId()
+    );
+    if (Boolean.TRUE.equals(isExistedPerson)) {
       throw new CustomException(CustomErrorCode.BAD_REQUEST, "관계 내에서 동일한 이름이 존재");
     }
 
@@ -51,7 +50,8 @@ public class PersonWriteService {
   public void patchPersonById(final RequestUpdatePersonDto personDto, final Long personId) {
     final Person person = personRepository
         .findByIdAndUserId(personId, securityUserUtil.getId())
-        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND, "수정할 대상을 찾을 수 없음"));
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("수정할 대상을 찾을 수 없음"));
+
     person.changeInfo(personDto);
   }
 
@@ -64,7 +64,8 @@ public class PersonWriteService {
   public void removePersonById(final Long personId) {
     final Person person = personRepository
         .findByIdAndUserId(personId, securityUserUtil.getId())
-        .orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND, "삭제할 대상을 찾을 수 없음"));
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("삭제할 대상을 찾을 수 없음"));
+
     personRepository.deleteByIdAndUserId(person.getId(), securityUserUtil.getId());
   }
 }
