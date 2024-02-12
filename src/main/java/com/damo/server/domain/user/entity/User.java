@@ -60,6 +60,9 @@ public class User {
   @Column(name = "created_at")
   private Timestamp createdAt;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private final List<Person> people = new ArrayList<>();
+
   /**
    * 빌더 패턴을 사용하여 `User` 객체를 생성하는 생성자입니다.
    *
@@ -97,6 +100,4 @@ public class User {
     this.providerId = providerId;
   }
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
-  private final List<Person> people = new ArrayList<>();
 }
