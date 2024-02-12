@@ -26,15 +26,12 @@ public class UserController {
   /**
    * 현재 사용자가 등록한 대상 목록을 조회하는 API입니다.
    *
-   * @param user 현재 사용자 정보
    * @return 대상 목록 응답
    */
   @ApiResponse(responseCode = "200", description = "유저가 등록한 대상 목록 조회", useReturnTypeSchema = true)
   @GetMapping("me/persons")
-  public ResponseEntity<List<PersonDto>> readPersonsByUserId(
-      @AuthenticationPrincipal final UserDto user
-  ) {
-    final List<PersonDto> people = userReadService.readPersonsByUserId(user.getId());
+  public ResponseEntity<List<PersonDto>> readPersonsByUserId() {
+    final List<PersonDto> people = userReadService.readPersonsByUserId();
     return ResponseEntity.ok(people);
   }
 }
