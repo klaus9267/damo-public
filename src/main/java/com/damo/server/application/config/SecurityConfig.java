@@ -50,9 +50,6 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
-      .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
-        .configurationSource(corsConfigurationSource())
-      )
       .csrf(CsrfConfigurer::disable)
       .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer
           .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
@@ -71,20 +68,6 @@ public class SecurityConfig {
       )
       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
       .build();
-  }
-
-  private CorsConfigurationSource corsConfigurationSource() {
-    return request -> {
-      final CorsConfiguration config = new CorsConfiguration();
-
-      config.setAllowedHeaders(Collections.singletonList("*"));
-      config.setAllowedMethods(Collections.singletonList("*"));
-      // TODO: 환경변수 cors 경로 추가한 후 적용해야 함
-      config.setAllowedOriginPatterns(Collections.singletonList("*"));
-      config.setAllowCredentials(true);
-
-      return config;
-    };
   }
 
   @Bean
