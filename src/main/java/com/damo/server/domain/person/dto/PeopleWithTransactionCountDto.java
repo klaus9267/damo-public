@@ -3,6 +3,9 @@ package com.damo.server.domain.person.dto;
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.person.entity.PersonRelation;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 /**
@@ -15,7 +18,7 @@ public class PeopleWithTransactionCountDto {
   private final String contact;
   private final PersonRelation relation;
   private final String memo;
-  private final Timestamp createdAt;
+  private final LocalDateTime createdAt;
   private final Long transactionCount;
 
   /**

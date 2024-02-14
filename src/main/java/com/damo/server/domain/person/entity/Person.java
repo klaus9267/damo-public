@@ -17,7 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.*;
@@ -55,11 +55,11 @@ public class Person {
 
   @Column(name = "created_at")
   @CreationTimestamp
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
 
   @Column(name = "updated_at")
   @UpdateTimestamp
-  private Timestamp updatedAt;
+  private LocalDateTime updatedAt;
 
   @OneToMany(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
   private final List<Transaction> transactions = new ArrayList<>();
