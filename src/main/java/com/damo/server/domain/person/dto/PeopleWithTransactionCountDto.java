@@ -2,10 +2,7 @@ package com.damo.server.domain.person.dto;
 
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.person.entity.PersonRelation;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 /**
