@@ -21,8 +21,8 @@ public class ScheduleDto {
   private final LocalDateTime eventDate;
   private final String memo;
   private final ScheduleStatus status;
-  private final Timestamp createdAt;
-  private final Timestamp updatedAt;
+  private final LocalDateTime createdAt;
+  private final LocalDateTime updatedAt;
   
   /**
    * 내부 생성자로, 일정 에너ㅣ에서 데이터를 이용해 DTO를 생성합니다.

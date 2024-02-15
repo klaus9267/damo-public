@@ -14,6 +14,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * `Transaction` 클래스는 시스템에서 내역을 나타냅니다.
@@ -41,11 +42,11 @@ public class Transaction {
   
   @Column(name = "created_at")
   @CreationTimestamp
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
   
   @Column(name = "updated_at")
   @UpdateTimestamp
-  private Timestamp updatedAt;
+  private LocalDateTime updatedAt;
   
   @Enumerated(EnumType.STRING)
   private TransactionCategory category;

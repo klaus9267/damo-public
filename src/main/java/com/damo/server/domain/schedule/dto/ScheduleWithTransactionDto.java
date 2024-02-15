@@ -24,8 +24,8 @@ public class ScheduleWithTransactionDto {
   private final String memo;
   private final ScheduleStatus status;
   private final TransactionDto transaction;
-  private final Timestamp createdAt;
-  private final Timestamp updatedAt;
+  private final LocalDateTime createdAt;
+  private final LocalDateTime updatedAt;
   
   /**
    * 주어진 일정과 내역으로 {@code ScheduleWithTransactionDto}를 생성합니다.

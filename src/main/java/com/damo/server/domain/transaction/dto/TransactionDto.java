@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 /**
  * {@code TransactionDto}는 내역 정보를 포함한 DTO 클래스입니다.
@@ -23,8 +24,8 @@ public class TransactionDto {
   private final TransactionAmount transactionAmount;
   private final TransactionCategory category;
   private final String memo;
-  private final Timestamp createdAt;
-  private final Timestamp updatedAt;
+  private final LocalDateTime createdAt;
+  private final LocalDateTime updatedAt;
   
   public TransactionDto(final Transaction transaction, final Person person) {
     this.id = transaction.getId();

@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -45,11 +44,11 @@ public class Schedule {
   
   @Column(name = "created_at")
   @CreationTimestamp
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
   
   @Column(name = "updated_at")
   @UpdateTimestamp
-  private Timestamp updatedAt;
+  private LocalDateTime updatedAt;
   
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
