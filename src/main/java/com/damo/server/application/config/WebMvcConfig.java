@@ -2,6 +2,7 @@ package com.damo.server.application.config;
 
 import com.damo.server.application.config.oauth.OAuthProviderTypeConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     
   @Bean
   public ObjectMapper objectMapper() {
-    return new ObjectMapper().registerModule(new JavaTimeModule());
+    return new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   }
 }

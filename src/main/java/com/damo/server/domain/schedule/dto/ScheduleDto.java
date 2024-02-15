@@ -2,12 +2,10 @@ package com.damo.server.domain.schedule.dto;
 
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * {@code ScheduleDto}는 일정 정보를 포함한 DTO 클래스입니다.
@@ -21,8 +19,8 @@ public class ScheduleDto {
   private final LocalDateTime eventDate;
   private final String memo;
   private final ScheduleStatus status;
-  private final Timestamp createdAt;
-  private final Timestamp updatedAt;
+  private final LocalDateTime createdAt;
+  private final LocalDateTime updatedAt;
   
   /**
    * 내부 생성자로, 일정 에너ㅣ에서 데이터를 이용해 DTO를 생성합니다.
