@@ -2,15 +2,12 @@ package com.damo.server.domain.bulk;
 
 import com.damo.server.application.config.user_details.SecurityUserUtil;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -45,7 +42,11 @@ public class ScheduleBulk {
    * @param end       무작위 이벤트 날짜를 생성하는 데 사용되는 종료 날짜 범위입니다.
    */
   @Transactional
-  public void bulkInsertWithSchedule(final Integer batchSize, final LocalDateTime start, final LocalDateTime end) {
+  public void bulkInsertWithSchedule(
+      final Integer batchSize,
+      final LocalDateTime start,
+      final LocalDateTime end
+  ) {
     for (int i = 1; i <= batchSize; i++) {
       batchInsert(batchSize, securityUserUtil.getId(), start, end);
     }

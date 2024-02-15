@@ -5,7 +5,21 @@ import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import com.damo.server.domain.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,8 +27,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * `Transaction` 클래스는 시스템에서 내역을 나타냅니다.
@@ -74,7 +86,10 @@ public class Transaction {
   /**
    * RequestCreateTransactionDto로부터 Transaction 객체를 생성하는 정적 메서드.
    */
-  public static Transaction from(final RequestCreateTransactionDto transactionDto, final Long userId) {
+  public static Transaction from(
+      final RequestCreateTransactionDto transactionDto,
+      final Long userId
+  ) {
     return new Transaction(transactionDto, userId);
   }
   
@@ -82,7 +97,9 @@ public class Transaction {
    * RequestUpdateTransactionDto로부터 내역 정보를 업데이트하는 메서드.
    */
   public void changeInfo(final RequestUpdateTransactionDto transactionDto) {
-    this.transactionAmount = transactionDto.transactionAmount() != null ? transactionDto.transactionAmount() : this.getTransactionAmount();
+    this.transactionAmount = transactionDto.transactionAmount() != null
+        ? transactionDto.transactionAmount()
+        : this.getTransactionAmount();
     this.memo = transactionDto.memo() != null ? transactionDto.memo() : this.getMemo();
   }
 }

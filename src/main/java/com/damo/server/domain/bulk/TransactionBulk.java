@@ -4,18 +4,15 @@ import com.damo.server.application.config.user_details.SecurityUserUtil;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
-
 import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;

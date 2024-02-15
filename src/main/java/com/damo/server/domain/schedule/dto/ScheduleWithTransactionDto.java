@@ -4,12 +4,10 @@ import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import com.damo.server.domain.transaction.dto.TransactionDto;
 import com.damo.server.domain.transaction.entity.Transaction;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 /**
  * {@code ScheduleWithTransactionDto}는 내역을 포함한 일정의 DTO 클래스입니다.

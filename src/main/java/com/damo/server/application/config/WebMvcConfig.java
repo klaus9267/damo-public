@@ -4,17 +4,12 @@ import com.damo.server.application.config.oauth.OAuthProviderTypeConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.time.format.DateTimeFormatter;
 
 /**
  * {@code WebMvcConfig} 클래스는 Spring Web MVC 설정을 담당하는 클래스입니다.
