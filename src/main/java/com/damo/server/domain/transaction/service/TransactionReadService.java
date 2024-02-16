@@ -1,12 +1,11 @@
 package com.damo.server.domain.transaction.service;
 
 import com.damo.server.application.config.user_details.SecurityUserUtil;
-import com.damo.server.application.handler.exception.CustomErrorCode;
-import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionRepository;
-import com.damo.server.domain.transaction.dto.TransactionTotalAmountDto;
 import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
+import com.damo.server.domain.transaction.dto.TransactionTotalAmountDto;
 import com.damo.server.domain.transaction.dto.TransactionWithScheduleDto;
 import com.damo.server.domain.transaction.entity.Transaction;
 import lombok.AllArgsConstructor;
@@ -51,7 +50,7 @@ public class TransactionReadService {
    * @return 조회된 내역, 일정을 포함하는 내역 DTO
    */
   public TransactionWithScheduleDto readTransaction(final Long transactionId) {
-    final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, securityUserUtil.getId()).orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND, "조회할 거래 내역을 찾을 수 없음"));
+    final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, securityUserUtil.getId()).orElseThrow(ExceptionThrowHelper.throwNotFound("조회할 거래 내역을 찾을 수 없음"));
     return TransactionWithScheduleDto.from(transaction);
   }
   
