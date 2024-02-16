@@ -1,19 +1,18 @@
 package com.damo.server.domain.transaction.service;
 
 import com.damo.server.application.config.user_details.SecurityUserUtil;
-import com.damo.server.application.handler.exception.CustomErrorCode;
-import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionRepository;
-import com.damo.server.domain.transaction.dto.TransactionTotalAmountDto;
 import com.damo.server.domain.transaction.dto.TransactionPaginationResponseDto;
+import com.damo.server.domain.transaction.dto.TransactionTotalAmountDto;
 import com.damo.server.domain.transaction.dto.TransactionWithScheduleDto;
 import com.damo.server.domain.transaction.entity.Transaction;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 
 /**
  * `TransactionReadService`는 주어진 조건에 따라 거래 내역 및 거래 총액을 조회하는 서비스를 제공합니다.
@@ -40,7 +39,9 @@ public class TransactionReadService {
    * @return 조회딘 거래 총액
    */
   public TransactionTotalAmountDto readRecentAmounts(final LocalDateTime startedAt) {
-    final LocalDateTime startDate = startedAt == null ? LocalDateTime.now().minusMonths(1) : startedAt;
+    final LocalDateTime startDate = startedAt == null
+        ? LocalDateTime.now().minusMonths(1)
+        : startedAt;
     return transactionRepository.readRecentAmounts(securityUserUtil.getId(), startDate);
   }
   
@@ -51,7 +52,9 @@ public class TransactionReadService {
    * @return 조회된 내역, 일정을 포함하는 내역 DTO
    */
   public TransactionWithScheduleDto readTransaction(final Long transactionId) {
-    final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, securityUserUtil.getId()).orElseThrow(() -> new CustomException(CustomErrorCode.NOT_FOUND, "조회할 거래 내역을 찾을 수 없음"));
+    final Transaction transaction = transactionRepository
+        .findByIdAndUserId(transactionId, securityUserUtil.getId())
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("조회할 거래 내역을 찾을 수 없음"));
     return TransactionWithScheduleDto.from(transaction);
   }
   
@@ -61,8 +64,17 @@ public class TransactionReadService {
    * @param param 조회할 내역 목록의 페이징 및 검색 조건
    * @return 조회된 내역 및 일정 정보를 포함하는 페이지 응답 DTO
    */
-  public TransactionPaginationResponseDto readTransactionList(final TransactionPaginationParam param) {
-    final Page<TransactionWithScheduleDto> transactionPage = transactionRepository.findAllByUserId(param.toPageable(), securityUserUtil.getId(), param.getStartedAt(), param.getEndedAt(), param.getAction());
+  public TransactionPaginationResponseDto readTransactionList(
+      final TransactionPaginationParam param
+  ) {
+    final Page<TransactionWithScheduleDto> transactionPage = transactionRepository
+        .findAllByUserId(
+            param.toPageable(),
+            securityUserUtil.getId(),
+            param.getStartedAt(),
+            param.getEndedAt(),
+            param.getAction()
+        );
     return TransactionPaginationResponseDto.from(transactionPage);
   }
 }
