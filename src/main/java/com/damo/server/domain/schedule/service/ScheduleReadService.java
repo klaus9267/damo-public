@@ -27,7 +27,9 @@ public class ScheduleReadService {
    * @return 조회된 일정, 내역을 포함하는 일정 DTO
    */
   public ScheduleWithTransactionDto readSchedule(final Long scheduleId) {
-    final Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, securityUserUtil.getId()).orElseThrow(ExceptionThrowHelper.throwNotFound("조회할 일정을 찾을 수 없음"));
+    final Schedule schedule = scheduleRepository
+        .findByIdAndUserId(scheduleId, securityUserUtil.getId())
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("조회할 일정을 찾을 수 없음"));
     return ScheduleWithTransactionDto.from(schedule);
   }
   
@@ -37,8 +39,17 @@ public class ScheduleReadService {
    * @param paginationParam 조회할 일정 목록의 페이징 및 검색 조건
    * @return 조회된 일정을 포함하는 페이지 응답 DTO
    */
-  public SchedulePaginationResponseDto readScheduleByEventDate(final SchedulePaginationParam paginationParam) {
-    final Page<ScheduleWithTransactionDto> schedulePage = scheduleRepository.findAllScheduleByEventDate(paginationParam.toPageable(), securityUserUtil.getId(), paginationParam.getYear(), paginationParam.getMonth(), paginationParam.getKeyword());
+  public SchedulePaginationResponseDto readScheduleByEventDate(
+      final SchedulePaginationParam paginationParam
+  ) {
+    final Page<ScheduleWithTransactionDto> schedulePage = scheduleRepository
+        .findAllScheduleByEventDate(
+            paginationParam.toPageable(),
+            securityUserUtil.getId(),
+            paginationParam.getYear(),
+            paginationParam.getMonth(),
+            paginationParam.getKeyword()
+        );
     return SchedulePaginationResponseDto.from(schedulePage);
   }
 }

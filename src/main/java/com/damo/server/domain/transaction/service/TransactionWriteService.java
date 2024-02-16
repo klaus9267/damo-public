@@ -28,7 +28,14 @@ public class TransactionWriteService {
    */
   @Transactional
   public void save(final RequestCreateTransactionDto transactionDto) {
-    if (transactionRepository.existsByEventDateAndPersonIdAndEvent(transactionDto.eventDate(), transactionDto.personId(), transactionDto.event())) {
+    final boolean isExistedTransaction = Boolean.TRUE.equals(
+        transactionRepository.existsByEventDateAndPersonIdAndEvent(
+          transactionDto.eventDate(),
+          transactionDto.personId(),
+          transactionDto.event()
+        )
+    );
+    if (isExistedTransaction) {
       throw new CustomException(CustomErrorCode.BAD_REQUEST, "내역에서 동일한 기록이 존재");
     }
     transactionRepository.save(Transaction.from(transactionDto, securityUserUtil.getId()));
@@ -42,7 +49,9 @@ public class TransactionWriteService {
    */
   @Transactional
   public void patchTransactionById(final RequestUpdateTransactionDto transactionDto, final Long transactionId) {
-    final Transaction transaction = transactionRepository.findByIdAndUserId(transactionId, securityUserUtil.getId()).orElseThrow(ExceptionThrowHelper.throwNotFound("수정할 내역을 찾을 수 없음"));
+    final Transaction transaction = transactionRepository
+        .findByIdAndUserId(transactionId, securityUserUtil.getId())
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("수정할 내역을 찾을 수 없음"));
     transaction.changeInfo(transactionDto);
   }
   
@@ -53,7 +62,9 @@ public class TransactionWriteService {
    */
   @Transactional
   public void removeTransactionById(final Long transactionId) {
-    transactionRepository.findByIdAndUserId(transactionId, securityUserUtil.getId()).orElseThrow(ExceptionThrowHelper.throwNotFound("삭제할 내역을 찾을 수 없음"));
+    transactionRepository
+        .findByIdAndUserId(transactionId, securityUserUtil.getId())
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("삭제할 내역을 찾을 수 없음"));
     transactionRepository.deleteById(transactionId);
   }
 }

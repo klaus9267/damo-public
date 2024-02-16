@@ -28,7 +28,14 @@ public class ScheduleWriteService {
    */
   @Transactional
   public void addSchedule(final RequestCreateScheduleDto scheduleDto) {
-    if (scheduleRepository.findByEventAndEventDateAndUserId(scheduleDto.event(), scheduleDto.eventDate(), securityUserUtil.getId()).isPresent()) {
+    final boolean isPresentedSchedule = scheduleRepository
+        .findByEventAndEventDateAndUserId(
+            scheduleDto.event(),
+            scheduleDto.eventDate(),
+            securityUserUtil.getId()
+        )
+        .isPresent();
+    if (isPresentedSchedule) {
       throw new CustomException(CustomErrorCode.BAD_REQUEST, "일정 내에서 동일한 기록이 존재");
     }
     final Schedule schedule = Schedule.from(scheduleDto, securityUserUtil.getId());
@@ -43,7 +50,9 @@ public class ScheduleWriteService {
    */
   @Transactional
   public void patchScheduleById(final RequestUpdateScheduleDto scheduleDto, final Long scheduleId) {
-    final Schedule schedule = scheduleRepository.findByIdAndUserId(scheduleId, securityUserUtil.getId()).orElseThrow(ExceptionThrowHelper.throwNotFound("수정할 내역을 찾을 수 없음"));
+    final Schedule schedule = scheduleRepository
+        .findByIdAndUserId(scheduleId, securityUserUtil.getId())
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("수정할 내역을 찾을 수 없음"));
     schedule.changeSchedule(scheduleDto);
   }
   
@@ -53,7 +62,9 @@ public class ScheduleWriteService {
    * @param scheduleId 삭제할 일정의 ID
    */
   public void removeScheduleById(final Long scheduleId) {
-    scheduleRepository.findByIdAndUserId(scheduleId, securityUserUtil.getId()).orElseThrow(ExceptionThrowHelper.throwNotFound("삭제할 일정을 찾을 수 없음"));
-    scheduleRepository.deleteById(scheduleId);
+    final Schedule schedule = scheduleRepository
+        .findByIdAndUserId(scheduleId, securityUserUtil.getId())
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("삭제할 일정을 찾을 수 없음"));
+    scheduleRepository.deleteById(schedule.getId());
   }
 }
