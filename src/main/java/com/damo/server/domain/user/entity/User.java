@@ -12,7 +12,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Builder;
@@ -58,7 +58,10 @@ public class User {
 
   @CreationTimestamp
   @Column(name = "created_at")
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private final List<Person> people = new ArrayList<>();
 
   /**
    * 빌더 패턴을 사용하여 `User` 객체를 생성하는 생성자입니다.
@@ -97,6 +100,4 @@ public class User {
     this.providerId = providerId;
   }
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
-  private final List<Person> people = new ArrayList<>();
 }

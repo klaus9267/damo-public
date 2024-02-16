@@ -3,7 +3,7 @@ package com.damo.server.domain.user.dto;
 import com.damo.server.application.config.oauth.provider.OAuthProviderType;
 import com.damo.server.domain.user.UserRole;
 import com.damo.server.domain.user.entity.User;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -20,7 +20,7 @@ public class UserDto {
   private final UserRole role;
   private OAuthProviderType providerType;
   private String providerId;
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
 
   /**
    * 토큰 생성을 위한 생성자로, ID, 이메일, 사용자 역할을 받아 객체를 초기화합니다.

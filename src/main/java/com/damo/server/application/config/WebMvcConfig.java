@@ -2,6 +2,7 @@ package com.damo.server.application.config;
 
 import com.damo.server.application.config.oauth.OAuthProviderTypeConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
   public void addCorsMappings(CorsRegistry registry) {
     // TODO: 추후 배포시 cors 설정 제대로 검토해야 함
     registry.addMapping("/**")
-        .allowedOrigins("/*")    // 외부에서 들어오는 모둔 url 을 허용
+        .allowedOriginPatterns("*")    // 외부에서 들어오는 모둔 url 을 허용
         .allowedMethods(
           HttpMethod.GET.name(),
           HttpMethod.POST.name(),
@@ -39,6 +40,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     
   @Bean
   public ObjectMapper objectMapper() {
-    return new ObjectMapper().registerModule(new JavaTimeModule());
+    return new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   }
 }
