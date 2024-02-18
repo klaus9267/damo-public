@@ -1,8 +1,8 @@
 package com.damo.server.application.controller;
 
-import com.damo.server.application.config.jwt.JwtToken;
-import com.damo.server.application.config.oauth.OAuthService;
-import com.damo.server.application.config.oauth.provider.OAuthProviderType;
+import com.damo.server.application.security.jwt.JwtToken;
+import com.damo.server.application.security.OAuthService;
+import com.damo.server.application.security.provider.OAuthProviderType;
 import com.damo.server.application.controller.operation.oauth.OAuthProviderOperation;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;

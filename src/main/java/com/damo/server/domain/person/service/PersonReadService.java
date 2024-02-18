@@ -1,6 +1,6 @@
 package com.damo.server.domain.person.service;
 
-import com.damo.server.application.config.user_details.SecurityUserUtil;
+import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeoplePaginationResponseDto;
 import com.damo.server.domain.person.dto.PeopleWithTransactionCountDto;

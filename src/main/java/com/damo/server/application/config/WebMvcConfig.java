@@ -1,6 +1,6 @@
 package com.damo.server.application.config;
 
-import com.damo.server.application.config.oauth.OAuthProviderTypeConverter;
+import com.damo.server.application.security.OAuthProviderTypeConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
