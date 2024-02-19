@@ -1,7 +1,6 @@
 package com.damo.server.application.security.user_details;
 
-import com.damo.server.application.handler.exception.CustomErrorCode;
-import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.user.entity.User;
 import com.damo.server.domain.user.repository.UserRepository;
 import java.util.Collection;
@@ -27,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
   public CustomUserDetails loadUserByUsername(final String username) {
     return userRepository.findOneByUsername(username)
         .map(this::createUserDetails)
-        .orElseThrow(() -> new CustomException(CustomErrorCode.UNAUTHORIZED, "유저 정보를 찾을 수 없습니다."));
+        .orElseThrow(ExceptionThrowHelper.throwUnauthorized("유저 정보를 찾을 수 없습니다."));
   }
 
   private CustomUserDetails createUserDetails(final User user) {
