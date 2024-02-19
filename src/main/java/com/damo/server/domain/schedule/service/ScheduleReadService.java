@@ -1,6 +1,6 @@
 package com.damo.server.domain.schedule.service;
 
-import com.damo.server.application.config.user_details.SecurityUserUtil;
+import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.ScheduleRepository;

@@ -1,6 +1,6 @@
 package com.damo.server.domain.bulk;
 
-import com.damo.server.application.config.user_details.SecurityUserUtil;
+import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

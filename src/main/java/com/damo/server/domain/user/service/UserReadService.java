@@ -1,6 +1,6 @@
 package com.damo.server.domain.user.service;
 
-import com.damo.server.application.config.user_details.SecurityUserUtil;
+import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.person.repository.PersonRepository;

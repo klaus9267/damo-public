@@ -1,10 +1,9 @@
 package com.damo.server.application.config;
 
-import com.damo.server.application.config.jwt.JwtAuthenticationEntryPoint;
-import com.damo.server.application.config.jwt.JwtAuthenticationFilter;
-import com.damo.server.application.config.jwt.JwtTokenService;
+import com.damo.server.application.security.jwt.JwtAuthenticationEntryPoint;
+import com.damo.server.application.security.jwt.JwtAuthenticationFilter;
+import com.damo.server.application.security.jwt.JwtTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +21,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
  * {@code SecurityConfig} 클래스는 Spring Security 설정을 담당하는 클래스입니다.

@@ -1,6 +1,6 @@
 package com.damo.server.domain.transaction.service;
 
-import com.damo.server.application.config.user_details.SecurityUserUtil;
+import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.TransactionRepository;
