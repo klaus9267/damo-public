@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 /**
  * `TransactionAmount` 클래스는 시스템에서 내역에 포함되어 거래 금액을 나타냅니다
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(force = true)
+@RequiredArgsConstructor
 public class TransactionAmount {
   private static final Long DEFAULT_AMOUNT = 0L;
   

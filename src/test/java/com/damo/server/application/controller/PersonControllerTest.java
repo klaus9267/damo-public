@@ -1,9 +1,9 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
 import com.damo.server.domain.person.entity.PersonRelation;
 import com.damo.server.domain.person.service.PersonWriteService;
-import com.damo.server.domain.person.dto.PersonDto;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -23,9 +23,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -45,10 +42,10 @@ public class PersonControllerTest {
     @Nested
     @DisplayName("성공 케이스")
     class 성공 {
-        Timestamp now;
+        LocalDateTime now;
         @BeforeEach
         void 초기값() {
-            now = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+            now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         }
 
         @Test
