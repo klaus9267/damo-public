@@ -6,6 +6,7 @@ import com.damo.server.application.controller.operation.person.PersonPaginationO
 import com.damo.server.application.controller.operation.person.PersonUpdateOperation;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeoplePaginationResponseDto;
+import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
 import com.damo.server.domain.person.dto.RequestUpdatePersonDto;
 import com.damo.server.domain.person.service.PersonReadService;
@@ -51,6 +52,19 @@ public class PersonController {
         personReadService.readPeopleByUserIdAndRelation(paginationParam);
 
     return ResponseEntity.ok(peoplePagination);
+  }
+
+  /**
+   * 주어진 personId에 해당하는 Person 정보를 조회하여 반환하는 엔드포인트.
+   *
+   * @param personId 조회할 Person의 식별자
+   * @return 조회한 Person 정보를 담은 ResponseEntity<PersonDto>
+   */
+  @GetMapping("{personId}")
+  public ResponseEntity<PersonDto> readPersonById(@PathVariable("personId") @Valid final Long personId) {
+    final PersonDto personDto = personReadService.readPersonById(personId);
+
+    return ResponseEntity.ok(personDto);
   }
 
   /**
