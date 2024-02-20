@@ -3,6 +3,7 @@ package com.damo.server.application.controller;
 import com.damo.server.application.controller.operation.person.PersonCreateOperation;
 import com.damo.server.application.controller.operation.person.PersonDeleteOperation;
 import com.damo.server.application.controller.operation.person.PersonPaginationOperation;
+import com.damo.server.application.controller.operation.person.PersonReadOneOperation;
 import com.damo.server.application.controller.operation.person.PersonUpdateOperation;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeoplePaginationResponseDto;
@@ -60,8 +61,11 @@ public class PersonController {
    * @param personId 조회할 Person의 식별자
    * @return 조회한 Person 정보를 담은 ResponseEntity<PersonDto>
    */
+  @PersonReadOneOperation(summary = "대상 단일 조회", description = "personId에 해당하는 유저의 대상 조회")
   @GetMapping("{personId}")
-  public ResponseEntity<PersonDto> readPersonById(@PathVariable("personId") @Valid final Long personId) {
+  public ResponseEntity<PersonDto> readPersonById(
+      @PathVariable("personId") @Valid final Long personId
+  ) {
     final PersonDto personDto = personReadService.readPersonById(personId);
 
     return ResponseEntity.ok(personDto);
