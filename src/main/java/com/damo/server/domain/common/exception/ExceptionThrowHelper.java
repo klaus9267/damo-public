@@ -19,4 +19,8 @@ public class ExceptionThrowHelper {
   public static Supplier<CustomException> throwNotFound(final String message) {
     return () -> new CustomException(CustomErrorCode.NOT_FOUND, message);
   }
+
+  public static Supplier<CustomException> throwUnauthorized(final String message) {
+    return () -> new CustomException(CustomErrorCode.UNAUTHORIZED, message);
+  }
 }

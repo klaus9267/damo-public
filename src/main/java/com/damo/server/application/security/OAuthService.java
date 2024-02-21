@@ -1,12 +1,13 @@
 package com.damo.server.application.security;
 
+import com.damo.server.application.handler.exception.CustomErrorCode;
+import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.application.security.jwt.JwtToken;
 import com.damo.server.application.security.jwt.JwtTokenService;
 import com.damo.server.application.security.provider.OAuthCodeRequestUrlProviderComposite;
 import com.damo.server.application.security.provider.OAuthProviderType;
 import com.damo.server.application.security.user_details.CustomUserDetails;
-import com.damo.server.application.handler.exception.CustomErrorCode;
-import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.user.dto.UserWithTokenDto;
 import com.damo.server.domain.user.entity.RefreshToken;
 import com.damo.server.domain.user.entity.User;
@@ -101,9 +102,9 @@ public class OAuthService {
     final CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
     final String username = customUserDetails.getUsername();
 
-    final User user = userRepository.findOneByUsername(username).orElseThrow(
-        () -> new CustomException(CustomErrorCode.NOT_FOUND, "유저 정보를 찾을 수 없습니다.")
-    );
+    final User user = userRepository
+        .findOneByUsername(username)
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("유저 정보를 찾을 수 없습니다."));
 
     if (jwtTokenService.validateToken(resolvedToken)) {
       return UserWithTokenDto.from(user, resolvedToken);
@@ -112,9 +113,7 @@ public class OAuthService {
 
     final RefreshToken refreshToken = refreshTokenRepository
         .findOneByUsername(username)
-        .orElseThrow(
-          () -> new CustomException(CustomErrorCode.UNAUTHORIZED, "Refresh Token이 존재하지 않습니다.")
-        );
+        .orElseThrow(ExceptionThrowHelper.throwNotFound("Refresh Token이 존재하지 않습니다."));
     if (!jwtTokenService.validateToken(refreshToken.getToken())) {
       throw new CustomException(CustomErrorCode.UNAUTHORIZED, "리프레쉬 토큰이 만료되었습니다.");
     }
