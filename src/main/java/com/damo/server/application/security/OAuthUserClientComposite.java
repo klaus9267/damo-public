@@ -1,8 +1,7 @@
 package com.damo.server.application.security;
 
 import com.damo.server.application.security.provider.OAuthProviderType;
-import com.damo.server.application.handler.exception.CustomErrorCode;
-import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.user.entity.User;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +29,6 @@ public class OAuthUserClientComposite {
 
   private OAuthUserClient getClient(OAuthProviderType oAuthProviderType) {
     return Optional.ofNullable(map.get(oAuthProviderType))
-        .orElseThrow(() -> new CustomException(CustomErrorCode.UNAUTHORIZED, "지원하지 않는 소셜 로그인"));
+        .orElseThrow(ExceptionThrowHelper.throwUnauthorized("지원하지 않는 소셜 로그인"));
   }
 }
