@@ -1,13 +1,11 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.common.WithMockCustomUser;
-import com.damo.server.domain.person.repository.PersonRepository;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionAmount;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
-import com.damo.server.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -15,13 +13,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -34,17 +31,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class TransactionControllerTest {
   private final String END_POINT = "/api/transactions";
-  @Mock
-  PersonRepository personRepository;
-  @Mock
-  UserRepository userRepository;
   @Autowired
   MockMvc mvc;
   
   @Nested
   @DisplayName("성공 케이스")
   @WithMockCustomUser
-  @Transactional
+  @ActiveProfiles("test")
   class 성공 {
     LocalDateTime now;
     
