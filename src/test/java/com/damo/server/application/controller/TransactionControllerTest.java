@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -29,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Transactional
 class TransactionControllerTest {
   private final String END_POINT = "/api/transactions";
   @Autowired
@@ -37,7 +40,6 @@ class TransactionControllerTest {
   @Nested
   @DisplayName("성공 케이스")
   @WithMockCustomUser
-  @ActiveProfiles("test")
   class 성공 {
     LocalDateTime now;
     
