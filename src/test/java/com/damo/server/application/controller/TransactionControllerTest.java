@@ -1,8 +1,10 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.common.WithMockCustomUser;
+import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
+import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionAmount;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
@@ -16,21 +18,30 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
+@Transactional
 class TransactionControllerTest {
   private final String END_POINT = "/api/transactions";
+  @MockBean
+  TransactionRepository transactionRepository;
   @Autowired
   MockMvc mvc;
   
@@ -44,6 +55,7 @@ class TransactionControllerTest {
     @BeforeEach
     void 초기값() {
       now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      when(transactionRepository.findByIdAndUserId(1L, 1L)).thenReturn(Optional.of(new Transaction()));
     }
     
     @Test
@@ -63,7 +75,8 @@ class TransactionControllerTest {
              .content(json)
              .accept(MediaType.APPLICATION_JSON)
          ).andDo(print())
-         .andExpect(status().isCreated());
+         .andExpect(status().isCreated())
+         .andExpect(jsonPath("$").doesNotExist());
     }
     
     @Test
@@ -82,7 +95,8 @@ class TransactionControllerTest {
              .content(json)
              .accept(MediaType.APPLICATION_JSON)
          ).andDo(print())
-         .andExpect(status().isNoContent());
+         .andExpect(status().isNoContent())
+         .andExpect(jsonPath("$").doesNotExist());
     }
     
     @Test
@@ -91,7 +105,8 @@ class TransactionControllerTest {
              .contentType(MediaType.APPLICATION_JSON)
              .accept(MediaType.APPLICATION_JSON)
          ).andDo(print())
-         .andExpect(status().isNoContent());
+         .andExpect(status().isNoContent())
+         .andExpect(jsonPath("$").doesNotExist());
     }
   }
 }
