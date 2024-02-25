@@ -106,7 +106,7 @@ public class TransactionController {
   @PatchMapping("{transactionId}")
   @TransactionUpdateOperation(summary = "내역 수정")
   public ResponseEntity<Void> patchTransactionById(
-      @RequestBody final RequestUpdateTransactionDto transactionDto,
+      @RequestBody @Valid final RequestUpdateTransactionDto transactionDto,
       @PathVariable("transactionId") final Long transactionId
   ) {
     transactionWriteService.patchTransactionById(transactionDto, transactionId);
