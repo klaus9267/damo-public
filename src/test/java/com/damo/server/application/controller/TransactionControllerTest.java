@@ -207,5 +207,81 @@ class TransactionControllerTest {
          .andExpect(status().isBadRequest())
          .andDo(print());
     }
+    
+    @Test
+    void 내역_수정() throws Exception {
+      final TransactionAction action = TransactionAction.RECEIVING;
+      final TransactionAmount amount = new TransactionAmount(action, 1000L);
+      final TransactionCategory category = TransactionCategory.ETC;
+      RequestUpdateTransactionDto transactionDto = new RequestUpdateTransactionDto(null, amount, category, "테스트 메모");
+      
+      ObjectMapper mapper = new ObjectMapper()
+          .registerModule(new JavaTimeModule())
+          .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+      String json = mapper.writeValueAsString(transactionDto);
+      
+      // 대상 아이디 실패
+      mvc.perform(patch(END_POINT + "/" + 1L)
+             .contentType(MediaType.APPLICATION_JSON)
+             .content(json)
+             .accept(MediaType.APPLICATION_JSON)
+         ).andDo(print())
+         .andExpect(status().isBadRequest())
+         .andDo(print());
+      
+      transactionDto = new RequestUpdateTransactionDto(1L, null, category, "테스트 메모");
+      
+      mapper = new ObjectMapper()
+          .registerModule(new JavaTimeModule())
+          .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+      json = mapper.writeValueAsString(transactionDto);
+      
+      // 거래 금액 실패
+      mvc.perform(patch(END_POINT + "/" + 1L)
+             .contentType(MediaType.APPLICATION_JSON)
+             .content(json)
+             .accept(MediaType.APPLICATION_JSON)
+         ).andDo(print())
+         .andExpect(status().isBadRequest())
+         .andDo(print());
+      
+      transactionDto = new RequestUpdateTransactionDto(1L, amount, category, "테스트 메모");
+      
+      mapper = new ObjectMapper()
+          .registerModule(new JavaTimeModule())
+          .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+      json = mapper.writeValueAsString(transactionDto);
+      
+      when(transactionRepository.findByIdAndUserId(1L, 1L)).thenReturn(Optional.empty());
+      
+      // 내역 아이디 실패
+      mvc.perform(patch(END_POINT + "/" + 1L)
+             .contentType(MediaType.APPLICATION_JSON)
+             .content(json)
+             .accept(MediaType.APPLICATION_JSON)
+         ).andDo(print())
+         .andExpect(status().isNotFound())
+         .andDo(print());
+    }
+    
+    @Test
+    void 내역_삭제() throws Exception {
+      // 내역 아이디 실패
+      mvc.perform(delete(END_POINT + "/" + "test")
+             .contentType(MediaType.APPLICATION_JSON)
+             .accept(MediaType.APPLICATION_JSON)
+         ).andDo(print())
+         .andExpect(status().isBadRequest())
+         .andDo(print());
+      
+      when(transactionRepository.findByIdAndUserId(1L, 1L)).thenReturn(Optional.empty());
+      // 내역 아이디 실패
+      mvc.perform(delete(END_POINT + "/" + 0L)
+             .contentType(MediaType.APPLICATION_JSON)
+             .accept(MediaType.APPLICATION_JSON)
+         ).andDo(print())
+         .andExpect(status().isNotFound())
+         .andDo(print());
+    }
   }
 }
