@@ -1,8 +1,10 @@
 package com.damo.server.application.controller;
 
 import com.damo.server.common.WithMockCustomUser;
+import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
+import com.damo.server.domain.transaction.entity.Transaction;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionAmount;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
@@ -16,15 +18,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
