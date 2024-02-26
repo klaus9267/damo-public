@@ -1,5 +1,7 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.application.handler.exception.CustomErrorCode;
+import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.common.WithMockCustomUser;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
 import com.damo.server.domain.person.dto.RequestUpdatePersonDto;
@@ -25,9 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -116,8 +119,8 @@ public class PersonControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(json)
                   )
-                  .andExpect(status().isBadRequest())
-                  .andDo(print());
+                  .andDo(print())
+                  .andExpect(status().isBadRequest());
             }
             @Test
             void 대상_이름값_없을_때() throws Exception {
@@ -168,6 +171,89 @@ public class PersonControllerTest {
             void 대상_연락처_12자() throws Exception {
                 final FailPersonDto personDto = new FailPersonDto("홍길동", PersonRelation.FAMILY, "메모", "0".repeat(12));
                 callApiForBadRequestWhenCreate(personDto);
+            }
+        }
+
+        @Nested
+        @DisplayName("대상_수정_실패")
+        class 대상_수정_실패 {
+            private void callApiForBadRequestWhenUpdate(final FailPersonDto failPersonDto) throws Exception {
+                final String json = mapper.writeValueAsString(failPersonDto);
+                final long personId = 1L;
+                mvc.perform(patch(END_POINT + "/" + personId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json)
+                  )
+                  .andDo(print())
+                  .andExpect(status().isBadRequest());
+            }
+            @Test
+            void 대상_이름값_없을_때() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto(null, PersonRelation.FAMILY, "메모", "01012345678");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_이름_빈문자열() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("", PersonRelation.FAMILY, "메모", "01012345678");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_이름_20자_초과() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("111111111111111111111", PersonRelation.FAMILY, "메모", "01012345678");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_관계값_없을_때() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("홍길동", null, "메모", "01012345678");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_관계_빈문자열() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("홍길동", "", "메모", "01012345678");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_관계_허용되지않은() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("홍길동", "FASTER", "메모", "01012345678");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_메모_200자_초과() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("홍길동", PersonRelation.FAMILY, "글".repeat(201), "01012345678");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_연락처_빈문자열() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("홍길동", PersonRelation.FAMILY, "메모", "");
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_연락처_8자() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("홍길동", PersonRelation.FAMILY, "메모", "0".repeat(8));
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 대상_연락처_12자() throws Exception {
+                final FailPersonDto personDto = new FailPersonDto("홍길동", PersonRelation.FAMILY, "메모", "0".repeat(12));
+                callApiForBadRequestWhenUpdate(personDto);
+            }
+            @Test
+            void 존재하지_않는_대상() throws Exception {
+                doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "수정할 대상을 찾을 수 없음"))
+                    .when(personWriteService)
+                    .patchPersonById(any(RequestUpdatePersonDto.class), anyLong());
+
+                final RequestUpdatePersonDto personDto = new RequestUpdatePersonDto("홍길동", PersonRelation.FAMILY, "메모", "1".repeat(11));
+                final String json = mapper.writeValueAsString(personDto);
+                final long personId = 11111111L;
+
+                mvc.perform(patch(END_POINT + "/" + personId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json)
+                  )
+                  .andDo(print())
+                  .andExpect(status().isNotFound())
+                  .andExpect(jsonPath("$.message").value("수정할 대상을 찾을 수 없음"));
             }
         }
     }
