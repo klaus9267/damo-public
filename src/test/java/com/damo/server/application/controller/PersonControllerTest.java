@@ -256,6 +256,26 @@ public class PersonControllerTest {
                   .andExpect(jsonPath("$.message").value("수정할 대상을 찾을 수 없음"));
             }
         }
+
+        @Nested
+        @DisplayName("대상_삭제_실패")
+        class 대상_삭제_실패 {
+            @Test
+            void 존재하지_않는_대상() throws Exception {
+                doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "삭제할 대상을 찾을 수 없음"))
+                  .when(personWriteService)
+                  .removePersonById(anyLong());
+
+                final long personId = 11111111L;
+
+                mvc.perform(delete(END_POINT + "/" + personId)
+                    .contentType(MediaType.APPLICATION_JSON)
+                  )
+                  .andDo(print())
+                  .andExpect(status().isNotFound())
+                  .andExpect(jsonPath("$.message").value("삭제할 대상을 찾을 수 없음"));
+            }
+        }
     }
 }
 
