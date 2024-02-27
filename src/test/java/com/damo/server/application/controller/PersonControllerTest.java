@@ -3,15 +3,16 @@ package com.damo.server.application.controller;
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.common.WithMockCustomUser;
+import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
 import com.damo.server.domain.person.dto.RequestUpdatePersonDto;
 import com.damo.server.domain.person.entity.PersonRelation;
+import com.damo.server.domain.person.service.PersonReadService;
 import com.damo.server.domain.person.service.PersonWriteService;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PersonControllerTest {
     @MockBean
     PersonWriteService personWriteService;
+    @MockBean
+    PersonReadService personReadService;
     @Autowired
     MockMvc mvc;
     private final String END_POINT = "/api/persons";
@@ -51,13 +53,24 @@ public class PersonControllerTest {
     @Nested
     @DisplayName("성공 케이스")
     class 성공 {
-        LocalDateTime now;
+        @Test
+        void 대상_단일_조회() throws Exception {
+            final LocalDateTime now = LocalDateTime.now();
+            final PersonDto personDto = new PersonDto(1L, "홍길동", "01012345678", PersonRelation.COMPANY, "memo", now, now);
+            when(personReadService.readPersonById(anyLong())).thenReturn(personDto);
 
-        @BeforeEach
-        void 초기값() {
-            now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+            mvc.perform(get(END_POINT + "/" + personDto.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+              ).andDo(print())
+              .andExpect(status().isOk())
+              .andExpect(jsonPath("$.id").value(personDto.getId()))
+              .andExpect(jsonPath("$.name").value(personDto.getName()))
+              .andExpect(jsonPath("$.contact").value(personDto.getContact()))
+              .andExpect(jsonPath("$.relation").value(personDto.getRelation().getKey()))
+              .andExpect(jsonPath("$.memo").value(personDto.getMemo()))
+              .andExpect(jsonPath("$.createdAt").value(personDto.getCreatedAt().toString()))
+              .andExpect(jsonPath("$.updatedAt").value(personDto.getUpdatedAt().toString()));
         }
-
         @Test
         void 대상_생성() throws Exception {
             for (final PersonRelation relation : PersonRelation.values()) {
@@ -74,7 +87,6 @@ public class PersonControllerTest {
                   .andExpect(status().isCreated());
             }
         }
-
         @Test
         void 대상_수정() throws Exception {
             final long personId = 1L;
@@ -92,7 +104,6 @@ public class PersonControllerTest {
                   .andExpect(status().isNoContent());
             }
         }
-
         @Test
         void 대상_삭제() throws Exception {
             final long personId = 1L;
