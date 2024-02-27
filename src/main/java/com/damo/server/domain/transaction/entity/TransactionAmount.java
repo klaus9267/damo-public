@@ -6,6 +6,7 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(force = true)
+@Builder
 @RequiredArgsConstructor
 public class TransactionAmount {
   private static final Long DEFAULT_AMOUNT = 0L;
