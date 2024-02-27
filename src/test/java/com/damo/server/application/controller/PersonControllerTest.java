@@ -121,6 +121,22 @@ public class PersonControllerTest {
     @DisplayName("실패 케이스")
     class 실패 {
         @Nested
+        @DisplayName("대상_단일_조회_실패")
+        class 대상_단일_조회_실패 {
+            @Test
+            void 존재하지_않는_대상() throws Exception {
+                doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "대상 정보를 찾을 수 없습니다."))
+                  .when(personReadService)
+                  .readPersonById(anyLong());
+
+                mvc.perform(get(END_POINT + "/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                  ).andDo(print())
+                  .andExpect(status().isNotFound())
+                  .andExpect(jsonPath("$.message").value("대상 정보를 찾을 수 없습니다."));
+            }
+        }
+        @Nested
         @DisplayName("대상_생성_실패")
         class 대상_생성_실패 {
             private void callApiForBadRequestWhenCreate(final FailPersonDto failPersonDto) throws Exception {
