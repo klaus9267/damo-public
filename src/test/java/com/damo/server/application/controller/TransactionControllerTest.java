@@ -45,9 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockCustomUser
 @Transactional
 class TransactionControllerTest {
-  final ObjectMapper mapper = new ObjectMapper()
-      .registerModule(new JavaTimeModule())
-      .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   
   private final String END_POINT = "/api/transactions";
   
@@ -69,10 +67,7 @@ class TransactionControllerTest {
     void 내역_삭제() throws Exception {
       doNothing().when(transactionWriteService).removeTransactionById(transactionId);
       
-      mvc.perform(delete(END_POINT + "/" + transactionId))
-         .andDo(print())
-         .andExpect(status().isNoContent())
-         .andExpect(jsonPath("$").doesNotExist());
+      mvc.perform(delete(END_POINT + "/" + transactionId)).andDo(print()).andExpect(status().isNoContent()).andExpect(jsonPath("$").doesNotExist());
     }
     
     @Nested
@@ -82,20 +77,13 @@ class TransactionControllerTest {
       void 내역_수정_거래_종류() throws Exception {
         for (final TransactionAction transactionAction : TransactionAction.values()) {
           if (!TransactionAction.TOTAL.equals(transactionAction)) {
-            final TransactionAmount transactionAmount = new TransactionAmount(transactionAction, 1000L);
-            final RequestUpdateTransactionDto updateTransactionDto = new RequestUpdateTransactionDto(1L, transactionAmount, category, "테스트 메모");
+            final RequestUpdateTransactionDto updateTransactionDto = new RequestUpdateTransactionDto(1L, transactionAction, 1000L, category, "테스트 메모");
             
             doNothing().when(transactionWriteService).patchTransactionById(updateTransactionDto, transactionId);
             
             final String json = mapper.writeValueAsString(updateTransactionDto);
             
-            mvc.perform(patch(END_POINT + "/" + transactionId)
-                   .contentType(MediaType.APPLICATION_JSON)
-                   .content(json)
-                   .accept(MediaType.APPLICATION_JSON)
-               ).andDo(print())
-               .andExpect(status().isNoContent())
-               .andExpect(jsonPath("$").doesNotExist());
+            mvc.perform(patch(END_POINT + "/" + transactionId).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNoContent()).andExpect(jsonPath("$").doesNotExist());
           }
         }
       }
@@ -103,19 +91,13 @@ class TransactionControllerTest {
       @Test
       void 내역_수정_거래_자산_유형() throws Exception {
         for (final TransactionCategory transactionCategory : TransactionCategory.values()) {
-          final RequestUpdateTransactionDto updateTransactionDto = new RequestUpdateTransactionDto(1L, amount, transactionCategory, "테스트 메모");
+          final RequestUpdateTransactionDto updateTransactionDto = new RequestUpdateTransactionDto(1L, action, 1000L, transactionCategory, "테스트 메모");
           
           doNothing().when(transactionWriteService).patchTransactionById(updateTransactionDto, transactionId);
           
           final String json = mapper.writeValueAsString(updateTransactionDto);
           
-          mvc.perform(patch(END_POINT + "/" + transactionId)
-                 .contentType(MediaType.APPLICATION_JSON)
-                 .content(json)
-                 .accept(MediaType.APPLICATION_JSON)
-             ).andDo(print())
-             .andExpect(status().isNoContent())
-             .andExpect(jsonPath("$").doesNotExist());
+          mvc.perform(patch(END_POINT + "/" + transactionId).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNoContent()).andExpect(jsonPath("$").doesNotExist());
         }
       }
     }
@@ -135,19 +117,13 @@ class TransactionControllerTest {
         for (final TransactionAction transactionAction : TransactionAction.values()) {
           if (!TransactionAction.TOTAL.equals(transactionAction)) {
             final TransactionAmount transactionAmount = new TransactionAmount(transactionAction, 1000L);
-            final RequestCreateTransactionDto createTransactionDto = new RequestCreateTransactionDto(1L, now, "테스트 이벤트", transactionAmount, category, "테스트 메모");
+            final RequestCreateTransactionDto createTransactionDto = new RequestCreateTransactionDto(1L, now, "테스트 이벤트", transactionAction, 1000L, category, "테스트 메모");
             
             doNothing().when(transactionWriteService).save(createTransactionDto);
             
             final String json = mapper.writeValueAsString(createTransactionDto);
             
-            mvc.perform(post(END_POINT)
-                   .contentType(MediaType.APPLICATION_JSON)
-                   .content(json)
-                   .accept(MediaType.APPLICATION_JSON)
-               ).andDo(print())
-               .andExpect(status().isCreated())
-               .andExpect(jsonPath("$").doesNotExist());
+            mvc.perform(post(END_POINT).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$").doesNotExist());
           }
         }
       }
@@ -155,18 +131,12 @@ class TransactionControllerTest {
       @Test
       void 내역_생성_거래_자산_유형() throws Exception {
         for (final TransactionCategory transactionCategory : TransactionCategory.values()) {
-          final RequestCreateTransactionDto createTransactionDto = new RequestCreateTransactionDto(1L, now, "테스트 이벤트", amount, transactionCategory, "테스트 메모");
+          final RequestCreateTransactionDto createTransactionDto = new RequestCreateTransactionDto(1L, now, "테스트 이벤트", action, 1000L, transactionCategory, "테스트 메모");
           doNothing().when(transactionWriteService).save(createTransactionDto);
           
           final String json = mapper.writeValueAsString(createTransactionDto);
           
-          mvc.perform(post(END_POINT)
-                 .contentType(MediaType.APPLICATION_JSON)
-                 .content(json)
-                 .accept(MediaType.APPLICATION_JSON)
-             ).andDo(print())
-             .andExpect(status().isCreated())
-             .andExpect(jsonPath("$").doesNotExist());
+          mvc.perform(post(END_POINT).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$").doesNotExist());
         }
       }
     }
@@ -175,19 +145,19 @@ class TransactionControllerTest {
   @Nested
   @DisplayName("실패 케이스")
   class 실패 {
-    LocalDateTime now;
-    
-    @BeforeEach
-    void 초기값() {
-      now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
+    TransactionAction action = TransactionAction.RECEIVING;
+    TransactionCategory category = TransactionCategory.ETC;
+    TransactionAmount amount = new TransactionAmount(action, 1000L);
     
     @Nested
     @DisplayName("내역_생성_실패")
     class 내역_생성_실패 {
-      TransactionAction action = TransactionAction.RECEIVING;
-      TransactionCategory category = TransactionCategory.ETC;
-      TransactionAmount amount = new TransactionAmount(action, 1000L);
+      LocalDateTime now;
+      
+      @BeforeEach
+      void 초기값() {
+        now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      }
       
       private void callApiForBadRequestWhenCreate(final FailTransactionWithScheduleDto dto) throws Exception {
         final String json = mapper.writeValueAsString(dto);
@@ -195,141 +165,195 @@ class TransactionControllerTest {
         mvc.perform(post(END_POINT)
                .contentType(MediaType.APPLICATION_JSON)
                .content(json)
-           )
-           .andDo(print())
+           ).andDo(print())
            .andExpect(status().isBadRequest());
       }
       
       @Test
       void 내역_대상_아이디_NULL() throws Exception {
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(null, now, "event", amount, category, "memo");
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(null, now, "event", action, 1000L, category, "memo");
         callApiForBadRequestWhenCreate(dto);
       }
       
       @Test
       void 내역_날짜_NULL() throws Exception {
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, null, "event", amount, category, "memo");
-        callApiForBadRequestWhenCreate(dto);
-      }
-      
-      @Test
-      void 내역_금액_객체_NULL() throws Exception {
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", null, category, "memo");
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, null, "event", action, 1000L, category, "memo");
         callApiForBadRequestWhenCreate(dto);
       }
       
       @Test
       void 내역_행사_이름_NULL() throws Exception {
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, null, amount, category, "memo");
-        callApiForBadRequestWhenCreate(dto);
-      }
-      
-      @Test
-      void 내역_행사_이름_빈문자열() throws Exception {
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "", amount, category, "memo");
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, null, action, 1000L, category, "memo");
         callApiForBadRequestWhenCreate(dto);
       }
       
       @Test
       void 내역_거래_종류_NULL() throws Exception {
-        amount = TransactionAmount.builder().action(null).amount(1000L).build();
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", amount, category, "memo");
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", null, 1000L, category, "memo");
+        callApiForBadRequestWhenCreate(dto);
+      }
+      
+      @Test
+      void 내역_거래_금액_NULL() throws Exception {
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", action, null, category, "memo");
+        callApiForBadRequestWhenCreate(dto);
+      }
+      
+      @Test
+      void 내역_거래_자산_종류_NULL() throws Exception {
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", action, 1000L, null, "memo");
+        callApiForBadRequestWhenCreate(dto);
+      }
+      
+      @Test
+      void 내역_행사_이름_빈문자열() throws Exception {
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "", action, 1000L, category, "memo");
         callApiForBadRequestWhenCreate(dto);
       }
       
       @Test
       void 내역_메모_200자_초과() throws Exception {
-        amount = TransactionAmount.builder().action(null).amount(1000L).build();
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", amount, category, "m".repeat(201));
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", action, 1000L, category, "m".repeat(201));
         callApiForBadRequestWhenCreate(dto);
       }
       
       @Test
       void 내역_선물_종류_허용되지않은() throws Exception {
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", amount, "유희왕 카드", "m".repeat(201));
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", action, 1000L, "유희왕 카드", "memo");
         callApiForBadRequestWhenCreate(dto);
       }
       
       @Test
       void 내역_거래_종류_허용되지않은() throws Exception {
-        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", "북한 돈", category, "m".repeat(201));
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", "강탈", 1000L, category, "memo");
         callApiForBadRequestWhenCreate(dto);
+      }
+      
+      @Test
+      void 내역_거래_금액_음수() throws Exception {
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", action, -1000L, category, "memo");
+        callApiForBadRequestWhenCreate(dto);
+      }
+      
+      @Test
+      void 내역_거래_금액_초과() throws Exception {
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", action, Long.MAX_VALUE + 1L, category, "memo");
+        callApiForBadRequestWhenCreate(dto);
+      }
+      
+      @Test
+      void 빈_요청() throws Exception {
+        mvc.perform(post(END_POINT)
+           ).andDo(print())
+           .andExpect(status().isBadRequest());
       }
     }
     
     @Nested
     @DisplayName("내역_수정_실패")
     class 내역_수정_실패 {
-      TransactionAction action = TransactionAction.RECEIVING;
-      TransactionCategory category = TransactionCategory.ETC;
-      TransactionAmount amount = new TransactionAmount(action, 1000L);
-      
       private void callApiForBadRequestWhenUpdate(final FailTransactionDto dto) throws Exception {
         final String json = mapper.writeValueAsString(dto);
         final Long transactionId = 1L;
         
-        mvc.perform(patch(END_POINT + "/" + transactionId)
-               .contentType(MediaType.APPLICATION_JSON)
-               .content(json)
-           )
-           .andDo(print())
-           .andExpect(status().isBadRequest());
+        mvc.perform(patch(END_POINT + "/" + transactionId).contentType(MediaType.APPLICATION_JSON).content(json)).andDo(print()).andExpect(status().isBadRequest());
       }
       
       @Test
       void 내역_대상_아이디_NULL() throws Exception {
-        final FailTransactionDto dto = new FailTransactionDto(null, amount, category, "memo");
+        final FailTransactionDto dto = new FailTransactionDto(null, action, 1000L, category, "memo");
         callApiForBadRequestWhenUpdate(dto);
       }
       
       @Test
-      void 내역_금액_객체_NULL() throws Exception {
-        final FailTransactionDto dto = new FailTransactionDto("event", amount, null, "memo");
+      void 내역_금액_종류_NULL() throws Exception {
+        final FailTransactionDto dto = new FailTransactionDto(1L, null, 1000L, null, "memo");
         callApiForBadRequestWhenUpdate(dto);
       }
       
       @Test
-      void 내역_거래_종류_NULL() throws Exception {
-        amount = TransactionAmount.builder().action(null).amount(1000L).build();
-        final FailTransactionDto dto = new FailTransactionDto(null, amount, category, "memo");
+      void 내역_거래_금액_NULL() throws Exception {
+        final FailTransactionDto dto = new FailTransactionDto(1L, action, null, category, "memo");
         callApiForBadRequestWhenUpdate(dto);
       }
       
       @Test
       void 내역_메모_200자_초과() throws Exception {
         amount = TransactionAmount.builder().action(null).amount(1000L).build();
-        final FailTransactionDto dto = new FailTransactionDto(null, amount, category, "m".repeat(201));
+        final FailTransactionDto dto = new FailTransactionDto(1L, action, 1000L, category, "m".repeat(201));
         callApiForBadRequestWhenUpdate(dto);
       }
       
       @Test
       void 내역_선물_종류_허용되지않은() throws Exception {
-        final FailTransactionDto dto = new FailTransactionDto(null, amount, "뇌물", "m".repeat(201));
+        final FailTransactionDto dto = new FailTransactionDto(1L, action, 1000L, "부루마블 지폐", "memo");
         callApiForBadRequestWhenUpdate(dto);
       }
       
       @Test
       void 내역_거래_종류_허용되지않은() throws Exception {
-        final FailTransactionDto dto = new FailTransactionDto(null, "부루마블 지폐", category, "m".repeat(201));
+        final FailTransactionDto dto = new FailTransactionDto(1L, "줫다뺏음", 1000L, category, "memo");
+        callApiForBadRequestWhenUpdate(dto);
+      }
+      
+      @Test
+      void 내역_거래_금액_음수() throws Exception {
+        final FailTransactionDto dto = new FailTransactionDto(1L, action, -1000L, category, "memo");
+        callApiForBadRequestWhenUpdate(dto);
+      }
+      
+      @Test
+      void 내역_거래_초과() throws Exception {
+        final FailTransactionDto dto = new FailTransactionDto(1L, action, Long.MAX_VALUE + 1L, category, "memo");
         callApiForBadRequestWhenUpdate(dto);
       }
       
       @Test
       void 존재하지_않는_내역() throws Exception {
-        doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "수정할 내역을 찾을 수 없음"))
-            .when(transactionWriteService)
-            .patchTransactionById(any(RequestUpdateTransactionDto.class), anyLong());
-        final RequestUpdateTransactionDto transactionDto = new RequestUpdateTransactionDto(1L, amount, category, "memo");
+        doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "수정할 내역을 찾을 수 없음")).when(transactionWriteService).patchTransactionById(any(RequestUpdateTransactionDto.class), anyLong());
+        final RequestUpdateTransactionDto transactionDto = new RequestUpdateTransactionDto(1L, action, 1000L, category, "memo");
         final String json = mapper.writeValueAsString(transactionDto);
         final Long transactionId = 1L;
         
         mvc.perform(patch(END_POINT + "/" + transactionId)
                .contentType(MediaType.APPLICATION_JSON)
                .content(json)
-           )
-           .andDo(print())
+           ).andDo(print())
            .andExpect(status().isNotFound())
            .andExpect(jsonPath("$.message").value("수정할 내역을 찾을 수 없음"));
+      }
+      
+      @Test
+      void 잘못된_내역_아이디_문자열() throws Exception {
+        final RequestUpdateTransactionDto transactionDto = new RequestUpdateTransactionDto(1L, action, 1000L, category, "memo");
+        final String json = mapper.writeValueAsString(transactionDto);
+        
+        mvc.perform(patch(END_POINT + "/" + "test")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(json)
+           ).andDo(print())
+           .andExpect(status().isBadRequest());
+      }
+      
+      @Test
+      void 잘못된_내역_아이디_소수() throws Exception {
+        final RequestUpdateTransactionDto transactionDto = new RequestUpdateTransactionDto(1L, action, 1000L, category, "memo");
+        final String json = mapper.writeValueAsString(transactionDto);
+        
+        mvc.perform(patch(END_POINT + "/" + 0.03)
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(json)
+           ).andDo(print())
+           .andExpect(status().isBadRequest());
+      }
+      
+      @Test
+      void 빈_요청() throws Exception {
+        final Long transactionId = 1L;
+        
+        mvc.perform(patch(END_POINT + "/" + transactionId)
+           ).andDo(print())
+           .andExpect(status().isBadRequest());
       }
     }
     
@@ -338,15 +362,28 @@ class TransactionControllerTest {
     class 내역_삭제_실패 {
       @Test
       void 존재하지_않는_내역() throws Exception {
-        doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "삭제할 내역을 찾을 수 없음"))
-            .when(transactionWriteService)
-            .removeTransactionById(anyLong());
+        doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "삭제할 내역을 찾을 수 없음")).when(transactionWriteService).removeTransactionById(anyLong());
+        
         final Long transactionId = 1L;
         
         mvc.perform(delete(END_POINT + "/" + transactionId))
            .andDo(print())
            .andExpect(status().isNotFound())
            .andExpect(jsonPath("$.message").value("삭제할 내역을 찾을 수 없음"));
+      }
+      
+      @Test
+      void 잘못된_내역_아이디_문자열() throws Exception {
+        mvc.perform(delete(END_POINT + "/" + "1번"))
+           .andDo(print())
+           .andExpect(status().isBadRequest());
+      }
+      
+      @Test
+      void 잘못된_내역_아이디_소수() throws Exception {
+        mvc.perform(delete(END_POINT + "/" + 0.3))
+           .andDo(print())
+           .andExpect(status().isBadRequest());
       }
     }
   }
@@ -358,7 +395,8 @@ class FailTransactionWithScheduleDto {
   private final Object personId;
   private final Object eventDate;
   private final Object event;
-  private final Object transactionAmount;
+  private final Object action;
+  private final Object amount;
   private final Object category;
   private final Object memo;
 }
@@ -367,7 +405,8 @@ class FailTransactionWithScheduleDto {
 @RequiredArgsConstructor
 class FailTransactionDto {
   private final Object personId;
-  private final Object transactionAmount;
+  private final Object action;
+  private final Object amount;
   private final Object category;
   private final Object memo;
 }
