@@ -10,5 +10,11 @@ public interface PaginationResponseDto<T> {
 
   Long getTotalElements();
 
+  Boolean getIsFirst();
+
+  Boolean getIsLast();
+
+  Boolean getHasNext();
+
   List<T> getItems();
 }

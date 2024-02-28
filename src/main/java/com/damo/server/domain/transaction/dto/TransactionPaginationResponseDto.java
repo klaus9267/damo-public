@@ -14,11 +14,17 @@ public class TransactionPaginationResponseDto
     implements PaginationResponseDto<TransactionWithScheduleDto> {
   private final Integer totalPages;
   private final Long totalElements;
+  private final Boolean isFirst;
+  private final Boolean isLast;
+  private final Boolean hasNext;
   private final List<TransactionWithScheduleDto> items;
   
   private TransactionPaginationResponseDto(final Page<TransactionWithScheduleDto> transactionPage) {
     this.totalPages = transactionPage.getTotalPages();
     this.totalElements = transactionPage.getTotalElements();
+    this.isFirst = transactionPage.isFirst();
+    this.isLast = transactionPage.isLast();
+    this.hasNext = transactionPage.hasNext();
     this.items = transactionPage.getContent();
   }
   
