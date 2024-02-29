@@ -59,7 +59,6 @@ class TransactionControllerTest {
   @DisplayName("성공 케이스")
   class 성공 {
     final TransactionAction action = TransactionAction.GIVING;
-    final TransactionAmount amount = new TransactionAmount(action, 1000L);
     final TransactionCategory category = TransactionCategory.ETC;
     final Long transactionId = 1L;
     
@@ -67,24 +66,35 @@ class TransactionControllerTest {
     void 내역_삭제() throws Exception {
       doNothing().when(transactionWriteService).removeTransactionById(transactionId);
       
-      mvc.perform(delete(END_POINT + "/" + transactionId)).andDo(print()).andExpect(status().isNoContent()).andExpect(jsonPath("$").doesNotExist());
+      mvc.perform(delete(END_POINT + "/" + transactionId))
+         .andDo(print())
+         .andExpect(status().isNoContent())
+         .andExpect(jsonPath("$").doesNotExist());
     }
     
     @Nested
-    @DisplayName("내역_생성_성공")
+    @DisplayName("내역_수정_성공")
     class 내역_수정 {
       @Test
       void 내역_수정_거래_종류() throws Exception {
         for (final TransactionAction transactionAction : TransactionAction.values()) {
-          if (!TransactionAction.TOTAL.equals(transactionAction)) {
-            final RequestUpdateTransactionDto updateTransactionDto = new RequestUpdateTransactionDto(1L, transactionAction, 1000L, category, "테스트 메모");
-            
-            doNothing().when(transactionWriteService).patchTransactionById(updateTransactionDto, transactionId);
-            
-            final String json = mapper.writeValueAsString(updateTransactionDto);
-            
-            mvc.perform(patch(END_POINT + "/" + transactionId).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNoContent()).andExpect(jsonPath("$").doesNotExist());
+          if (TransactionAction.TOTAL.equals(transactionAction)) {
+            continue;
           }
+          
+          final RequestUpdateTransactionDto updateTransactionDto = new RequestUpdateTransactionDto(1L, transactionAction, 1000L, category, "테스트 메모");
+          
+          doNothing().when(transactionWriteService).patchTransactionById(updateTransactionDto, transactionId);
+          
+          final String json = mapper.writeValueAsString(updateTransactionDto);
+          
+          mvc.perform(patch(END_POINT + "/" + transactionId)
+                 .contentType(MediaType.APPLICATION_JSON)
+                 .content(json)
+                 .accept(MediaType.APPLICATION_JSON)
+             ).andDo(print())
+             .andExpect(status().isNoContent())
+             .andExpect(jsonPath("$").doesNotExist());
         }
       }
       
@@ -97,7 +107,13 @@ class TransactionControllerTest {
           
           final String json = mapper.writeValueAsString(updateTransactionDto);
           
-          mvc.perform(patch(END_POINT + "/" + transactionId).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isNoContent()).andExpect(jsonPath("$").doesNotExist());
+          mvc.perform(patch(END_POINT + "/" + transactionId)
+                 .contentType(MediaType.APPLICATION_JSON)
+                 .content(json)
+                 .accept(MediaType.APPLICATION_JSON)
+             ).andDo(print())
+             .andExpect(status().isNoContent())
+             .andExpect(jsonPath("$").doesNotExist());
         }
       }
     }
@@ -123,7 +139,13 @@ class TransactionControllerTest {
             
             final String json = mapper.writeValueAsString(createTransactionDto);
             
-            mvc.perform(post(END_POINT).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$").doesNotExist());
+            mvc.perform(post(END_POINT)
+                   .contentType(MediaType.APPLICATION_JSON)
+                   .content(json)
+                   .accept(MediaType.APPLICATION_JSON)
+               ).andDo(print())
+               .andExpect(status().isCreated())
+               .andExpect(jsonPath("$").doesNotExist());
           }
         }
       }
@@ -136,7 +158,13 @@ class TransactionControllerTest {
           
           final String json = mapper.writeValueAsString(createTransactionDto);
           
-          mvc.perform(post(END_POINT).contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON)).andDo(print()).andExpect(status().isCreated()).andExpect(jsonPath("$").doesNotExist());
+          mvc.perform(post(END_POINT)
+                 .contentType(MediaType.APPLICATION_JSON)
+                 .content(json)
+                 .accept(MediaType.APPLICATION_JSON)
+             ).andDo(print())
+             .andExpect(status().isCreated())
+             .andExpect(jsonPath("$").doesNotExist());
         }
       }
     }
@@ -147,7 +175,6 @@ class TransactionControllerTest {
   class 실패 {
     TransactionAction action = TransactionAction.RECEIVING;
     TransactionCategory category = TransactionCategory.ETC;
-    TransactionAmount amount = new TransactionAmount(action, 1000L);
     
     @Nested
     @DisplayName("내역_생성_실패")
@@ -212,6 +239,12 @@ class TransactionControllerTest {
       }
       
       @Test
+      void 내역_행사_이름_공백() throws Exception {
+        final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, " ", action, 1000L, category, "memo");
+        callApiForBadRequestWhenCreate(dto);
+      }
+      
+      @Test
       void 내역_메모_200자_초과() throws Exception {
         final FailTransactionWithScheduleDto dto = new FailTransactionWithScheduleDto(1L, now, "event", action, 1000L, category, "m".repeat(201));
         callApiForBadRequestWhenCreate(dto);
@@ -256,7 +289,11 @@ class TransactionControllerTest {
         final String json = mapper.writeValueAsString(dto);
         final Long transactionId = 1L;
         
-        mvc.perform(patch(END_POINT + "/" + transactionId).contentType(MediaType.APPLICATION_JSON).content(json)).andDo(print()).andExpect(status().isBadRequest());
+        mvc.perform(patch(END_POINT + "/" + transactionId)
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(json)
+           ).andDo(print())
+           .andExpect(status().isBadRequest());
       }
       
       @Test
@@ -267,7 +304,7 @@ class TransactionControllerTest {
       
       @Test
       void 내역_금액_종류_NULL() throws Exception {
-        final FailTransactionDto dto = new FailTransactionDto(1L, null, 1000L, null, "memo");
+        final FailTransactionDto dto = new FailTransactionDto(1L, null, 1000L, category, "memo");
         callApiForBadRequestWhenUpdate(dto);
       }
       
@@ -278,8 +315,13 @@ class TransactionControllerTest {
       }
       
       @Test
+      void 내역_거래_자산_종류_NULL() throws Exception {
+        final FailTransactionDto dto = new FailTransactionDto(1L, action, 1000L, null, "memo");
+        callApiForBadRequestWhenUpdate(dto);
+      }
+      
+      @Test
       void 내역_메모_200자_초과() throws Exception {
-        amount = TransactionAmount.builder().action(null).amount(1000L).build();
         final FailTransactionDto dto = new FailTransactionDto(1L, action, 1000L, category, "m".repeat(201));
         callApiForBadRequestWhenUpdate(dto);
       }
@@ -328,7 +370,7 @@ class TransactionControllerTest {
         final RequestUpdateTransactionDto transactionDto = new RequestUpdateTransactionDto(1L, action, 1000L, category, "memo");
         final String json = mapper.writeValueAsString(transactionDto);
         
-        mvc.perform(patch(END_POINT + "/" + "test")
+        mvc.perform(patch(END_POINT + "/test")
                .contentType(MediaType.APPLICATION_JSON)
                .content(json)
            ).andDo(print())
@@ -340,7 +382,7 @@ class TransactionControllerTest {
         final RequestUpdateTransactionDto transactionDto = new RequestUpdateTransactionDto(1L, action, 1000L, category, "memo");
         final String json = mapper.writeValueAsString(transactionDto);
         
-        mvc.perform(patch(END_POINT + "/" + 0.03)
+        mvc.perform(patch(END_POINT + "/0.03")
                .contentType(MediaType.APPLICATION_JSON)
                .content(json)
            ).andDo(print())
@@ -374,14 +416,14 @@ class TransactionControllerTest {
       
       @Test
       void 잘못된_내역_아이디_문자열() throws Exception {
-        mvc.perform(delete(END_POINT + "/" + "1번"))
+        mvc.perform(delete(END_POINT + "/1번"))
            .andDo(print())
            .andExpect(status().isBadRequest());
       }
       
       @Test
       void 잘못된_내역_아이디_소수() throws Exception {
-        mvc.perform(delete(END_POINT + "/" + 0.3))
+        mvc.perform(delete(END_POINT + "/0.3"))
            .andDo(print())
            .andExpect(status().isBadRequest());
       }

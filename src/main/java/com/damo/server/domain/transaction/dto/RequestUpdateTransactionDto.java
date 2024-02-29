@@ -26,6 +26,7 @@ public record RequestUpdateTransactionDto(
     @Schema(description = "거래 금액", example = "50000")
     Long amount,
     
+    @NotNull
     @Schema(description = "선물 종류 CASH | GIFT | MOBILE_VOUCHER | ETC", example = "CASH")
     TransactionCategory category,
     
