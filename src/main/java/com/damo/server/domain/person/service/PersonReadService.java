@@ -37,7 +37,6 @@ public class PersonReadService {
             securityUserUtil.getId(),
             paginationParam.getKeyword()
         );
-
     return PeoplePaginationResponseDto.from(peoplePage);
   }
 
