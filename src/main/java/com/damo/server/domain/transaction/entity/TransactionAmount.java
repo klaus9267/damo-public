@@ -1,5 +1,6 @@
 package com.damo.server.domain.transaction.entity;
 
+import com.damo.server.domain.transaction.dto.TransactionAmountDto;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -34,5 +35,9 @@ public class TransactionAmount {
   public TransactionAmount(Long amount, String action) {
     this.amount = amount == null ? DEFAULT_AMOUNT : amount;
     this.action = TransactionAction.valueOf(action);
+  }
+  
+  public static TransactionAmount from(final TransactionAmountDto dto) {
+    return new TransactionAmount(dto.action(), dto.amount());
   }
 }

@@ -1,12 +1,9 @@
 package com.damo.server.domain.transaction.dto;
 
-import com.damo.server.application.controller.validation.transaction.ActionValid;
-import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -29,14 +26,9 @@ public record RequestCreateTransactionDto(
     String event,
     
     @NotNull
-    @ActionValid
+    @Valid
     @Schema(description = "거래 종류", example = "GIVING")
-    TransactionAction action,
-    
-    @NotNull
-    @Min(value = 0)
-    @Schema(description = "거래 금액", example = "50000")
-    Long amount,
+    TransactionAmountDto transactionAmount,
     
     @NotNull
     @Schema(description = "선물 종류 CASH | GIFT | MOBILE_VOUCHER | ETC", example = "CASH")

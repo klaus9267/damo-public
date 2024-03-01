@@ -64,7 +64,7 @@ public class Transaction {
   
   private Transaction(final RequestCreateTransactionDto transactionDto, final Long userId) {
     this.person = Person.builder().id(transactionDto.personId()).build();
-    this.transactionAmount = new TransactionAmount(transactionDto.action(), transactionDto.amount());
+    this.transactionAmount = TransactionAmount.from(transactionDto.transactionAmount());
     this.memo = transactionDto.memo();
     this.category = transactionDto.category();
     this.user = User.builder().id(userId).build();
@@ -85,7 +85,7 @@ public class Transaction {
    * RequestUpdateTransactionDto로부터 내역 정보를 업데이트하는 메서드.
    */
   public void changeInfo(final RequestUpdateTransactionDto transactionDto) {
-    this.transactionAmount = new TransactionAmount(transactionDto.action(), transactionDto.amount());
+    this.transactionAmount = TransactionAmount.from(transactionDto.transactionAmount());
     this.memo = transactionDto.memo() != null ? transactionDto.memo() : this.getMemo();
   }
 }
