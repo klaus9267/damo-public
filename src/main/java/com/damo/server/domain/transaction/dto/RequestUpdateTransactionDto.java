@@ -1,9 +1,11 @@
 package com.damo.server.domain.transaction.dto;
 
-import com.damo.server.domain.transaction.entity.TransactionAmount;
+import com.damo.server.application.controller.validation.transaction.ActionValid;
+import com.damo.server.domain.transaction.entity.TransactionAction;
 import com.damo.server.domain.transaction.entity.TransactionCategory;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
@@ -15,10 +17,12 @@ public record RequestUpdateTransactionDto(
     @Schema(description = "대상 id", example = "1")
     Long personId,
     
+    @NotNull
     @Valid
-    @Schema(description = "거래 종류 GIVING | RECEIVING")
-    TransactionAmount transactionAmount,
+    @Schema(description = "거래 종류", example = "GIVING")
+    TransactionAmountDto transactionAmount,
     
+    @NotNull
     @Schema(description = "선물 종류 CASH | GIFT | MOBILE_VOUCHER | ETC", example = "CASH")
     TransactionCategory category,
     

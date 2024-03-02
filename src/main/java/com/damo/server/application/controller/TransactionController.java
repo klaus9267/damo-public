@@ -3,7 +3,6 @@ package com.damo.server.application.controller;
 import com.damo.server.application.controller.operation.transaction.*;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.transaction.dto.*;
-import com.damo.server.domain.transaction.dto.TransactionTotalAmountDto;
 import com.damo.server.domain.transaction.service.TransactionReadService;
 import com.damo.server.domain.transaction.service.TransactionWriteService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,7 +27,7 @@ import java.time.LocalDateTime;
 public class TransactionController {
   private final TransactionReadService transactionReadService;
   private final TransactionWriteService transactionWriteService;
-
+  
   /**
    * 내역을 추가하는 API입니다.
    *
@@ -41,7 +40,7 @@ public class TransactionController {
     transactionWriteService.save(transactionDto);
     return ResponseEntity.status(HttpStatus.CREATED).build();
   }
-
+  
   /**
    * 전체 거래 총액을 조회하는 API입니다.
    *
@@ -53,7 +52,7 @@ public class TransactionController {
     final TransactionTotalAmountDto amount = transactionReadService.readTotalAmounts();
     return ResponseEntity.ok(amount);
   }
-
+  
   /**
    * 최근 거래 총액을 조회하는 API입니다.
    *
@@ -69,7 +68,7 @@ public class TransactionController {
     final TransactionTotalAmountDto amount = transactionReadService.readRecentAmounts(startedAt);
     return ResponseEntity.ok(amount);
   }
-
+  
   /**
    * 내역을 단건 조회하는 API입니다.
    *
@@ -82,7 +81,7 @@ public class TransactionController {
     final TransactionWithScheduleDto transactionWithScheduleDto = transactionReadService.readTransaction(transactionId);
     return ResponseEntity.ok(transactionWithScheduleDto);
   }
-
+  
   /**
    * 특정 종류의 내역 목록을 페이지네이션하여 조회하는 API입니다.
    *
@@ -95,7 +94,7 @@ public class TransactionController {
     final TransactionPaginationResponseDto transactionPage = transactionReadService.readTransactionList(paginationParam);
     return ResponseEntity.ok(transactionPage);
   }
-
+  
   /**
    * 내역을 수정하는 API입니다.
    *
@@ -106,13 +105,13 @@ public class TransactionController {
   @PatchMapping("{transactionId}")
   @TransactionUpdateOperation(summary = "내역 수정")
   public ResponseEntity<Void> patchTransactionById(
-      @RequestBody final RequestUpdateTransactionDto transactionDto,
+      @RequestBody @Valid final RequestUpdateTransactionDto transactionDto,
       @PathVariable("transactionId") final Long transactionId
   ) {
     transactionWriteService.patchTransactionById(transactionDto, transactionId);
     return ResponseEntity.noContent().build();
   }
-
+  
   /**
    * 내역을 제거하는 API입니다.
    *

@@ -1,4 +1,7 @@
 spring:
+  output:
+    ansi:
+      enabled: always
   config:
     activate:
       on-profile: test
