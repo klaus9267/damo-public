@@ -20,12 +20,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TransactionAmount {
   private static final Long DEFAULT_AMOUNT = 0L;
-  
+
   @Enumerated(EnumType.STRING)
   private final TransactionAction action;
-  
+
   private final Long amount;
-  
+
   /**
    * 'TransactionRepository'에서 금액 조회할 때  시용되는 생성자
    *
@@ -36,8 +36,8 @@ public class TransactionAmount {
     this.amount = amount == null ? DEFAULT_AMOUNT : amount;
     this.action = TransactionAction.valueOf(action);
   }
-  
-  public static TransactionAmount from(final TransactionAmountDto dto) {
-    return new TransactionAmount(dto.action(), dto.amount());
+
+  public static TransactionAmount from(final TransactionAmountDto transactionAmountDto) {
+    return new TransactionAmount(transactionAmountDto.action(), transactionAmountDto.amount());
   }
 }
