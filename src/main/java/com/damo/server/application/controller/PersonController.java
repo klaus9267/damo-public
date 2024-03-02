@@ -99,7 +99,7 @@ public class PersonController {
   @PatchMapping("{personId}")
   public ResponseEntity<Void> patchPersonById(
       @PathVariable("personId") @Valid final Long personId,
-      @RequestBody final RequestUpdatePersonDto personDto
+      @RequestBody @Valid final RequestUpdatePersonDto personDto
   ) {
     personWriteService.patchPersonById(personDto, personId);
 
