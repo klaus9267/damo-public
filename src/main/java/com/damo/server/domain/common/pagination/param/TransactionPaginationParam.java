@@ -5,8 +5,11 @@ import com.damo.server.domain.common.pagination.PaginationSortType;
 import com.damo.server.domain.common.pagination.PaginationValidation;
 import com.damo.server.domain.transaction.entity.TransactionAction;
 import io.swagger.v3.oas.annotations.Parameter;
+
+import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,21 +40,23 @@ public class TransactionPaginationParam extends AbstractPaginationParam {
   /**
    * TransactionPaginationParam의 생성자로, 필수 및 기본값이 지정된 파라미터들을 초기화합니다.
    *
-   * @param page    페이지 번호
-   * @param size    페이지 크기
-   * @param action  거래 유형
+   * @param page      페이지 번호
+   * @param size      페이지 크기
+   * @param action    거래 유형
    * @param startedAt 조회 시작 일시
    * @param endedAt   조회 종료 일시
-   * @param field   정렬 기준 필드
+   * @param field     정렬 기준 필드
    * @param direction 정렬 방향
    */
+  @ConstructorProperties({"page", "size", "action", "startedAt", "endedAt", "field", "direction"})
   public TransactionPaginationParam(
       final Integer page,
       final Integer size,
       final TransactionAction action,
       final LocalDateTime startedAt,
       final LocalDateTime endedAt,
-      final PaginationSortType field, final Sort.Direction direction
+      final PaginationSortType field,
+      final Sort.Direction direction
   ) {
     this.page = Math.max(page, 0);
     this.size = Math.max(size, 10);
