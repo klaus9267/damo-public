@@ -86,7 +86,7 @@ class TransactionControllerTest {
     @Nested
     @DisplayName("내역_조회_성공")
     class 내역_조회 {
-      private LocalDateTime now;
+      LocalDateTime now;
 
       @BeforeEach
       void 초기값() {
@@ -325,6 +325,69 @@ class TransactionControllerTest {
     TransactionAction action;
     TransactionCategory category;
     FailTransactionAmountDto transactionAmount;
+
+    @Nested
+    @DisplayName("내역_생성_실패")
+    class 내역_조회_실패 {
+      LocalDateTime now;
+
+      @BeforeEach
+      void 초기값() {
+        now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      }
+
+      @Test
+      void 내역_아이디_문자열() throws Exception {
+        mvc.perform(get(END_POINT + "/1번")
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+
+      @Test
+      void 내역_종료_날짜_미래() throws Exception {
+        final PersonDto personDto = new PersonDto(1L, "name", "01012341234", PersonRelation.ETC, "memo,now", now, now);
+        final ScheduleDto scheduleDto = new ScheduleDto(1L, "event,now", now, "memo", ScheduleStatus.IMPORTANT, now, now);
+        final TransactionAmountDto transactionAmountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
+        final List<TransactionWithScheduleDto> transactionWithScheduleDtoList = List.of(new TransactionWithScheduleDto(1L, personDto, scheduleDto, transactionAmountDto, TransactionCategory.ETC, "memo", now, now));
+        final TransactionPaginationResponseDto paginationResponseDto = new TransactionPaginationResponseDto(1, 1L, true, true, false, transactionWithScheduleDtoList);
+
+        when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
+
+        final MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.put("page", List.of("0"));
+        parameters.put("size", List.of("0"));
+        parameters.put("action", List.of(TransactionAction.GIVING.getKey()));
+        parameters.put("startedAt", List.of(LocalDateTime.now().plusDays(1L).toString()));
+
+        mvc.perform(get(END_POINT).params(parameters)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+
+      @Test
+      void 내역_시작_날짜_미래() throws Exception {
+        final PersonDto personDto = new PersonDto(1L, "name", "01012341234", PersonRelation.ETC, "memo,now", now, now);
+        final ScheduleDto scheduleDto = new ScheduleDto(1L, "event,now", now, "memo", ScheduleStatus.IMPORTANT, now, now);
+        final TransactionAmountDto transactionAmountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
+        final List<TransactionWithScheduleDto> transactionWithScheduleDtoList = List.of(new TransactionWithScheduleDto(1L, personDto, scheduleDto, transactionAmountDto, TransactionCategory.ETC, "memo", now, now));
+        final TransactionPaginationResponseDto paginationResponseDto = new TransactionPaginationResponseDto(1, 1L, true, true, false, transactionWithScheduleDtoList);
+
+        when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
+
+        final MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+        parameters.put("page", List.of("0"));
+        parameters.put("size", List.of("0"));
+        parameters.put("action", List.of(TransactionAction.GIVING.getKey()));
+        parameters.put("endedAt", List.of(LocalDateTime.now().plusDays(1L).toString()));
+
+        mvc.perform(get(END_POINT).params(parameters)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+    }
 
     @Nested
     @DisplayName("내역_생성_실패")

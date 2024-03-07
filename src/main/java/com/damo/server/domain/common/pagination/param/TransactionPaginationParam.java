@@ -8,6 +8,9 @@ import io.swagger.v3.oas.annotations.Parameter;
 
 import java.beans.ConstructorProperties;
 import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -27,8 +30,10 @@ public class TransactionPaginationParam extends AbstractPaginationParam {
   @Parameter(required = true)
   private final TransactionAction action;
   @Parameter(example = "2023-12-09T:00:00:00", required = false, hidden = true)
+  @Past
   private final LocalDateTime startedAt;
   @Parameter(example = "2023-12-10T:00:00:00", required = false, hidden = true)
+  @PastOrPresent
   private final LocalDateTime endedAt;
   @Parameter(name = "direction", description = "default desc")
   private final Sort.Direction direction;

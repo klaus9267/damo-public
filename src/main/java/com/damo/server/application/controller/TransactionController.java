@@ -90,7 +90,7 @@ public class TransactionController {
    */
   @GetMapping
   @TransactionPaginationOperation(summary = "내역 종류별 목록 조회")
-  public ResponseEntity<TransactionPaginationResponseDto> readTransactionList(@ParameterObject final TransactionPaginationParam paginationParam) {
+  public ResponseEntity<TransactionPaginationResponseDto> readTransactionList(@ParameterObject @Valid final TransactionPaginationParam paginationParam) {
     final TransactionPaginationResponseDto transactionPage = transactionReadService.readTransactionList(paginationParam);
     return ResponseEntity.ok(transactionPage);
   }
