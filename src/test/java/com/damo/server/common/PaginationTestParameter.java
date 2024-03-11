@@ -1,38 +1,49 @@
 package com.damo.server.common;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.List;
-
+@RequiredArgsConstructor
 public class PaginationTestParameter {
-  private final MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
+  private final MultiValueMap<String, String> parameters;
 
-  private PaginationTestParameter() {
-    this.parameters.add("page", "0");
-    this.parameters.add("size", "10");
+  public static MultiValueMap<String, String> getInitialParams() {
+    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add("page", "0");
+    params.add("size", "10");
+    return params;
   }
 
-  public static PaginationTestParameter getInitialParams() {
-    return new PaginationTestParameter();
+  public static Builder builder() {
+    return new Builder();
   }
 
-  public PaginationTestParameter put(String key, String value) {
-    this.parameters.put(key, List.of(value));
-    return this;
-  }
+  public static class Builder {
+    private final MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 
-  public PaginationTestParameter setPage(final Integer page) {
-    this.parameters.set("page", String.valueOf(page));
-    return this;
-  }
+    private Builder() {
+      this.parameters.add("page", "0");
+      this.parameters.add("size", "10");
+    }
 
-  public PaginationTestParameter setSize(final Integer size) {
-    this.parameters.set("size", String.valueOf(size));
-    return this;
-  }
+    public Builder setParameterOf(final String key, final String value) {
+      this.parameters.set(key, value);
+      return this;
+    }
 
-  public MultiValueMap<String, String> build() {
-    return parameters;
+    public Builder page(final Integer page) {
+      setParameterOf("page", String.valueOf(page));
+      return this;
+    }
+
+    public Builder size(final Integer size) {
+      setParameterOf("size", String.valueOf(size));
+      return this;
+    }
+
+    public MultiValueMap<String, String> build() {
+      return parameters;
+    }
   }
 }

@@ -174,8 +174,8 @@ class TransactionControllerTest {
           final List<TransactionWithScheduleDto> transactionWithScheduleDtoList = List.of(new TransactionWithScheduleDto(1L, personDto, scheduleDto, transactionAmountDto, TransactionCategory.ETC, "memo", now, now));
           final TransactionPaginationResponseDto paginationResponseDto = new TransactionPaginationResponseDto(1, 1L, true, true, false, transactionWithScheduleDtoList);
 
-          final MultiValueMap<String, String> parameters = PaginationTestParameter.getInitialParams()
-              .put("action", transactionAction.getKey())
+          final MultiValueMap<String, String> parameters = PaginationTestParameter.builder()
+              .setParameterOf("action", transactionAction.getKey())
               .build();
 
           when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
@@ -353,9 +353,9 @@ class TransactionControllerTest {
 
         when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
 
-        final MultiValueMap<String, String> parameters = PaginationTestParameter.getInitialParams()
-            .put("action", TransactionAction.GIVING.getKey())
-            .put("startedAt", LocalDateTime.now().plusDays(1L).toString())
+        final MultiValueMap<String, String> parameters = PaginationTestParameter.builder()
+            .setParameterOf("action", TransactionAction.GIVING.getKey())
+            .setParameterOf("startedAt", LocalDateTime.now().plusDays(1L).toString())
             .build();
 
         mvc.perform(get(END_POINT).params(parameters)
@@ -374,9 +374,9 @@ class TransactionControllerTest {
 
         when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
 
-        final MultiValueMap<String, String> parameters = PaginationTestParameter.getInitialParams()
-            .put("action", TransactionAction.GIVING.getKey())
-            .put("startedAt", LocalDateTime.now().plusDays(1L).toString())
+        final MultiValueMap<String, String> parameters = PaginationTestParameter.builder()
+            .setParameterOf("action", TransactionAction.GIVING.getKey())
+            .setParameterOf("startedAt", LocalDateTime.now().plusDays(1L).toString())
             .build();
 
         mvc.perform(get(END_POINT).params(parameters)
