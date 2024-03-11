@@ -2,6 +2,7 @@ package com.damo.server.application.controller;
 
 import com.damo.server.application.handler.exception.CustomErrorCode;
 import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.common.PaginationTestParameter;
 import com.damo.server.common.WithMockCustomUser;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.person.dto.PersonDto;
@@ -31,7 +32,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDateTime;
@@ -174,10 +174,9 @@ class TransactionControllerTest {
           final List<TransactionWithScheduleDto> transactionWithScheduleDtoList = List.of(new TransactionWithScheduleDto(1L, personDto, scheduleDto, transactionAmountDto, TransactionCategory.ETC, "memo", now, now));
           final TransactionPaginationResponseDto paginationResponseDto = new TransactionPaginationResponseDto(1, 1L, true, true, false, transactionWithScheduleDtoList);
 
-          final MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-          parameters.put("page", List.of("0"));
-          parameters.put("size", List.of("0"));
-          parameters.put("action", List.of(transactionAction.getKey()));
+          final MultiValueMap<String, String> parameters = PaginationTestParameter.getInitialParams()
+              .put("action", transactionAction.getKey())
+              .build();
 
           when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
 
@@ -354,11 +353,10 @@ class TransactionControllerTest {
 
         when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
 
-        final MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        parameters.put("page", List.of("0"));
-        parameters.put("size", List.of("0"));
-        parameters.put("action", List.of(TransactionAction.GIVING.getKey()));
-        parameters.put("startedAt", List.of(LocalDateTime.now().plusDays(1L).toString()));
+        final MultiValueMap<String, String> parameters = PaginationTestParameter.getInitialParams()
+            .put("action", TransactionAction.GIVING.getKey())
+            .put("startedAt", LocalDateTime.now().plusDays(1L).toString())
+            .build();
 
         mvc.perform(get(END_POINT).params(parameters)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -376,11 +374,10 @@ class TransactionControllerTest {
 
         when(transactionReadService.readTransactionList(any(TransactionPaginationParam.class))).thenReturn(paginationResponseDto);
 
-        final MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
-        parameters.put("page", List.of("0"));
-        parameters.put("size", List.of("0"));
-        parameters.put("action", List.of(TransactionAction.GIVING.getKey()));
-        parameters.put("endedAt", List.of(LocalDateTime.now().plusDays(1L).toString()));
+        final MultiValueMap<String, String> parameters = PaginationTestParameter.getInitialParams()
+            .put("action", TransactionAction.GIVING.getKey())
+            .put("startedAt", LocalDateTime.now().plusDays(1L).toString())
+            .build();
 
         mvc.perform(get(END_POINT).params(parameters)
                 .contentType(MediaType.APPLICATION_JSON)
