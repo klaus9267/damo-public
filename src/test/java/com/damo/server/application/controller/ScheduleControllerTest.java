@@ -1,5 +1,7 @@
 package com.damo.server.application.controller;
 
+import com.damo.server.application.handler.exception.CustomErrorCode;
+import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.common.WithMockCustomUser;
 import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
 import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
@@ -28,7 +30,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -178,6 +182,213 @@ class ScheduleControllerTest {
           ).andDo(print())
           .andExpect(status().isNoContent())
           .andExpect(jsonPath("$").doesNotExist());
+    }
+  }
+
+  @Nested
+  @DisplayName("실패 케이스")
+  class 실패 {
+    @Nested
+    @DisplayName("일정_생성_실패")
+    class 일정_생성_실패 {
+      LocalDateTime now;
+      FailScheduleDto failScheduleDto;
+
+      @BeforeEach
+      void 초기값() {
+        now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        failScheduleDto = new FailScheduleDto(now, "event", "memo", ScheduleStatus.IMPORTANT, 1L);
+      }
+
+      private void callApiForBadRequestWhenCreate() throws Exception {
+        final String json = mapper.writeValueAsString(failScheduleDto);
+
+        mvc.perform(post(END_POINT)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+            ).andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+
+      @Test
+      void 일정_거래_날짜_NULL() throws Exception {
+        failScheduleDto.setEventDate(null);
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_문자열() throws Exception {
+        failScheduleDto.setEventDate("열흘 뒤");
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_정수() throws Exception {
+        failScheduleDto.setEventDate(123);
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_음수() throws Exception {
+        failScheduleDto.setEventDate(-123);
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_소수() throws Exception {
+        failScheduleDto.setEventDate(1.23);
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 일정_행사_이름_NULL() throws Exception {
+        failScheduleDto.setEvent(null);
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 일정_행사_이름_빈문자열() throws Exception {
+        failScheduleDto.setEvent("");
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 일정_행사_이름_공백() throws Exception {
+        failScheduleDto.setEvent(" ");
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 일정_메모_200자_초과() throws Exception {
+        failScheduleDto.setMemo("m".repeat(201));
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 잘못된_일정_중요도() throws Exception {
+        failScheduleDto.setStatus("그렇게 중요하진 않은데 안나가기 애매한 일정");
+        callApiForBadRequestWhenCreate();
+      }
+
+      @Test
+      void 잘못된_일정_내역_아이디() throws Exception {
+        failScheduleDto.setTransactionId("일번");
+        callApiForBadRequestWhenCreate();
+      }
+    }
+
+    @Nested
+    @DisplayName("일정_수정_실패")
+    class 일정_수정_실패 {
+      LocalDateTime now;
+      FailScheduleDto failScheduleDto;
+
+      @BeforeEach
+      void 초기값() {
+        now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        failScheduleDto = new FailScheduleDto(now, "event", "memo", ScheduleStatus.IMPORTANT, 1L);
+      }
+
+      private void callApiForBadRequestWhenUpdate() throws Exception {
+        final Long scheduleId = 1L;
+        final String json = mapper.writeValueAsString(failScheduleDto);
+
+        mvc.perform(patch(END_POINT + "/" + scheduleId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+            ).andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_문자열() throws Exception {
+        failScheduleDto.setEventDate("열흘 뒤");
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_정수() throws Exception {
+        failScheduleDto.setEventDate(123);
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_음수() throws Exception {
+        failScheduleDto.setEventDate(-123);
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 잘못된_일정_거래_날짜_소수() throws Exception {
+        failScheduleDto.setEventDate(1.23);
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 일정_행사_이름_NULL() throws Exception {
+        failScheduleDto.setEvent(null);
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 일정_행사_이름_빈문자열() throws Exception {
+        failScheduleDto.setEvent("");
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 일정_행사_이름_공백() throws Exception {
+        failScheduleDto.setEvent(" ");
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 일정_메모_200자_초과() throws Exception {
+        failScheduleDto.setMemo("m".repeat(201));
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 잘못된_일정_중요도() throws Exception {
+        failScheduleDto.setStatus("그렇게 중요하진 않은데 안나가기 애매한 일정");
+        callApiForBadRequestWhenUpdate();
+      }
+
+      @Test
+      void 잘못된_일정_내역_아이디() throws Exception {
+        failScheduleDto.setTransactionId("일번");
+        callApiForBadRequestWhenUpdate();
+      }
+    }
+
+    @Nested
+    @DisplayName("일정_삭제_실패")
+    class 일정_삭제_실패 {
+      @Test
+      void 존재하지_않는_일정() throws Exception {
+        doThrow(new CustomException(CustomErrorCode.NOT_FOUND, "삭제할 일정을 찾을 수 없음")).when(scheduleWriteService).removeScheduleById(anyLong());
+
+        final Long scheduleId = 1L;
+
+        mvc.perform(delete(END_POINT + "/" + scheduleId))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value("삭제할 일정을 찾을 수 없음"));
+      }
+
+      @Test
+      void 잘못된_일정_아이디_문자열() throws Exception {
+        mvc.perform(delete(END_POINT + "/1번"))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+
+      @Test
+      void 잘못된_일정_아이디_소수() throws Exception {
+        mvc.perform(delete(END_POINT + "/0.3"))
+            .andDo(print())
+            .andExpect(status().isBadRequest());
+      }
     }
   }
 }
