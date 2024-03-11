@@ -2,6 +2,7 @@ package com.damo.server.domain.schedule.dto;
 
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +17,7 @@ public record RequestCreateScheduleDto(
     @Schema(description = "거래 날짜", example = "2024-01-02T00:00:00")
     LocalDateTime eventDate,
 
-    @NotEmpty(message = "event is required")
+    @NotBlank(message = "event is required")
     @Schema(description = "행사 이름", example = "민호 취업 축하 파티")
     String event,
 
