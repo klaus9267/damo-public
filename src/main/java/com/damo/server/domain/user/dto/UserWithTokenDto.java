@@ -1,6 +1,6 @@
 package com.damo.server.domain.user.dto;
 
-import com.damo.server.application.config.oauth.provider.OAuthProviderType;
+import com.damo.server.application.security.provider.OAuthProviderType;
 import com.damo.server.domain.user.entity.User;
 import lombok.Getter;
 

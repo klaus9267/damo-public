@@ -2,7 +2,7 @@ package com.damo.server.domain.person.dto;
 
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.person.entity.PersonRelation;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,8 +17,8 @@ public class PersonDto {
   private final String contact;
   private final PersonRelation relation;
   private final String memo;
-  private final Timestamp createdAt;
-  private final Timestamp updatedAt;
+  private final LocalDateTime createdAt;
+  private final LocalDateTime updatedAt;
 
   /**
    * 주어진 {@code Person} 객체를 {@code PersonDto}로 변환합니다.

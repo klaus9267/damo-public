@@ -23,7 +23,7 @@ public record RequestUpdatePersonDto(
         @Length(max = 200, message = "memo max length 200")
         String memo,
 
-        @Schema(description = "9자 혹은 11자 번호(ex: 020000000, 0211112222, 01011112222", example = "01055553333")
-        @Pattern(regexp = "^\\d{9,11}$", message = "a contact is a 9 or 11-digit range containing only numbers")
+        @Schema(description = "9자에서 11자 번호(ex: 020000000, 0211112222, 01011112222", example = "01055553333")
+        @Pattern(regexp = "^\\d{9,11}$", message = "a contact is a 9 or 10 or 11-digit range containing only numbers")
         String contact
 ) {}

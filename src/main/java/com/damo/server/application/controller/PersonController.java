@@ -3,9 +3,11 @@ package com.damo.server.application.controller;
 import com.damo.server.application.controller.operation.person.PersonCreateOperation;
 import com.damo.server.application.controller.operation.person.PersonDeleteOperation;
 import com.damo.server.application.controller.operation.person.PersonPaginationOperation;
+import com.damo.server.application.controller.operation.person.PersonReadOneOperation;
 import com.damo.server.application.controller.operation.person.PersonUpdateOperation;
 import com.damo.server.domain.common.pagination.param.PersonPaginationParam;
 import com.damo.server.domain.person.dto.PeoplePaginationResponseDto;
+import com.damo.server.domain.person.dto.PersonDto;
 import com.damo.server.domain.person.dto.RequestCreatePersonDto;
 import com.damo.server.domain.person.dto.RequestUpdatePersonDto;
 import com.damo.server.domain.person.service.PersonReadService;
@@ -54,6 +56,22 @@ public class PersonController {
   }
 
   /**
+   * 주어진 personId에 해당하는 Person 정보를 조회하여 반환하는 엔드포인트.
+   *
+   * @param personId 조회할 Person의 식별자
+   * @return 조회한 Person 정보를 담은 ResponseEntity<PersonDto>
+   */
+  @PersonReadOneOperation(summary = "대상 단일 조회", description = "personId에 해당하는 유저의 대상 조회")
+  @GetMapping("{personId}")
+  public ResponseEntity<PersonDto> readPersonById(
+      @PathVariable("personId") @Valid final Long personId
+  ) {
+    final PersonDto personDto = personReadService.readPersonById(personId);
+
+    return ResponseEntity.ok(personDto);
+  }
+
+  /**
    * 대상을 추가하는 API입니다.
    *
    * @param personDto 추가할 대상 정보 DTO
@@ -81,7 +99,7 @@ public class PersonController {
   @PatchMapping("{personId}")
   public ResponseEntity<Void> patchPersonById(
       @PathVariable("personId") @Valid final Long personId,
-      @RequestBody final RequestUpdatePersonDto personDto
+      @RequestBody @Valid final RequestUpdatePersonDto personDto
   ) {
     personWriteService.patchPersonById(personDto, personId);
 

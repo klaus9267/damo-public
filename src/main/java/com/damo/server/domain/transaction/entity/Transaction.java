@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 
 /**
  * `Transaction` 클래스는 시스템에서 내역을 나타냅니다.
@@ -41,11 +42,11 @@ public class Transaction {
   
   @Column(name = "created_at")
   @CreationTimestamp
-  private Timestamp createdAt;
+  private LocalDateTime createdAt;
   
   @Column(name = "updated_at")
   @UpdateTimestamp
-  private Timestamp updatedAt;
+  private LocalDateTime updatedAt;
   
   @Enumerated(EnumType.STRING)
   private TransactionCategory category;
@@ -63,7 +64,7 @@ public class Transaction {
   
   private Transaction(final RequestCreateTransactionDto transactionDto, final Long userId) {
     this.person = Person.builder().id(transactionDto.personId()).build();
-    this.transactionAmount = transactionDto.transactionAmount();
+    this.transactionAmount = TransactionAmount.from(transactionDto.transactionAmount());
     this.memo = transactionDto.memo();
     this.category = transactionDto.category();
     this.user = User.builder().id(userId).build();
@@ -73,7 +74,10 @@ public class Transaction {
   /**
    * RequestCreateTransactionDto로부터 Transaction 객체를 생성하는 정적 메서드.
    */
-  public static Transaction from(final RequestCreateTransactionDto transactionDto, final Long userId) {
+  public static Transaction from(
+      final RequestCreateTransactionDto transactionDto,
+      final Long userId
+  ) {
     return new Transaction(transactionDto, userId);
   }
   
@@ -81,7 +85,7 @@ public class Transaction {
    * RequestUpdateTransactionDto로부터 내역 정보를 업데이트하는 메서드.
    */
   public void changeInfo(final RequestUpdateTransactionDto transactionDto) {
-    this.transactionAmount = transactionDto.transactionAmount() != null ? transactionDto.transactionAmount() : this.getTransactionAmount();
+    this.transactionAmount = TransactionAmount.from(transactionDto.transactionAmount());
     this.memo = transactionDto.memo() != null ? transactionDto.memo() : this.getMemo();
   }
 }

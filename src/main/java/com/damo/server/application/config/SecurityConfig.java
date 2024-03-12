@@ -1,10 +1,9 @@
 package com.damo.server.application.config;
 
-import com.damo.server.application.config.jwt.JwtAuthenticationEntryPoint;
-import com.damo.server.application.config.jwt.JwtAuthenticationFilter;
-import com.damo.server.application.config.jwt.JwtTokenService;
+import com.damo.server.application.security.jwt.JwtAuthenticationEntryPoint;
+import com.damo.server.application.security.jwt.JwtAuthenticationFilter;
+import com.damo.server.application.security.jwt.JwtTokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +21,6 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 /**
  * {@code SecurityConfig} 클래스는 Spring Security 설정을 담당하는 클래스입니다.
@@ -50,9 +47,6 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     return http
-      .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
-        .configurationSource(corsConfigurationSource())
-      )
       .csrf(CsrfConfigurer::disable)
       .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer
           .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
@@ -71,20 +65,6 @@ public class SecurityConfig {
       )
       .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
       .build();
-  }
-
-  private CorsConfigurationSource corsConfigurationSource() {
-    return request -> {
-      final CorsConfiguration config = new CorsConfiguration();
-
-      config.setAllowedHeaders(Collections.singletonList("*"));
-      config.setAllowedMethods(Collections.singletonList("*"));
-      // TODO: 환경변수 cors 경로 추가한 후 적용해야 함
-      config.setAllowedOriginPatterns(Collections.singletonList("*"));
-      config.setAllowCredentials(true);
-
-      return config;
-    };
   }
 
   @Bean
