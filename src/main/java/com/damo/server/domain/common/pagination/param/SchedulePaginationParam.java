@@ -4,7 +4,11 @@ import com.damo.server.domain.common.pagination.PaginationSortGroup;
 import com.damo.server.domain.common.pagination.PaginationSortType;
 import com.damo.server.domain.common.pagination.PaginationValidation;
 import io.swagger.v3.oas.annotations.Parameter;
+
+import java.beans.ConstructorProperties;
 import java.time.LocalDate;
+
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +25,7 @@ public class SchedulePaginationParam extends AbstractPaginationParam {
   @Parameter(example = "10", required = true)
   private final Integer size;
   @Parameter(description = "조회 년,월 | 일은 아무 숫자나 상관 없음", example = "2024-01-01")
+  @PastOrPresent
   private final LocalDate date;
   @Parameter(hidden = true)
   private final Integer year;
@@ -38,13 +43,14 @@ public class SchedulePaginationParam extends AbstractPaginationParam {
   /**
    * SchedulePaginationParam의 생성자로, 필수 및 기본값이 지정된 파라미터들을 초기화합니다.
    *
-   * @param page    페이지 번호
-   * @param size    페이지 크기
-   * @param date    조회 날짜
+   * @param page      페이지 번호
+   * @param size      페이지 크기
+   * @param date      조회 날짜
    * @param keyword   검색 키워드
-   * @param field   정렬 기준 필드
+   * @param field     정렬 기준 필드
    * @param direction 정렬 방향
    */
+  @ConstructorProperties({"page", "size", "date", "keyword", "field", "direction"})
   public SchedulePaginationParam(
       final Integer page,
       final Integer size,
