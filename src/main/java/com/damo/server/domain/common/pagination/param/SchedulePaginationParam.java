@@ -4,6 +4,8 @@ import com.damo.server.domain.common.pagination.PaginationSortGroup;
 import com.damo.server.domain.common.pagination.PaginationSortType;
 import com.damo.server.domain.common.pagination.PaginationValidation;
 import io.swagger.v3.oas.annotations.Parameter;
+
+import java.beans.ConstructorProperties;
 import java.time.LocalDate;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
@@ -38,13 +40,14 @@ public class SchedulePaginationParam extends AbstractPaginationParam {
   /**
    * SchedulePaginationParam의 생성자로, 필수 및 기본값이 지정된 파라미터들을 초기화합니다.
    *
-   * @param page    페이지 번호
-   * @param size    페이지 크기
-   * @param date    조회 날짜
+   * @param page      페이지 번호
+   * @param size      페이지 크기
+   * @param date      조회 날짜
    * @param keyword   검색 키워드
-   * @param field   정렬 기준 필드
+   * @param field     정렬 기준 필드
    * @param direction 정렬 방향
    */
+  @ConstructorProperties({"page", "size", "date", "keyword", "field", "direction"})
   public SchedulePaginationParam(
       final Integer page,
       final Integer size,

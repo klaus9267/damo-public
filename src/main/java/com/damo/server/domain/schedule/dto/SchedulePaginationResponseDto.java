@@ -3,12 +3,14 @@ package com.damo.server.domain.schedule.dto;
 import com.damo.server.domain.common.pagination.dto.PaginationResponseDto;
 import java.util.List;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 
 /**
  * {@code SchedulePaginationResponseDto}는 페이지네이션된 일정 목록의 응답 DTO입니다.
  */
 @Getter
+@RequiredArgsConstructor
 public class SchedulePaginationResponseDto
     implements PaginationResponseDto<ScheduleWithTransactionDto> {
   private final Integer totalPages;
