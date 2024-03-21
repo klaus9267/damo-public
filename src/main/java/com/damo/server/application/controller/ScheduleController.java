@@ -63,7 +63,7 @@ public class ScheduleController {
    */
   @GetMapping
   @ScheduleReadOperation(summary = "년,월별 일정 리스트 조회")
-  public ResponseEntity<SchedulePaginationResponseDto> readScheduleListByDate(@ParameterObject final SchedulePaginationParam paginationParam) {
+  public ResponseEntity<SchedulePaginationResponseDto> readScheduleListByDate(@ParameterObject @Valid final SchedulePaginationParam paginationParam) {
     final SchedulePaginationResponseDto scheduleDto = scheduleReadServices.readScheduleByEventDate(paginationParam);
     return ResponseEntity.ok(scheduleDto);
   }

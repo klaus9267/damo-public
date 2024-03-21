@@ -288,6 +288,29 @@ class ScheduleControllerTest {
   class 실패 {
     @Nested
     @DisplayName("일정_생성_실패")
+    class 일정_조회_실패 {
+      @Test
+      void 일정_단건_조회_아이디_문자열() throws Exception {
+        mvc.perform(get(END_POINT + "/1번")
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+
+      @Test
+      void 일정_목록_조회_미래() throws Exception {
+        MultiValueMap<String, String> parameters = PaginationTestParameter.getInitialParams();
+        parameters.add("date", LocalDate.now().plusDays(1).toString());
+
+        mvc.perform(get(END_POINT).params(parameters)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andDo(print())
+            .andExpect(status().isBadRequest());
+      }
+    }
+
+    @Nested
+    @DisplayName("일정_생성_실패")
     class 일정_생성_실패 {
       LocalDateTime now;
       FailScheduleDto failScheduleDto;

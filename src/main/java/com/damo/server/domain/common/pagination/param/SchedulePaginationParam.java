@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 
 import java.beans.ConstructorProperties;
 import java.time.LocalDate;
+
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ public class SchedulePaginationParam extends AbstractPaginationParam {
   @Parameter(example = "10", required = true)
   private final Integer size;
   @Parameter(description = "조회 년,월 | 일은 아무 숫자나 상관 없음", example = "2024-01-01")
+  @PastOrPresent
   private final LocalDate date;
   @Parameter(hidden = true)
   private final Integer year;
