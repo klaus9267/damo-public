@@ -7,7 +7,6 @@ import com.damo.server.domain.schedule.dto.RequestCreateScheduleDto;
 import com.damo.server.domain.schedule.dto.RequestUpdateScheduleDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -25,7 +24,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@Transactional
 class ScheduleWriteServiceTest {
   ScheduleWriteService scheduleWriteService;
   @Mock
@@ -57,7 +55,7 @@ class ScheduleWriteServiceTest {
         final RequestCreateScheduleDto scheduleDto = new RequestCreateScheduleDto(now, status.getKey(), "memo", status, 1L);
         final Schedule schedule = Schedule.from(scheduleDto, userId);
 
-        when(scheduleRepository.findByEventAndEventDateAndUserId(scheduleDto.event(), scheduleDto.eventDate(), userId)).thenReturn(Optional.empty());
+        when(scheduleRepository.findByEventAndEventDateAndUserId(anyString(), any(LocalDateTime.class), anyLong())).thenReturn(Optional.empty());
         when(scheduleRepository.save(any(Schedule.class))).thenReturn(schedule);
 
         scheduleWriteService.addSchedule(scheduleDto);
@@ -74,7 +72,7 @@ class ScheduleWriteServiceTest {
         final Schedule schedule = new Schedule(1L, scheduleDto.event(), scheduleDto.eventDate(), scheduleDto.memo(), scheduleDto.status(), now, now, null, null);
 
         when(securityUserUtil.getId()).thenReturn(userId);
-        when(scheduleRepository.findByIdAndUserId(scheduleId, userId)).thenReturn(Optional.of(schedule));
+        when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(schedule));
 
         scheduleWriteService.patchScheduleById(scheduleDto, scheduleId);
       }
@@ -86,12 +84,61 @@ class ScheduleWriteServiceTest {
     void 일정_삭제() throws Exception {
       final Schedule schedule = new Schedule(1L, "event", now, "memo", ScheduleStatus.NORMAL, now, now, null, null);
 
-      when(scheduleRepository.findByIdAndUserId(scheduleId, userId)).thenReturn(Optional.of(schedule));
-      doNothing().when(scheduleRepository).deleteById(scheduleId);
+      when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(schedule));
+      doNothing().when(scheduleRepository).deleteById(anyLong());
 
       scheduleWriteService.removeScheduleById(scheduleId);
 
       verify(scheduleRepository).deleteById(scheduleId);
+    }
+  }
+
+  @Nested
+  @DisplayName("실패 케이스")
+  class 실패 {
+    LocalDateTime now;
+    Long userId = 1L;
+    Long scheduleId = 1L;
+
+    @BeforeEach
+    void 초기값() {
+      now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      when(securityUserUtil.getId()).thenReturn(userId);
+    }
+
+    @Test
+    void 일정_생성_중복_일정() throws Exception {
+      final RequestCreateScheduleDto scheduleDto = new RequestCreateScheduleDto(now, "event", "memo", ScheduleStatus.NORMAL, 1L);
+      final Schedule schedule = Schedule.from(scheduleDto, userId);
+
+      when(scheduleRepository.findByEventAndEventDateAndUserId(anyString(), any(LocalDateTime.class), anyLong())).thenReturn(Optional.of(schedule));
+
+      assertThatThrownBy(() -> scheduleWriteService.addSchedule(scheduleDto)).isInstanceOf(CustomException.class);
+
+      verify(scheduleRepository).findByEventAndEventDateAndUserId(scheduleDto.event(), scheduleDto.eventDate(), userId);
+      verify(scheduleRepository, never()).save(any(Schedule.class));
+    }
+
+    @Test
+    void 일정_수정_없는_일정() throws Exception {
+      final RequestUpdateScheduleDto scheduleDto = new RequestUpdateScheduleDto(now, "event", "memo", ScheduleStatus.NORMAL, 1L);
+
+      when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> scheduleWriteService.patchScheduleById(scheduleDto, scheduleId)).isInstanceOf(CustomException.class);
+
+      verify(scheduleRepository).findByIdAndUserId(anyLong(), anyLong());
+      verify(scheduleRepository, never()).save(any(Schedule.class));
+    }
+
+    @Test
+    void 일정_삭제_없는_일정() throws Exception {
+      when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> scheduleWriteService.removeScheduleById(scheduleId)).isInstanceOf(CustomException.class);
+
+      verify(scheduleRepository).findByIdAndUserId(anyLong(), anyLong());
+      verify(scheduleRepository, never()).deleteById(anyLong());
     }
   }
 }
