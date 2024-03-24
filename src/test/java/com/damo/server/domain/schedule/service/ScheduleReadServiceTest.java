@@ -1,9 +1,9 @@
 package com.damo.server.domain.schedule.service;
 
+import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.ScheduleRepository;
-import com.damo.server.domain.schedule.dto.SchedulePaginationResponseDto;
 import com.damo.server.domain.schedule.dto.ScheduleWithTransactionDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
@@ -24,6 +24,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -71,7 +72,6 @@ class ScheduleReadServiceTest {
       final ScheduleWithTransactionDto schedule1 = new ScheduleWithTransactionDto(1L, "event1", now, "memo", ScheduleStatus.NORMAL, null, now, now);
       final ScheduleWithTransactionDto schedule2 = new ScheduleWithTransactionDto(2L, "event2", now, "memo", ScheduleStatus.NORMAL, null, now, now);
       final Page<ScheduleWithTransactionDto> schedulePage = new PageImpl<>(List.of(schedule1, schedule2), pageable, 2);
-
       final SchedulePaginationParam paginationParam = new SchedulePaginationParam(0, 20, null, null, null, null);
 
       when(scheduleRepository.findAllScheduleByEventDate(paginationParam.toPageable(), userId, paginationParam.getYear(), paginationParam.getMonth(), paginationParam.getKeyword())).thenReturn(schedulePage);
@@ -79,6 +79,27 @@ class ScheduleReadServiceTest {
       scheduleReadService.readScheduleByEventDate(paginationParam);
 
       verify(scheduleRepository).findAllScheduleByEventDate(paginationParam.toPageable(), userId, paginationParam.getYear(), paginationParam.getMonth(), paginationParam.getKeyword());
+    }
+  }
+
+  @Nested
+  @DisplayName("실패 케이스")
+  class 실패 {
+    LocalDateTime now;
+    Long userId = 1L;
+    Long scheduleId = 1L;
+
+    @BeforeEach
+    void 초기값() {
+      now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      when(securityUserUtil.getId()).thenReturn(userId);
+    }
+
+    @Test
+    void 일정_조회_단건() throws Exception {
+      when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> scheduleReadService.readSchedule(scheduleId)).isInstanceOf(CustomException.class);
     }
   }
 }
