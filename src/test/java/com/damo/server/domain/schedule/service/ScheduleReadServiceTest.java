@@ -4,6 +4,7 @@ import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.common.pagination.param.SchedulePaginationParam;
 import com.damo.server.domain.schedule.ScheduleRepository;
+import com.damo.server.domain.schedule.dto.SchedulePaginationResponseDto;
 import com.damo.server.domain.schedule.dto.ScheduleWithTransactionDto;
 import com.damo.server.domain.schedule.entity.Schedule;
 import com.damo.server.domain.schedule.entity.ScheduleStatus;
@@ -24,6 +25,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
@@ -56,18 +58,20 @@ class ScheduleReadServiceTest {
     }
 
     @Test
-    void 일정_조회_단건() throws Exception {
+    void 일정_조회_단건() {
       final Schedule schedule = new Schedule(1L, "event", now, "memo", ScheduleStatus.NORMAL, now, now, null, null);
 
       when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(schedule));
 
-      scheduleReadService.readSchedule(scheduleId);
+      final ScheduleWithTransactionDto scheduleWithTransactionDto = scheduleReadService.readSchedule(scheduleId);
 
       verify(scheduleRepository).findByIdAndUserId(anyLong(), anyLong());
+      assertThat(scheduleWithTransactionDto).extracting(ScheduleWithTransactionDto::getId, ScheduleWithTransactionDto::getEvent, ScheduleWithTransactionDto::getEventDate, ScheduleWithTransactionDto::getMemo, ScheduleWithTransactionDto::getStatus, ScheduleWithTransactionDto::getTransaction, ScheduleWithTransactionDto::getCreatedAt, ScheduleWithTransactionDto::getUpdatedAt)
+          .containsExactly(scheduleWithTransactionDto.getId(), scheduleWithTransactionDto.getEvent(), scheduleWithTransactionDto.getEventDate(), scheduleWithTransactionDto.getMemo(), scheduleWithTransactionDto.getStatus(), scheduleWithTransactionDto.getTransaction(), scheduleWithTransactionDto.getCreatedAt(), scheduleWithTransactionDto.getUpdatedAt());
     }
 
     @Test
-    void 일정_조회_페이지네이션() throws Exception {
+    void 일정_조회_페이지네이션() {
       final Pageable pageable = PageRequest.of(0, 10);
       final ScheduleWithTransactionDto schedule1 = new ScheduleWithTransactionDto(1L, "event1", now, "memo", ScheduleStatus.NORMAL, null, now, now);
       final ScheduleWithTransactionDto schedule2 = new ScheduleWithTransactionDto(2L, "event2", now, "memo", ScheduleStatus.NORMAL, null, now, now);
@@ -76,9 +80,11 @@ class ScheduleReadServiceTest {
 
       when(scheduleRepository.findAllScheduleByEventDate(paginationParam.toPageable(), userId, paginationParam.getYear(), paginationParam.getMonth(), paginationParam.getKeyword())).thenReturn(schedulePage);
 
-      scheduleReadService.readScheduleByEventDate(paginationParam);
+      final SchedulePaginationResponseDto paginationResponseDto = scheduleReadService.readScheduleByEventDate(paginationParam);
 
       verify(scheduleRepository).findAllScheduleByEventDate(paginationParam.toPageable(), userId, paginationParam.getYear(), paginationParam.getMonth(), paginationParam.getKeyword());
+      assertThat(paginationResponseDto).extracting(SchedulePaginationResponseDto::getTotalPages, SchedulePaginationResponseDto::getTotalElements, SchedulePaginationResponseDto::getIsFirst, SchedulePaginationResponseDto::getIsLast, SchedulePaginationResponseDto::getHasNext, SchedulePaginationResponseDto::getItems)
+          .containsExactly(paginationResponseDto.getTotalPages(), paginationResponseDto.getTotalElements(), paginationResponseDto.getIsFirst(), paginationResponseDto.getIsLast(), paginationResponseDto.getHasNext(), paginationResponseDto.getItems());
     }
   }
 
@@ -96,7 +102,7 @@ class ScheduleReadServiceTest {
     }
 
     @Test
-    void 일정_조회_단건() throws Exception {
+    void 일정_조회_단건() {
       when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
       assertThatThrownBy(() -> scheduleReadService.readSchedule(scheduleId)).isInstanceOf(CustomException.class);

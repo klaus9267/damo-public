@@ -50,7 +50,7 @@ class ScheduleWriteServiceTest {
     }
 
     @Test
-    void 일정_생성_중요도() throws Exception {
+    void 일정_생성_중요도() {
       for (final ScheduleStatus status : ScheduleStatus.values()) {
         final RequestCreateScheduleDto scheduleDto = new RequestCreateScheduleDto(now, status.getKey(), "memo", status, 1L);
         final Schedule schedule = Schedule.from(scheduleDto, userId);
@@ -66,7 +66,7 @@ class ScheduleWriteServiceTest {
     }
 
     @Test
-    void 일정_수정_중요도() throws Exception {
+    void 일정_수정_중요도() {
       for (final ScheduleStatus status : ScheduleStatus.values()) {
         final RequestUpdateScheduleDto scheduleDto = new RequestUpdateScheduleDto(now, "event", "memo", status, null);
         final Schedule schedule = new Schedule(1L, scheduleDto.event(), scheduleDto.eventDate(), scheduleDto.memo(), scheduleDto.status(), now, now, null, null);
@@ -81,7 +81,7 @@ class ScheduleWriteServiceTest {
     }
 
     @Test
-    void 일정_삭제() throws Exception {
+    void 일정_삭제() {
       final Schedule schedule = new Schedule(1L, "event", now, "memo", ScheduleStatus.NORMAL, now, now, null, null);
 
       when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(schedule));
@@ -90,6 +90,9 @@ class ScheduleWriteServiceTest {
       scheduleWriteService.removeScheduleById(scheduleId);
 
       verify(scheduleRepository).deleteById(scheduleId);
+
+      when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+      assertThatThrownBy(() -> scheduleWriteService.removeScheduleById(scheduleId)).isInstanceOf(CustomException.class);
     }
   }
 
@@ -107,7 +110,7 @@ class ScheduleWriteServiceTest {
     }
 
     @Test
-    void 일정_생성_중복_일정() throws Exception {
+    void 일정_생성_중복_일정() {
       final RequestCreateScheduleDto scheduleDto = new RequestCreateScheduleDto(now, "event", "memo", ScheduleStatus.NORMAL, 1L);
       final Schedule schedule = Schedule.from(scheduleDto, userId);
 
@@ -120,7 +123,7 @@ class ScheduleWriteServiceTest {
     }
 
     @Test
-    void 일정_수정_없는_일정() throws Exception {
+    void 일정_수정_없는_일정() {
       final RequestUpdateScheduleDto scheduleDto = new RequestUpdateScheduleDto(now, "event", "memo", ScheduleStatus.NORMAL, 1L);
 
       when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
@@ -132,7 +135,7 @@ class ScheduleWriteServiceTest {
     }
 
     @Test
-    void 일정_삭제_없는_일정() throws Exception {
+    void 일정_삭제_없는_일정() {
       when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
       assertThatThrownBy(() -> scheduleWriteService.removeScheduleById(scheduleId)).isInstanceOf(CustomException.class);
