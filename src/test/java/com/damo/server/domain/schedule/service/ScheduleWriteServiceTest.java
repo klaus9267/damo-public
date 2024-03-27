@@ -51,7 +51,8 @@ class ScheduleWriteServiceTest {
 
     @Test
     void 일정_생성_중요도() {
-      for (final ScheduleStatus status : ScheduleStatus.values()) {
+      ScheduleStatus[] statuses = ScheduleStatus.values();
+      for (final ScheduleStatus status : statuses) {
         final RequestCreateScheduleDto scheduleDto = new RequestCreateScheduleDto(now, status.getKey(), "memo", status, 1L);
         final Schedule schedule = Schedule.from(scheduleDto, userId);
 
@@ -67,7 +68,8 @@ class ScheduleWriteServiceTest {
 
     @Test
     void 일정_수정_중요도() {
-      for (final ScheduleStatus status : ScheduleStatus.values()) {
+      final ScheduleStatus[] statuses = ScheduleStatus.values();
+      for (final ScheduleStatus status : statuses) {
         final RequestUpdateScheduleDto scheduleDto = new RequestUpdateScheduleDto(now, "event", "memo", status, null);
         final Schedule schedule = new Schedule(1L, scheduleDto.event(), scheduleDto.eventDate(), scheduleDto.memo(), scheduleDto.status(), now, now, null, null);
 

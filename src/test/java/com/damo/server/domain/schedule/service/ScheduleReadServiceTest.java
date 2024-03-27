@@ -54,20 +54,34 @@ class ScheduleReadServiceTest {
     @BeforeEach
     void 초기값() {
       now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-      when(securityUserUtil.getId()).thenReturn(userId);
     }
 
     @Test
     void 일정_조회_단건() {
       final Schedule schedule = new Schedule(1L, "event", now, "memo", ScheduleStatus.NORMAL, now, now, null, null);
 
+      when(securityUserUtil.getId()).thenReturn(userId);
       when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.of(schedule));
 
       final ScheduleWithTransactionDto scheduleWithTransactionDto = scheduleReadService.readSchedule(scheduleId);
 
       verify(scheduleRepository).findByIdAndUserId(anyLong(), anyLong());
-      assertThat(scheduleWithTransactionDto).extracting(ScheduleWithTransactionDto::getId, ScheduleWithTransactionDto::getEvent, ScheduleWithTransactionDto::getEventDate, ScheduleWithTransactionDto::getMemo, ScheduleWithTransactionDto::getStatus, ScheduleWithTransactionDto::getTransaction, ScheduleWithTransactionDto::getCreatedAt, ScheduleWithTransactionDto::getUpdatedAt)
-          .containsExactly(scheduleWithTransactionDto.getId(), scheduleWithTransactionDto.getEvent(), scheduleWithTransactionDto.getEventDate(), scheduleWithTransactionDto.getMemo(), scheduleWithTransactionDto.getStatus(), scheduleWithTransactionDto.getTransaction(), scheduleWithTransactionDto.getCreatedAt(), scheduleWithTransactionDto.getUpdatedAt());
+      assertThat(scheduleWithTransactionDto).extracting(ScheduleWithTransactionDto::getId,
+              ScheduleWithTransactionDto::getEvent,
+              ScheduleWithTransactionDto::getEventDate,
+              ScheduleWithTransactionDto::getMemo,
+              ScheduleWithTransactionDto::getStatus,
+              ScheduleWithTransactionDto::getTransaction,
+              ScheduleWithTransactionDto::getCreatedAt,
+              ScheduleWithTransactionDto::getUpdatedAt)
+          .containsExactly(scheduleWithTransactionDto.getId(),
+              scheduleWithTransactionDto.getEvent(),
+              scheduleWithTransactionDto.getEventDate(),
+              scheduleWithTransactionDto.getMemo(),
+              scheduleWithTransactionDto.getStatus(),
+              scheduleWithTransactionDto.getTransaction(),
+              scheduleWithTransactionDto.getCreatedAt(),
+              scheduleWithTransactionDto.getUpdatedAt());
     }
 
     @Test
@@ -78,13 +92,25 @@ class ScheduleReadServiceTest {
       final Page<ScheduleWithTransactionDto> schedulePage = new PageImpl<>(List.of(schedule1, schedule2), pageable, 2);
       final SchedulePaginationParam paginationParam = new SchedulePaginationParam(0, 20, null, null, null, null);
 
+      when(securityUserUtil.getId()).thenReturn(userId);
       when(scheduleRepository.findAllScheduleByEventDate(paginationParam.toPageable(), userId, paginationParam.getYear(), paginationParam.getMonth(), paginationParam.getKeyword())).thenReturn(schedulePage);
 
       final SchedulePaginationResponseDto paginationResponseDto = scheduleReadService.readScheduleByEventDate(paginationParam);
 
       verify(scheduleRepository).findAllScheduleByEventDate(paginationParam.toPageable(), userId, paginationParam.getYear(), paginationParam.getMonth(), paginationParam.getKeyword());
-      assertThat(paginationResponseDto).extracting(SchedulePaginationResponseDto::getTotalPages, SchedulePaginationResponseDto::getTotalElements, SchedulePaginationResponseDto::getIsFirst, SchedulePaginationResponseDto::getIsLast, SchedulePaginationResponseDto::getHasNext, SchedulePaginationResponseDto::getItems)
-          .containsExactly(paginationResponseDto.getTotalPages(), paginationResponseDto.getTotalElements(), paginationResponseDto.getIsFirst(), paginationResponseDto.getIsLast(), paginationResponseDto.getHasNext(), paginationResponseDto.getItems());
+      assertThat(paginationResponseDto).extracting(
+              SchedulePaginationResponseDto::getTotalPages,
+              SchedulePaginationResponseDto::getTotalElements,
+              SchedulePaginationResponseDto::getIsFirst,
+              SchedulePaginationResponseDto::getIsLast,
+              SchedulePaginationResponseDto::getHasNext,
+              SchedulePaginationResponseDto::getItems)
+          .containsExactly(paginationResponseDto.getTotalPages(),
+              paginationResponseDto.getTotalElements(),
+              paginationResponseDto.getIsFirst(),
+              paginationResponseDto.getIsLast(),
+              paginationResponseDto.getHasNext(),
+              paginationResponseDto.getItems());
     }
   }
 
@@ -102,7 +128,14 @@ class ScheduleReadServiceTest {
     }
 
     @Test
-    void 일정_조회_단건() {
+    void 일정_조회_단건_없는_일정() {
+      when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> scheduleReadService.readSchedule(scheduleId)).isInstanceOf(CustomException.class);
+    }
+
+    @Test
+    void 일정_조회_단건_로그인_안함() {
       when(scheduleRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
       assertThatThrownBy(() -> scheduleReadService.readSchedule(scheduleId)).isInstanceOf(CustomException.class);
