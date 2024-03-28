@@ -1,6 +1,8 @@
 package com.damo.server.domain.transaction.service;
 
+import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.application.security.user_details.SecurityUserUtil;
+import com.damo.server.common.WithMockCustomUser;
 import com.damo.server.domain.transaction.TransactionRepository;
 import com.damo.server.domain.transaction.dto.RequestCreateTransactionDto;
 import com.damo.server.domain.transaction.dto.RequestUpdateTransactionDto;
@@ -20,10 +22,12 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@WithMockCustomUser
 class TransactionWriteServiceTest {
   TransactionWriteService transactionWriteService;
   @Mock
@@ -137,6 +141,59 @@ class TransactionWriteServiceTest {
 
       verify(transactionRepository).findByIdAndUserId(anyLong(), anyLong());
       verify(transactionRepository).deleteById(anyLong());
+    }
+  }
+
+  @Nested
+  @DisplayName("실패 케이스")
+  class 실패 {
+    LocalDateTime now;
+    Long transactionId = 1L;
+
+    @BeforeEach
+    void 초기값() {
+      now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    @Nested
+    @DisplayName("내역 생성")
+    class 내역_생성_실패 {
+      @Test
+      void 내역_생성_중복_내역() {
+        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
+        final RequestCreateTransactionDto createTransactionDto = new RequestCreateTransactionDto(1L, now, "event", amountDto, TransactionCategory.ETC, "memo");
+
+        when(transactionRepository.existsByEventDateAndPersonIdAndEvent(any(LocalDateTime.class), anyLong(), anyString())).thenReturn(true);
+
+        assertThatThrownBy(() -> transactionWriteService.save(createTransactionDto)).isInstanceOf(CustomException.class);
+
+        verify(transactionRepository).existsByEventDateAndPersonIdAndEvent(any(LocalDateTime.class), anyLong(), anyString());
+        verify(securityUserUtil, never()).getId();
+        verify(transactionRepository, never()).save(any(Transaction.class));
+      }
+
+      @Test
+      void 내역_수정_없는_내역() {
+        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
+        final RequestUpdateTransactionDto updateTransactionDto = new RequestUpdateTransactionDto(1L, amountDto, TransactionCategory.ETC, "memo");
+
+        when(transactionRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> transactionWriteService.patchTransactionById(updateTransactionDto, transactionId)).isInstanceOf(CustomException.class);
+
+        verify(transactionRepository).findByIdAndUserId(anyLong(), anyLong());
+        verify(transactionRepository, never()).save(any(Transaction.class));
+      }
+
+      @Test
+      void 내역_삭제_없는_내역() {
+        when(transactionRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> transactionWriteService.removeTransactionById(transactionId)).isInstanceOf(CustomException.class);
+
+        verify(transactionRepository).findByIdAndUserId(anyLong(), anyLong());
+        verify(transactionRepository, never()).deleteById(anyLong());
+      }
     }
   }
 }
