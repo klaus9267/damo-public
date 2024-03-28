@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@WithMockCustomUser
 class TransactionWriteServiceTest {
   TransactionWriteService transactionWriteService;
   @Mock
