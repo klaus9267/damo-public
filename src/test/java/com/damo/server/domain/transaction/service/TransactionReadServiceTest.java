@@ -1,5 +1,6 @@
 package com.damo.server.domain.transaction.service;
 
+import com.damo.server.application.handler.exception.CustomException;
 import com.damo.server.application.security.user_details.SecurityUserUtil;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.person.dto.PersonDto;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
@@ -125,7 +127,7 @@ class TransactionReadServiceTest {
     @Test
     void 내역_조회_페이지네이션() {
       final TransactionAction[] actions = TransactionAction.values();
-      for (int i = 0; i < actions.length; i++) {
+      for (final TransactionAction action : actions) {
         final ScheduleDto schedule = new ScheduleDto(1L, "event", now, "memo", ScheduleStatus.NORMAL, now, now);
         final PersonDto person = new PersonDto(1L, "name", "01012341234", PersonRelation.ETC, "memo", now, now);
         final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
@@ -133,7 +135,7 @@ class TransactionReadServiceTest {
         final TransactionWithScheduleDto transactionWithScheduleDto2 = new TransactionWithScheduleDto(2L, person, schedule, amountDto, TransactionCategory.ETC, "memo2", now, now);
 
         final Pageable pageable = PageRequest.of(0, 10);
-        final TransactionPaginationParam paginationParam = new TransactionPaginationParam(pageable.getPageNumber(), pageable.getPageSize(), actions[i], null, null, null, null);
+        final TransactionPaginationParam paginationParam = new TransactionPaginationParam(pageable.getPageNumber(), pageable.getPageSize(), action, null, null, null, null);
         final Page<TransactionWithScheduleDto> transactionWithScheduleDtoPage = new PageImpl<>(List.of(transactionWithScheduleDto1, transactionWithScheduleDto2), pageable, 2);
 
         when(transactionRepository.findAllByUserId(
@@ -170,6 +172,27 @@ class TransactionReadServiceTest {
                 transactionPaginationResponseDto.getItems()
             );
       }
+    }
+  }
+
+  @Nested
+  @DisplayName("실패 케이스")
+  class 실패 {
+    LocalDateTime now;
+    Long userId = 1L;
+    Long transactionId = 1L;
+
+    @BeforeEach
+    void 초기값() {
+      now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      when(securityUserUtil.getId()).thenReturn(userId);
+    }
+
+    @Test
+    void 내역_조회_단건_없는_내역() {
+      when(transactionRepository.findByIdAndUserId(anyLong(), anyLong())).thenReturn(Optional.empty());
+
+      assertThatThrownBy(() -> transactionReadService.readTransaction(transactionId)).isInstanceOf(CustomException.class);
     }
   }
 }
