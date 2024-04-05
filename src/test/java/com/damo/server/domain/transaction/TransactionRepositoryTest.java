@@ -90,5 +90,16 @@ class TransactionRepositoryTest {
       assertThat(foundTransaction.getUser()).isEqualTo(transaction.getUser());
       assertThat(foundTransaction.getPerson()).isEqualTo(transaction.getPerson());
     }
+
+    @Test
+    void 내역_삭제() {
+      Optional<Transaction> foundTransaction1 = transactionRepository.findById(transaction.getId());
+      assertThat(foundTransaction1.isPresent()).isEqualTo(true);
+
+      transactionRepository.deleteById(transaction.getId());
+
+      Optional<Transaction> foundTransaction2 = transactionRepository.findById(transaction.getId());
+      assertThat(foundTransaction2.isPresent()).isEqualTo(false);
+    }
   }
 }
