@@ -1,6 +1,7 @@
 package com.damo.server.domain.transaction;
 
 import com.damo.server.application.security.provider.OAuthProviderType;
+import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.person.entity.Person;
 import com.damo.server.domain.person.entity.PersonRelation;
 import com.damo.server.domain.person.repository.PersonRepository;
@@ -23,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,6 +77,18 @@ class TransactionRepositoryTest {
               transaction.getUser(),
               transaction.getPerson()
           );
+    }
+
+    @Test
+    void 내역_조회() {
+      Transaction foundTransaction = transactionRepository.findById(transaction.getId()).orElseThrow(ExceptionThrowHelper.throwNotFound("조회할 거래 내역을 찾을 수 없음"));
+
+      assertThat(foundTransaction.getId()).isEqualTo(transaction.getId());
+      assertThat(foundTransaction.getTransactionAmount()).isEqualTo(transaction.getTransactionAmount());
+      assertThat(foundTransaction.getMemo()).isEqualTo(transaction.getMemo());
+      assertThat(foundTransaction.getCategory()).isEqualTo(transaction.getCategory());
+      assertThat(foundTransaction.getUser()).isEqualTo(transaction.getUser());
+      assertThat(foundTransaction.getPerson()).isEqualTo(transaction.getPerson());
     }
   }
 }
