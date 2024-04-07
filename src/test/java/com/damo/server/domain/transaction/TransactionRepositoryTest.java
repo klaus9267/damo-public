@@ -155,19 +155,12 @@ class TransactionRepositoryTest {
 
       final List<Transaction> foundTransactions = transactionRepository.findAll();
 
-      final Map<TransactionAction, Long> amountMap = transactions.stream()
+      final Map<TransactionAction, Long> amountMap = foundTransactions.stream()
           .collect(Collectors.groupingBy(
-              transaction -> transaction.getTransactionAmount().getAction(),
-              Collectors.summingLong(transaction -> transaction.getTransactionAmount().getAmount())
-          ));
-
-      if (TransactionAction.GIVING.equals(transaction.getTransactionAmount().getAction())) {
-        final Long newAmount = amountMap.get(TransactionAction.GIVING) + transaction.getTransactionAmount().getAmount();
-        amountMap.put(TransactionAction.GIVING, newAmount);
-      } else {
-        final Long newAmount = amountMap.get(TransactionAction.RECEIVING) + transaction.getTransactionAmount().getAmount();
-        amountMap.put(TransactionAction.RECEIVING, newAmount);
-      }
+                  transaction -> transaction.getTransactionAmount().getAction(),
+                  Collectors.summingLong(transaction -> transaction.getTransactionAmount().getAmount())
+              )
+          );
 
       final TransactionTotalAmountDto totalAmountDto = transactionRepository.findTotalAmount(user.getId());
 
@@ -177,7 +170,7 @@ class TransactionRepositoryTest {
 
     @Test
     void 내역_조회_readRecentAmounts() {
-      List<Transaction> transactions = new ArrayList<>();
+      final List<Transaction> transactions = new ArrayList<>();
       final LocalDateTime startedAt = LocalDateTime.now().minusMonths(2);
       for (int i = 0; i < 100; i++) {
         final Random random = new Random();
@@ -194,20 +187,13 @@ class TransactionRepositoryTest {
 
       final List<Transaction> foundTransactions = transactionRepository.findAll();
 
-      final Map<TransactionAction, Long> amountMap = transactions.stream()
+      final Map<TransactionAction, Long> amountMap = foundTransactions.stream()
           .filter(data -> data.getSchedule().getEventDate().isAfter(startedAt))
           .collect(Collectors.groupingBy(
-              transaction -> transaction.getTransactionAmount().getAction(),
-              Collectors.summingLong(transaction -> transaction.getTransactionAmount().getAmount())
-          ));
-
-      if (TransactionAction.GIVING.equals(transaction.getTransactionAmount().getAction())) {
-        final Long newAmount = amountMap.get(TransactionAction.GIVING) + transaction.getTransactionAmount().getAmount();
-        amountMap.put(TransactionAction.GIVING, newAmount);
-      } else {
-        final Long newAmount = amountMap.get(TransactionAction.RECEIVING) + transaction.getTransactionAmount().getAmount();
-        amountMap.put(TransactionAction.RECEIVING, newAmount);
-      }
+                  transaction -> transaction.getTransactionAmount().getAction(),
+                  Collectors.summingLong(transaction -> transaction.getTransactionAmount().getAmount())
+              )
+          );
 
       final TransactionTotalAmountDto totalAmountDto = transactionRepository.readRecentAmounts(user.getId(), startedAt);
 
