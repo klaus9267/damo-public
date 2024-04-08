@@ -140,18 +140,7 @@ class TransactionRepositoryTest {
 
     @Test
     void 내역_조회_findTotalAmount() {
-      List<Transaction> transactions = new ArrayList<>();
-      for (int i = 0; i < 100; i++) {
-        final Random random = new Random();
-        final long randomAmount = random.nextLong(1000000);
-        final int randomIndex = random.nextInt(2) + 1;
-
-        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.values()[randomIndex], randomAmount);
-        final RequestCreateTransactionDto transactionDto = new RequestCreateTransactionDto(person.getId(), now, "event" + i, amountDto, TransactionCategory.ETC, "memo");
-
-        transactions.add(Transaction.from(transactionDto, user.getId()));
-      }
-      transactionRepository.saveAll(transactions);
+      saveRandomData();
 
       final List<Transaction> foundTransactions = transactionRepository.findAll();
 
@@ -170,23 +159,11 @@ class TransactionRepositoryTest {
 
     @Test
     void 내역_조회_readRecentAmounts() {
-      final List<Transaction> transactions = new ArrayList<>();
-      final LocalDateTime startedAt = LocalDateTime.now().minusMonths(2);
-      for (int i = 0; i < 100; i++) {
-        final Random random = new Random();
-        final long randomAmount = random.nextLong(1000000);
-        final int randomIndex = random.nextInt(2) + 1;
-        final LocalDateTime randomDateTime = now.minusDays(random.nextInt(100) + 30);
-
-        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.values()[randomIndex], randomAmount);
-        final RequestCreateTransactionDto transactionDto = new RequestCreateTransactionDto(person.getId(), randomDateTime, "event" + i, amountDto, TransactionCategory.ETC, "memo");
-
-        transactions.add(Transaction.from(transactionDto, user.getId()));
-      }
-      transactionRepository.saveAll(transactions);
+      saveRandomData();
 
       final List<Transaction> foundTransactions = transactionRepository.findAll();
 
+      final LocalDateTime startedAt = LocalDateTime.now().minusMonths(2);
       final Map<TransactionAction, Long> amountMap = foundTransactions.stream()
           .filter(data -> data.getSchedule().getEventDate().isAfter(startedAt))
           .collect(Collectors.groupingBy(
@@ -244,6 +221,22 @@ class TransactionRepositoryTest {
               savedTransaction.getUser(),
               savedTransaction.getPerson()
           );
+    }
+
+    private void saveRandomData() {
+      final List<Transaction> transactions = new ArrayList<>();
+      for (int i = 0; i < 100; i++) {
+        final Random random = new Random();
+        final long randomAmount = random.nextLong(1000000);
+        final int randomIndex = random.nextInt(2) + 1;
+        final LocalDateTime randomDateTime = now.minusDays(random.nextInt(100) + 30);
+
+        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.values()[randomIndex], randomAmount);
+        final RequestCreateTransactionDto transactionDto = new RequestCreateTransactionDto(person.getId(), randomDateTime, "event" + i, amountDto, TransactionCategory.ETC, "memo");
+
+        transactions.add(Transaction.from(transactionDto, user.getId()));
+      }
+      transactionRepository.saveAll(transactions);
     }
   }
 }
