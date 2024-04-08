@@ -1,6 +1,7 @@
 package com.damo.server.domain.transaction;
 
 import com.damo.server.application.security.provider.OAuthProviderType;
+import com.damo.server.common.TestUtils;
 import com.damo.server.domain.common.exception.ExceptionThrowHelper;
 import com.damo.server.domain.common.pagination.param.TransactionPaginationParam;
 import com.damo.server.domain.person.entity.Person;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -34,6 +36,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -189,6 +192,7 @@ class TransactionRepositoryTest {
       assertThat(deletedTransaction.isPresent()).isFalse();
     }
 
+
     private void assertReadTransaction(final Transaction foundTransaction) {
       assertThat(foundTransaction).extracting(
               Transaction::getId,
@@ -237,6 +241,95 @@ class TransactionRepositoryTest {
         transactions.add(Transaction.from(transactionDto, user.getId()));
       }
       transactionRepository.saveAll(transactions);
+    }
+  }
+
+  @Nested
+  @DisplayName("실패 케이스")
+  class 실패 {
+    LocalDateTime now;
+    Transaction transaction;
+    User user;
+    Person person;
+    Schedule schedule;
+
+
+    @Nested
+    @DisplayName("생성 케이스")
+    class 생성 {
+      @BeforeEach
+      void 초기값() {
+        now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+
+        final User newUser = new User(null, "name", "email", UserRole.USER, "username", "imageUrl", OAuthProviderType.KAKAO, "provideId");
+        user = userRepository.save(newUser);
+
+        final Person newPerson = new Person(null, "name", PersonRelation.ETC, "01012341234", "memo", null, null, user);
+        person = personRepository.save(newPerson);
+
+        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
+        final RequestCreateTransactionDto transactionDto = new RequestCreateTransactionDto(person.getId(), now, "event", amountDto, TransactionCategory.ETC, "memo");
+
+        transaction = Transaction.from(transactionDto, user.getId());
+      }
+      @Test
+      void 내역_생성_금액_객체_NULL() {
+        TestUtils.setField(transaction, "transactionAmount", null);
+        assertThatThrownBy(() -> transactionRepository.save(transaction)).isInstanceOf(DataIntegrityViolationException.class);
+      }
+
+      @Test
+      void 내역_생성_거래_종류_NULL() {
+        final TransactionAmount amount = new TransactionAmount(null, 1000L);
+        TestUtils.setField(transaction, "transactionAmount", amount);
+        assertThatThrownBy(() -> transactionRepository.save(transaction)).isInstanceOf(DataIntegrityViolationException.class);
+      }
+
+      @Test
+      void 내역_생성_거래_금액_NULL() {
+        final TransactionAmount amount = new TransactionAmount(TransactionAction.RECEIVING, null);
+        TestUtils.setField(transaction, "transactionAmount", amount);
+        assertThatThrownBy(() -> transactionRepository.save(transaction)).isInstanceOf(DataIntegrityViolationException.class);
+      }
+
+      @Test
+      void 내역_생성_선물_종류_NULL() {
+        TestUtils.setField(transaction, "category", null);
+        assertThatThrownBy(() -> transactionRepository.save(transaction)).isInstanceOf(DataIntegrityViolationException.class);
+      }
+
+      @Test
+      void 내역_생성_대상_NULL() {
+        TestUtils.setField(transaction, "person", null);
+        assertThatThrownBy(() -> transactionRepository.save(transaction)).isInstanceOf(DataIntegrityViolationException.class);
+      }
+
+      @Test
+      void 내역_생성_사용자_NULL() {
+        TestUtils.setField(transaction, "user", null);
+        assertThatThrownBy(() -> transactionRepository.save(transaction)).isInstanceOf(DataIntegrityViolationException.class);
+      }
+    }
+
+    @Nested
+    @DisplayName("수정 케이스")
+    class 수정 {
+      @BeforeEach
+      void 초기값() {
+        now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+
+        final User newUser = new User(null, "name", "email", UserRole.USER, "username", "imageUrl", OAuthProviderType.KAKAO, "provideId");
+        user = userRepository.save(newUser);
+
+        final Person newPerson = new Person(null, "name", PersonRelation.ETC, "01012341234", "memo", null, null, user);
+        person = personRepository.save(newPerson);
+
+        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
+        final RequestCreateTransactionDto transactionDto = new RequestCreateTransactionDto(person.getId(), now, "event", amountDto, TransactionCategory.ETC, "memo");
+
+        transaction = transactionRepository.save(Transaction.from(transactionDto, user.getId()));
+        schedule = transaction.getSchedule();
+      }
     }
   }
 }
