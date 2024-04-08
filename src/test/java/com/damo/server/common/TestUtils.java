@@ -11,7 +11,7 @@ public class TestUtils {
       Field field = target.getClass().getDeclaredField(fieldName);
       field.setAccessible(true);
       field.set(target, value);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
+    } catch (Exception e) {
       throw new CustomException(CustomErrorCode.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }

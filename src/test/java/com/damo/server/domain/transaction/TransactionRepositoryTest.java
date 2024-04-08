@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.domain.Page;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -251,7 +253,6 @@ class TransactionRepositoryTest {
     Transaction transaction;
     User user;
     Person person;
-    Schedule schedule;
 
 
     @Nested
@@ -272,6 +273,7 @@ class TransactionRepositoryTest {
 
         transaction = Transaction.from(transactionDto, user.getId());
       }
+
       @Test
       void 내역_생성_금액_객체_NULL() {
         TestUtils.setField(transaction, "transactionAmount", null);
@@ -312,23 +314,53 @@ class TransactionRepositoryTest {
     }
 
     @Nested
-    @DisplayName("수정 케이스")
-    class 수정 {
-      @BeforeEach
-      void 초기값() {
-        now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+    @DisplayName("조회 케이스")
+    class 조회 {
+      @Test
+      void 내역_조회_없는_내역() {
+        final Optional<Transaction> foundTransaction = transactionRepository.findById(anyLong());
+        assertThat(foundTransaction.isPresent()).isFalse();
+      }
 
-        final User newUser = new User(null, "name", "email", UserRole.USER, "username", "imageUrl", OAuthProviderType.KAKAO, "provideId");
-        user = userRepository.save(newUser);
+      @Test
+      void 내역_조회_아이디_NULL() {
+        assertThatThrownBy(() -> transactionRepository.findById(null)).isInstanceOf(InvalidDataAccessApiUsageException.class);
+      }
 
-        final Person newPerson = new Person(null, "name", PersonRelation.ETC, "01012341234", "memo", null, null, user);
-        person = personRepository.save(newPerson);
+      @Test
+      void 내역_조회_existsByEventDateAndPersonIdAndEvent_없는_내역() {
+        Boolean isExist = transactionRepository.existsByEventDateAndPersonIdAndEvent(any(LocalDateTime.class), anyLong(), anyString());
+        assertThat(isExist).isFalse();
+      }
 
-        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
-        final RequestCreateTransactionDto transactionDto = new RequestCreateTransactionDto(person.getId(), now, "event", amountDto, TransactionCategory.ETC, "memo");
+      @Test
+      void 내역_조회_findByIdAndUserId_없는_내역() {
+        final Optional<Transaction> foundTransaction = transactionRepository.findByIdAndUserId(anyLong(), anyLong());
+        assertThat(foundTransaction.isPresent()).isFalse();
+      }
 
-        transaction = transactionRepository.save(Transaction.from(transactionDto, user.getId()));
-        schedule = transaction.getSchedule();
+      @Test
+      void 내역_조회_findAllByUserId_내역_없음() {
+        final TransactionPaginationParam paginationParam = new TransactionPaginationParam(0, 10, TransactionAction.TOTAL, null, null, null, null);
+        Page<TransactionWithScheduleDto> foundTransactionPagination = transactionRepository.findAllByUserId(paginationParam.toPageable(), 1L, null, null, TransactionAction.TOTAL);
+
+        assertThat(foundTransactionPagination.getContent().size()).isEqualTo(0);
+      }
+
+      @Test
+      void 내역_조회_findTotalAmount_내역_없음() {
+        TransactionTotalAmountDto foundAmount = transactionRepository.findTotalAmount(1L);
+
+        assertThat(foundAmount.getTotalReceivingAmount()).isEqualTo(0);
+        assertThat(foundAmount.getTotalGivingAmount()).isEqualTo(0);
+      }
+
+      @Test
+      void 내역_조회_readRecentAmounts_내역_없음() {
+        TransactionTotalAmountDto foundAmount = transactionRepository.readRecentAmounts(1L, null);
+
+        assertThat(foundAmount.getTotalReceivingAmount()).isEqualTo(0);
+        assertThat(foundAmount.getTotalGivingAmount()).isEqualTo(0);
       }
     }
   }
