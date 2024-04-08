@@ -1,6 +1,7 @@
 package com.damo.server.domain.transaction.entity;
 
 import com.damo.server.domain.transaction.dto.TransactionAmountDto;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,8 +23,10 @@ public class TransactionAmount {
   private static final Long DEFAULT_AMOUNT = 0L;
 
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private final TransactionAction action;
 
+  @Column(nullable = false)
   private final Long amount;
 
   /**
