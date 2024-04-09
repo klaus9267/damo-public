@@ -128,8 +128,8 @@ class TransactionRepositoryTest {
     @Test
     void 내역_조회_findAllByUserId() {
       List<Transaction> transactions = new ArrayList<>();
+      final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
       for (int i = 0; i < 10; i++) {
-        final TransactionAmountDto amountDto = new TransactionAmountDto(TransactionAction.GIVING, 1000L);
         final RequestCreateTransactionDto transactionDto = new RequestCreateTransactionDto(person.getId(), now, "event" + i, amountDto, TransactionCategory.ETC, "memo");
         transactions.add(Transaction.from(transactionDto, user.getId()));
       }
@@ -233,7 +233,7 @@ class TransactionRepositoryTest {
       final List<Transaction> transactions = new ArrayList<>();
       for (int i = 0; i < 100; i++) {
         final Random random = new Random();
-        final long randomAmount = random.nextLong(1000000);
+        final long randomAmount = random.nextLong(1_000_000);
         final int randomIndex = random.nextInt(2) + 1;
         final LocalDateTime randomDateTime = now.minusDays(random.nextInt(100) + 30);
 
