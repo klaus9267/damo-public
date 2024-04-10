@@ -35,6 +35,7 @@ public class Transaction {
    * 거래 금액과 관련된 개체들을 분리한 클래스입니다.
    */
   @Embedded
+  @Column(nullable = false)
   private TransactionAmount transactionAmount;
   
   @Column(columnDefinition = "TEXT")
@@ -49,6 +50,7 @@ public class Transaction {
   private LocalDateTime updatedAt;
   
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private TransactionCategory category;
   
   @ManyToOne(fetch = FetchType.LAZY)
