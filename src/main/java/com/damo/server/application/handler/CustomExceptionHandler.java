@@ -1,95 +1,89 @@
 package com.damo.server.application.handler;
 
-
-import com.damo.server.application.handler.exception.*;
+import com.damo.server.application.handler.exception.CustomErrorCode;
+import com.damo.server.application.handler.exception.CustomException;
+import com.damo.server.application.handler.exception.ResponseCustomException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
-@ControllerAdvice
+/**
+ * {@code CustomExceptionHandler}는 커스텀 예외 처리를 담당하는 클래스입니다.
+ */
 @Slf4j
+@RestControllerAdvice
 public class CustomExceptionHandler {
-    /* Validator Exception */
-//    @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ExceptionError handleValidException(final MethodArgumentNotValidException ex) {
-        log.warn("Validator Exception: ", ex);
-        return buildExceptionError(ex, HttpStatus.BAD_REQUEST);
-    }
-    /* 400 - Bad Request */
-//    @ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-    @ExceptionHandler(BadRequestException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
-    public ExceptionError handleBadRequest(final RuntimeException ex) {
-        log.warn("Bad Request: ", ex);
-        return buildExceptionError(ex, HttpStatus.BAD_REQUEST);
-    }
+  /**
+   * 커스텀 예외를 처리하는 메서드입니다.
+   *
+   * @param exception 커스텀 예외
+   * @param request   현재 요청에 대한 정보를 나타내는 HttpServletRequest 객체
+   * @return 커스텀 예외에 대한 응답
+     */
+  @ExceptionHandler(CustomException.class)
+  public ResponseEntity<ResponseCustomException> handleException(
+      final CustomException exception,
+      final HttpServletRequest request
+  ) {
+    log.error(
+        "[code] {}, [url] {}, [message] {}",
+        exception.getCustomErrorCode(),
+        request.getRequestURI(),
+        exception.getMessage()
+    );
 
-    /* 401 - Unauthorized */
-//    @ApiResponse(responseCode = "401", description = "UNAUTHORIZED")
-    @ExceptionHandler(UnauthorizedException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ResponseBody
-    public ExceptionError handleUnauthorized(final RuntimeException ex) {
-        log.warn("Unauthorized: ", ex);
-        return buildExceptionError(ex, HttpStatus.UNAUTHORIZED);
-    }
+    return ResponseEntity
+        .status(exception.getCustomErrorCode().getStatusCode())
+        .body(ResponseCustomException.of(exception));
+  }
 
-    /* 403 - Forbidden */
-//    @ApiResponse(responseCode = "403", description = "FORBIDDEN")
-    @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ResponseBody
-    public ExceptionError handleForbidden(final RuntimeException ex) {
-        log.warn("Forbidden: ", ex);
-        return buildExceptionError(ex, HttpStatus.FORBIDDEN);
-    }
+  /**
+   * 메소드 인자 유효성 검증 예외를 처리하는 메서드입니다.
+   *
+   * @param exception 메소드 인자 유효성 검증 예외
+   * @return 메소드 인자 유효성 검증 예외에 대한 응답
+   */
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  protected ResponseEntity<ResponseCustomException> handleMethodArgumentNotValidException(
+      final MethodArgumentNotValidException exception
+  ) {
+    log.error("[MethodArgumentNotValidException] " + exception.getMessage());
 
-    /* 404 - Not Found */
-//    @ApiResponse(responseCode = "404", description = "NOT_FOUND")
-    @ExceptionHandler(NotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ResponseBody
-    public ExceptionError handleNotFound(final RuntimeException ex) {
-        log.warn("Not Found: ", ex);
-        return buildExceptionError(ex, HttpStatus.NOT_FOUND);
-    }
+    final CustomException customException = new CustomException(
+        CustomErrorCode.BAD_REQUEST, exception.getMessage()
+    );
+    return ResponseEntity
+        .status(customException.getCustomErrorCode().getStatusCode())
+        .body(ResponseCustomException.of(customException));
+  }
 
+  /**
+   * 핸들러 메서드 유효성 검증 예외를 처리하는 메서드입니다.
+   *
+   * @param exception 핸들러 메서드 유효성 검증 예외
+   * @return 핸들러 메서드 유효성 검증 예외에 대한 응답
+   */
+  @ExceptionHandler(HandlerMethodValidationException.class)
+  protected ResponseEntity<ResponseCustomException> handleHandlerMethodValidationException(
+      final HandlerMethodValidationException exception
+  ) {
+    final String message = exception
+        .getAllValidationResults()
+        .get(0)
+        .getResolvableErrors()
+        .get(0)
+        .getDefaultMessage();
+    log.error("[HandlerMethodValidationException] " + message);
 
-    /* 500 - Internal Server Error(and ALL) */
-//    @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
-    @ExceptionHandler({ Exception.class })
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ExceptionError handleServerError(final Exception ex) {
-        log.info(ex.getClass().getName());
-        log.error("Server Error: ", ex);
-        return buildExceptionError(ex, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    /* 알 수 없는 에러 */
-//    @ApiResponse(responseCode = "500", description = "INTERNAL_SERVER_ERROR")
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public ExceptionError handleUnknownException(final RuntimeException ex) {
-        log.warn("알 수 없음, ", ex);
-        return buildExceptionError(ex, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private ExceptionError buildExceptionError(Exception exception, HttpStatus status) {
-        return ExceptionError
-                .builder()
-                .message(exception.getMessage())
-                .statusMessage(status.getReasonPhrase())
-                .statusCode(status.value())
-                .build();
-    }
+    final CustomException customException = new CustomException(
+        CustomErrorCode.BAD_REQUEST, message
+    );
+    return ResponseEntity
+        .status(customException.getCustomErrorCode().getStatusCode())
+        .body(ResponseCustomException.of(customException));
+  }
 }
